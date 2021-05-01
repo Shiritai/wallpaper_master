@@ -2,6 +2,8 @@ package eroiko.ani;
 
 import java.io.*;
 
+import com.dustinredmond.fxtrayicon.FXTrayIcon;
+
 import eroiko.ani.controller.MainController;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -26,7 +28,13 @@ public class MainApp extends Application{
         Parent root = FXMLLoader.load(getClass().getResource("view/MainWindow.fxml"));
         mainScene = new Scene(root);
 
-        mainScene.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> {
+        FXTrayIcon trayIcon = new FXTrayIcon(mainStage, getClass().getResource("img/wallpaper79.png"));
+        trayIcon.show();
+        // MenuItem menu = new MenuItem("Meow!");
+        // menu.setOnAction(e -> new Alert(Alert.AlertType.INFORMATION, "Clicked on Menu!").showAndWait());
+        // trayIcon.addMenuItem(menu);
+
+        mainScene.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> { // 因為是對整個 Scene, 因此宣告在此
             if (new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN).match(e)){
                 new MainController().OpenPropertiesWindow(new ActionEvent());
                 e.consume();

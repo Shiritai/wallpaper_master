@@ -1,11 +1,6 @@
 package eroiko.ani.controller.ControllerSupporter;
 
-import com.dustinredmond.fxtrayicon.FXTrayIcon;
-
-import eroiko.ani.MainApp;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyEvent;
@@ -23,7 +18,7 @@ public class MinimizeWindow {
     }
     
     private void minimizeAStage(){
-        
+
         // FXTrayIcon trayIcon = new FXTrayIcon(MainApp.mainStage, getClass().getClassLoader().getResource("eroiko.ain.img.wallpaper79.ico"));
         // MenuItem menu = new MenuItem("Meow!");
         // menu.setOnAction(e -> new Alert(Alert.AlertType.INFORMATION, "Clicked on Menu!").showAndWait());
