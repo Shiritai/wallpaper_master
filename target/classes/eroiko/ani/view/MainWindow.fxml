@@ -28,7 +28,8 @@
           <Menu mnemonicParsing="false" text="File">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#OpenPropertiesWindow" style="-fx-text-fill: black;" text="Properties" />
-                  <MenuItem mnemonicParsing="false" onAction="#hitExit" text="Close" />
+                  <MenuItem mnemonicParsing="false" onAction="#hitMinimize" text="Minimize" />
+                  <MenuItem mnemonicParsing="false" onAction="#hitExit" text="Exit" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">

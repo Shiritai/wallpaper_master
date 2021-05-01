@@ -11,6 +11,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
@@ -20,7 +21,8 @@ public class MainApp extends Application{
         
     public static Stage mainStage;
     public static Scene mainScene;
-    public static MenuItem [] menus;
+    public static MenuItem [] menuItems;
+    public static FXTrayIcon trayIcon;
 
     public static void main(String [] args){
         launch(args);
@@ -32,24 +34,7 @@ public class MainApp extends Application{
         Parent root = FXMLLoader.load(getClass().getResource("view/MainWindow.fxml"));
         mainScene = new Scene(root);
 
-
-        FXTrayIcon trayIcon = new FXTrayIcon(mainStage, getClass().getResource("img/wallpaper79.png"));
-        trayIcon.setTrayIconTooltip("Wallpaper Master\nversion 0.0.1");
-
-        menus = new MenuItem [4];
-        menus[0] = new MenuItem("Current Wallpaper");
-        menus[1] = new MenuItem("Properties");
-        MainApp.menus[1].setOnAction(e -> new Alert(Alert.AlertType.INFORMATION, "Show Properties!").showAndWait());
-        menus[2] = new MenuItem("Process");
-        MainApp.menus[2].setOnAction(e -> new Alert(Alert.AlertType.INFORMATION, "Clicked on Process Menu!").showAndWait());
-        menus[3] = new MenuItem("Exit");
-        MainApp.menus[3].setOnAction(e -> {mainStage.close(); Platform.exit(); System.exit(0);});
-        
-        for (var m : menus){
-            trayIcon.addMenuItem(m);
-        }
-        trayIcon.show();
-
+        setMinimizedMenu();
 
         mainScene.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> { // 因為是對整個 Scene, 因此宣告在此
             if (new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN).match(e)){
@@ -58,14 +43,41 @@ public class MainApp extends Application{
             }
         });
 
-        MainApp.mainStage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
-        MainApp.mainStage.setTitle("Wallpaper Master");
-        MainApp.mainStage.setScene(mainScene);
-        MainApp.mainStage.show();
+        mainStage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+        mainStage.setTitle("Wallpaper Master");
+        mainStage.setScene(mainScene);
+        mainStage.show();
 
-        // MainApp.mainStage.setOnCloseRequest((e) -> {
-            // MainController.
-        // });
+        // mainStage.setOnCloseRequest(e -> trayIcon.show());
+        mainStage.setOnHiding(e -> trayIcon.show());
+        mainStage.setOnShowing(e -> trayIcon.hide());
 
+    }
+
+    private void setMinimizedMenu() {
+        /* Adjust minimized menu */
+        trayIcon = new FXTrayIcon(mainStage, getClass().getResource("img/wallpaper79.png"));
+        trayIcon.setTrayIconTooltip("Wallpaper Master\nversion 0.0.1");
+
+        var menu = new Menu("Options");
+        var childMenu1 = new MenuItem("opt1");
+        childMenu1.setOnAction(e -> System.out.println("clicked opt1"));
+        var childMenu2 = new MenuItem("opt2");
+        childMenu2.setOnAction(e -> System.out.println("clicked opt2"));
+        menu.getItems().addAll(childMenu1, childMenu2);
+        
+        menuItems = new MenuItem [4];
+        menuItems[0] = menu;
+        menuItems[1] = new MenuItem("Properties");
+        MainApp.menuItems[1].setOnAction(e -> new Alert(Alert.AlertType.INFORMATION, "Show Properties!").showAndWait());
+        menuItems[2] = new MenuItem("Process");
+        MainApp.menuItems[2].setOnAction(e -> new Alert(Alert.AlertType.INFORMATION, "Clicked on Process Menu!").showAndWait());
+        menuItems[3] = new MenuItem("Exit");
+        MainApp.menuItems[3].setOnAction(e -> {mainStage.close(); Platform.exit(); System.exit(0);});
+        
+        for (var m : menuItems){
+            trayIcon.addMenuItem(m);
+        }
+        trayIcon.setOnAction(e -> mainStage.show());
     }
 }

@@ -9,6 +9,7 @@ import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.ControllerSupporter.MinimizeWindow;
 import eroiko.ani.controller.PrimaryControllers.PropertiesController;
 import eroiko.ani.controller.PrimaryControllers.TestingController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.Scene;
@@ -45,6 +46,8 @@ public class MainController implements Initializable {
             killTerminal();
         }
         MainApp.mainStage.close();
+        Platform.exit();
+        System.exit(0);
     }
 
     @FXML
@@ -125,6 +128,12 @@ public class MainController implements Initializable {
         }
     }
 
+    @FXML
+    void hitMinimize(ActionEvent event) {
+        MainApp.mainStage.hide();
+        MainApp.trayIcon.show();
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb){
         imagePreview.setOnMouseEntered((e) -> {
@@ -137,10 +146,6 @@ public class MainController implements Initializable {
         // initializeMinimizedMenu();
         // MinimizeWindow.minimizeWindow(MainApp.mainStage);
     }
-    
-    // private void initializeMinimizedMenu() {
-        
-    // }
 
     public void initializeKeyBoardShortcuts(){
         Terminal_in.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> {
