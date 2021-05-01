@@ -18,6 +18,17 @@
   </properties>
 
   <dependencies>
+
+    <dependency>
+      <groupId>com.dustinredmond.fxtrayicon</groupId>
+      <artifactId>FXTrayIcon</artifactId>
+      <version>3.0.0</version>
+      <scope>system</scope>
+      <systemPath>
+      D:\ShiZu_Code\Java\FXTrayIcon-3.0.0\FXTrayIcon-3.0.0.jar
+      </systemPath>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-controls -->
     <dependency>
       <groupId>org.openjfx</groupId>
@@ -83,12 +94,6 @@
       <version>3.12.0</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/de.jensd/fontawesomefx -->
-    <dependency>
-      <groupId>de.jensd</groupId>
-      <artifactId>fontawesomefx</artifactId>
-      <version>8.2</version>
-    </dependency>
   </dependencies>
 
   <build>
