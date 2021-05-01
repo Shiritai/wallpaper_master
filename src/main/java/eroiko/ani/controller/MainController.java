@@ -37,6 +37,10 @@ public class MainController implements Initializable {
   
     @FXML
     void hitExit(ActionEvent event) {
+        Exit();
+    }
+
+    void Exit() {
         if (terminalThread != null){
             killTerminal();
         }
@@ -130,9 +134,14 @@ public class MainController implements Initializable {
             }
         });
         initializeKeyBoardShortcuts();
+        // initializeMinimizedMenu();
         // MinimizeWindow.minimizeWindow(MainApp.mainStage);
     }
     
+    // private void initializeMinimizedMenu() {
+        
+    // }
+
     public void initializeKeyBoardShortcuts(){
         Terminal_in.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> {
             if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
