@@ -18,7 +18,7 @@ public class MinimizeWindow {
     }
     
     private static void minimizeAStage(){
-        
+        // FXTrayIcon
         
         //Check the SystemTray is supported
         // if (!SystemTray.isSupported()) {
