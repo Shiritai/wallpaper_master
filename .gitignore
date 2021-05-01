@@ -1,0 +1,8 @@
+*.exe
+*.in
+*.out
+*.o
+Free_test
+tempCodeRunnerFile.c
+.vscode
+*\img
