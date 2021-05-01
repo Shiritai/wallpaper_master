@@ -49,8 +49,9 @@ public class MainController implements Initializable {
         try {
             var stage = new Stage();
             stage.setTitle("Testing Window");
-            stage.setScene(new Scene(FXMLLoader.load(new File("src/main/java/eroiko/ani/view/TestingWindow.fxml").toURL())));
-            stage.getIcons().add(new Image(new File("src/main/java/eroiko/ani/img/wallpaper79.png").toURI().toString()));
+            // stage.setScene(new Scene(FXMLLoader.load(new File("src/main/java/eroiko/ani/view/TestingWindow.fxml").toURL())));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/TestingWindow.fxml"))));
+            stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
             stage.show();
         } catch (Exception e){
             System.out.println(e.toString());
@@ -74,8 +75,8 @@ public class MainController implements Initializable {
         try {
             var stage = new Stage();
             stage.setTitle("Properties");
-            stage.setScene(new Scene(FXMLLoader.load(new File("src/main/java/eroiko/ani/view/PropertiesWindow.fxml").toURL())));
-            stage.getIcons().add(new Image(new File("src/main/java/eroiko/ani/img/wallpaper79.png").toURI().toString()));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/PropertiesWindow.fxml"))));
+            stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
             stage.show();
         } catch (Exception e){
             System.out.println(e.toString());
@@ -129,7 +130,7 @@ public class MainController implements Initializable {
             }
         });
         initializeKeyBoardShortcuts();
-        MinimizeWindow.minimizeWindow(MainApp.mainStage);
+        // MinimizeWindow.minimizeWindow(MainApp.mainStage);
     }
     
     public void initializeKeyBoardShortcuts(){

@@ -33,10 +33,14 @@ public class MainApp extends Application{
             }
         });
 
-        MainApp.mainStage.getIcons().add(new Image(new File("src/main/java/eroiko/ani/img/wallpaper79.png").toURI().toString()));
+        MainApp.mainStage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
         MainApp.mainStage.setTitle("Wallpaper Master");
         MainApp.mainStage.setScene(mainScene);
         MainApp.mainStage.show();
+
+        // MainApp.mainStage.setOnCloseRequest((e) -> {
+            // MainController.
+        // });
 
     }
 }
