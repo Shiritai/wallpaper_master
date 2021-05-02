@@ -5,6 +5,8 @@ import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 
+import de.jensd.fx.glyphs.GlyphsDude;
+import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
@@ -21,6 +23,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 public class MainController implements Initializable {
@@ -42,6 +45,7 @@ public class MainController implements Initializable {
     @FXML private Label pathLabel;
     @FXML private TextField searchBar;
     @FXML private Label progressBarText;
+    @FXML private BorderPane openWindowsFileExplorer = new BorderPane();
 
     @FXML
     void hitExit(ActionEvent event) {
@@ -86,7 +90,7 @@ public class MainController implements Initializable {
             crawler = new CrawlerZeroChan(TestFunctions.testWallpaperPath.toString(), keywords.split(" "), 2, 1);
             var service = Executors.newCachedThreadPool();
             var previewResult = crawler.readMultiplePagesAndDownloadPreviews(20, service);
-            
+
             service.shutdown();
         } catch (IOException e) {
             Alert alert = new Alert(AlertType.INFORMATION);
@@ -121,7 +125,7 @@ public class MainController implements Initializable {
         } catch (IOException e1) {
             System.err.println(e1.toString());
         }
-        this.quit = false;
+        quit = false;
         new TerminalThread(pipIn, terminalThread, Terminal_out, quit);
         System.out.println("GUI Terminal is activated!" + "\nUse Ctrl + C to cancel the terminal, and Ctrl + L to clear the text.");
     }
@@ -134,7 +138,7 @@ public class MainController implements Initializable {
     synchronized void killTerminal(){
         if (!quit){
             System.out.println("Closing GUI Terminal..."); // 在 GUI Terminal 上輸出
-            this.quit = true;
+            quit = true;
             notifyAll();
             try {
                 this.terminalThread.join(1000l);
@@ -176,6 +180,8 @@ public class MainController implements Initializable {
         preview = new WallpaperImage();
         imagePreview.setImage(preview.getNextWallpaper());
         Terminal_out.setEditable(false);
+        openWindowsFileExplorer.setCenter(GlyphsDude.createIcon(FontAwesomeIcons.BARCODE, "400px"));
+        // (GlyphsDude.createIcon(FontAwesomeIcons.FOLDER, "40px"));
         initializeKeyBoardShortcuts();
         initializeMouseEvents();
     }
@@ -258,10 +264,6 @@ public class MainController implements Initializable {
         searchBar.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> {
             if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
                 Search();
-                // Alert alert = new Alert(AlertType.INFORMATION);
-                // alert.titleProperty().set("Message");
-                // alert.headerTextProperty().set("There is no database yet!");
-                // alert.showAndWait();
                 e.consume();
             }
         });
