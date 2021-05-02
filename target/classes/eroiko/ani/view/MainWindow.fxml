@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.StackedAreaChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollBar?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -69,7 +72,7 @@
                                                   <items>
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                          <children>
-                                                            <TextField layoutX="-168.0" layoutY="-271.0" prefHeight="26.0" prefWidth="228.0" text="&gt;  Search Artwork" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <TextField fx:id="searchBar" layoutX="-168.0" layoutY="-271.0" prefHeight="26.0" prefWidth="228.0" text="&gt;  Search Artwork" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <font>
                                                                   <Font name="Fira Code Regular" size="12.0" />
                                                                </font>
@@ -148,6 +151,41 @@
                                  <children>
                                     <TabPane layoutX="121.0" layoutY="71.0" prefHeight="425.0" prefWidth="624.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <tabs>
+                                        <Tab text="Explorer">
+                                          <content>
+                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                   <children>
+                                                      <SplitPane dividerPositions="0.08021390374331551" layoutX="90.0" layoutY="41.0" orientation="VERTICAL" prefHeight="376.0" prefWidth="624.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                        <items>
+                                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                               <children>
+                                                                  <Label fx:id="pathLabel" layoutX="4.0" layoutY="19.0" prefHeight="27.0" prefWidth="618.0" text="Directory Path" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                               </children>
+                                                            </AnchorPane>
+                                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                               <children>
+                                                                  <SplitPane dividerPositions="0.2572347266881029" layoutX="-111.0" layoutY="31.0" prefHeight="341.0" prefWidth="622.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                    <items>
+                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                                           <children>
+                                                                              <TreeView fx:id="treeFileExplorer" layoutX="-178.0" layoutY="156.0" prefHeight="374.0" prefWidth="157.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                              <ScrollBar layoutX="142.0" orientation="VERTICAL" prefHeight="339.0" prefWidth="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="142.0" AnchorPane.topAnchor="0.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                                           <children>
+                                                                              <TilePane layoutX="46.0" layoutY="138.0" prefHeight="374.0" prefWidth="459.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                    </items>
+                                                                  </SplitPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                        </items>
+                                                      </SplitPane>
+                                                   </children></AnchorPane>
+                                          </content>
+                                        </Tab>
                                         <Tab text="Detail">
                                           <content>
                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -166,40 +204,42 @@
                                                 </AnchorPane>
                                           </content>
                                         </Tab>
-                                        <Tab text="Browse">
-                                          <content>
-                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                          <Tab text="Browser">
+                                             <content>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                    <children>
                                                       <SplitPane dividerPositions="0.08021390374331551" layoutX="90.0" layoutY="41.0" orientation="VERTICAL" prefHeight="376.0" prefWidth="624.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                        <items>
-                                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                         <items>
+                                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                                <children>
-                                                                  <Label fx:id="pathLabel" layoutX="244.0" layoutY="19.0" prefHeight="27.0" prefWidth="622.0" text="Label" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                  <Label fx:id="pathLabel1" layoutX="4.0" layoutY="19.0" prefHeight="27.0" prefWidth="618.0" text="Result of Searching : " AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                </children>
                                                             </AnchorPane>
-                                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                                <children>
                                                                   <SplitPane dividerPositions="0.2572347266881029" layoutX="-111.0" layoutY="31.0" prefHeight="341.0" prefWidth="622.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                    <items>
-                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                                     <items>
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                                            <children>
-                                                                              <TreeView fx:id="treeFileExplorer" layoutX="-178.0" layoutY="156.0" prefHeight="374.0" prefWidth="157.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                              <TreeView fx:id="treeFileExplorer1" layoutX="-178.0" layoutY="156.0" prefHeight="374.0" prefWidth="157.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                              <ScrollBar layoutX="142.0" orientation="VERTICAL" prefHeight="339.0" prefWidth="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="142.0" AnchorPane.topAnchor="0.0" />
                                                                            </children>
                                                                         </AnchorPane>
-                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                                            <children>
                                                                               <TilePane layoutX="46.0" layoutY="138.0" prefHeight="374.0" prefWidth="459.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                            </children>
                                                                         </AnchorPane>
-                                                                    </items>
+                                                                     </items>
                                                                   </SplitPane>
                                                                </children>
                                                             </AnchorPane>
-                                                        </items>
+                                                         </items>
                                                       </SplitPane>
-                                                   </children></AnchorPane>
-                                          </content>
-                                        </Tab>
+                                                   </children>
+                                                </AnchorPane>
+                                             </content>
+                                          </Tab>
                                       </tabs>
                                     </TabPane>
                                  </children>
@@ -214,10 +254,33 @@
                                                    <children>
                                                       <SplitPane dividerPositions="0.82" orientation="VERTICAL" prefHeight="171.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                         <items>
-                                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
                                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                                <children>
-                                                                  <ProgressBar fx:id="pbar" layoutX="153.0" prefHeight="18.0" prefWidth="622.0" progress="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                  <StackedAreaChart layoutX="-108.0" layoutY="-134.0" prefHeight="131.0" prefWidth="622.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                    <xAxis>
+                                                                      <NumberAxis side="BOTTOM" />
+                                                                    </xAxis>
+                                                                    <yAxis>
+                                                                      <NumberAxis side="LEFT" />
+                                                                    </yAxis>
+                                                                  </StackedAreaChart>
+                                                               </children></AnchorPane>
+                                                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                                               <children>
+                                                                  <SplitPane dividerPositions="0.13548387096774195" layoutX="55.0" layoutY="-80.0" prefHeight="26.0" prefWidth="622.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                    <items>
+                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                                           <children>
+                                                                              <Label fx:id="progressBarText" layoutX="3.0" prefHeight="24.0" prefWidth="88.0" text="Progress Bar" textAlignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="3.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                                           <children>
+                                                                              <ProgressBar fx:id="pbar" layoutX="-218.0" prefHeight="24.0" prefWidth="432.0" progress="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                           </children>
+                                                                        </AnchorPane>
+                                                                    </items>
+                                                                  </SplitPane>
                                                                </children>
                                                             </AnchorPane>
                                                         </items>
@@ -234,7 +297,11 @@
                                                         <items>
                                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                                <children>
-                                                                  <TextArea fx:id="Terminal_out" layoutX="-10.0" layoutY="-86.0" prefHeight="130.0" prefWidth="622.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                  <TextArea fx:id="Terminal_out" layoutX="202.0" layoutY="-60.0" prefHeight="131.0" prefWidth="622.0" style="-fx-text-color: #000000;" text=" &lt;Terminal_Output&gt;&#10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                     <font>
+                                                                        <Font name="Fira Code Regular" size="13.0" />
+                                                                     </font>
+                                                                  </TextArea>
                                                                </children>
                                                             </AnchorPane>
                                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
@@ -243,7 +310,10 @@
                                                                     <items>
                                                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="25.0" prefWidth="435.0">
                                                                            <children>
-                                                                              <TextField fx:id="Terminal_in" prefHeight="25.0" prefWidth="418.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                              <TextField fx:id="Terminal_in" prefHeight="25.0" prefWidth="418.0" text=" &lt;Terminal_Input&gt;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                 <font>
+                                                                                    <Font name="Fira Code Regular" size="12.0" />
+                                                                                 </font></TextField>
                                                                            </children>
                                                                         </AnchorPane>
                                                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="138.0">

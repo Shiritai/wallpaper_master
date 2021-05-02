@@ -3,6 +3,7 @@ package eroiko.ani.controller;
 import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.Executors;
 
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
@@ -10,12 +11,12 @@ import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
 import eroiko.ani.controller.PrimaryControllers.PropertiesController;
 import eroiko.ani.controller.PrimaryControllers.TestingController;
 import eroiko.ani.controller.PrimaryControllers.WallpaperViewController;
+import eroiko.ani.model.Crawler.CrawlerZeroChan;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -31,13 +32,16 @@ public class MainController implements Initializable {
     private Thread terminalThread;
     boolean quit = true;
     /* FXML variables */
+    // @FXML private TextArea Terminal_out = new TextArea();
     @FXML private TextArea Terminal_out = new TextArea();
     @FXML private TextField Terminal_in = new TextField();  
     @FXML private ProgressBar pbar;  
     @FXML private ImageView imagePreview;
     @FXML private TreeView<String> treeFileExplorer;
     @FXML private Label pathLabel;
-  
+    @FXML private TextField searchBar;
+    @FXML private Label progressBarText;
+
     @FXML
     void hitExit(ActionEvent event) {
         Exit();
@@ -55,7 +59,6 @@ public class MainController implements Initializable {
     @FXML
     void OpenTestingWindow(ActionEvent event) {
         TestingController.quit = quit;
-        // System.out.println("Meow");
         try {
             wallpaperViewStage = new Stage();
             wallpaperViewStage.setTitle("Wallpaper viewer");
@@ -72,10 +75,16 @@ public class MainController implements Initializable {
 
     @FXML
     void GoSearch(ActionEvent event) {
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.titleProperty().set("Message");
-        alert.headerTextProperty().set("There is no database yet!");
-        alert.showAndWait();
+        Search();
+    }
+    
+    void Search(){
+        String keywords = searchBar.getText();
+        var crawler = new CrawlerZeroChan(TestFunctions.testWallpaperPath.toString(), keywords.split(" "));
+        crawler.setFirstLayerUrl(2, 1);
+        var service = Executors.newCachedThreadPool();
+        crawler.readMultiplePagesAndDownloadPreviews(10, service);
+        service.shutdown();    
     }
 
     @FXML
@@ -153,22 +162,38 @@ public class MainController implements Initializable {
         }
     }
 
-
     @Override
     public void initialize(URL url, ResourceBundle rb){
         preview = new WallpaperImage();
         imagePreview.setImage(preview.getNextWallpaper());
+        Terminal_out.setEditable(false);
         initializeKeyBoardShortcuts();
         initializeMouseEvents();
     }
 
     public void initializeMouseEvents(){
-        imagePreview.setOnMouseEntered((e) -> {
-            System.out.println("You touched the image!");
-            if (!quit){
-                System.err.println("You touched the image!");
+        Terminal_in.focusedProperty().addListener((arg, oldProperty, newProperty) -> {
+            if (newProperty){
+                Terminal_in.setText("");
+            }
+            else if (Terminal_in.getText().length() == 0){
+                Terminal_in.setText(" <Terminal_Input>");
             }
         });
+        searchBar.focusedProperty().addListener((arg, oldProperty, newProperty) -> {
+            if (newProperty){
+                searchBar.setText("");
+            }
+            else if (searchBar.getText().length() == 0){
+                searchBar.setText(">  Search Artwork");
+            }
+        });
+        // imagePreview.setOnMouseEntered((e) -> {
+        //     System.out.println("You touched the image!");
+        //     if (!quit){
+        //         System.err.println("You touched the image!");
+        //     }
+        // });
         imagePreview.setOnMouseClicked((e) -> {
             if (e.getClickCount() == 2){
                 OpenWallpaperViewWindow(preview);
@@ -203,7 +228,7 @@ public class MainController implements Initializable {
                 e.consume();
             }
             else if (new KeyCodeCombination(KeyCode.L, KeyCodeCombination.CONTROL_DOWN).match(e)){
-                Terminal_out.clear();
+                Terminal_out.setText("");
                 e.consume();
             }
         });
@@ -223,7 +248,17 @@ public class MainController implements Initializable {
                 e.consume();
             }
             else if (new KeyCodeCombination(KeyCode.L, KeyCodeCombination.CONTROL_DOWN).match(e)){
-                Terminal_out.clear();
+                Terminal_out.setText("");
+                e.consume();
+            }
+        });
+        searchBar.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> {
+            if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
+                Search();
+                // Alert alert = new Alert(AlertType.INFORMATION);
+                // alert.titleProperty().set("Message");
+                // alert.headerTextProperty().set("There is no database yet!");
+                // alert.showAndWait();
                 e.consume();
             }
         });

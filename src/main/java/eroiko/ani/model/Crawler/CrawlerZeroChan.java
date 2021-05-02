@@ -33,6 +33,7 @@ public class CrawlerZeroChan extends Crawler{
         return page;
     }
 
+    /** service : 請給定線程執行池 */
     public ArrayList<ArrayList<myPair<String, String>>> readMultiplePagesAndDownloadPreviews(int pages, ExecutorService service){
         var res = new ArrayList<ArrayList<myPair<String, String>>>(pages);
         final int span = 16;
@@ -154,7 +155,7 @@ public class CrawlerZeroChan extends Crawler{
         }
     }
 
-    /* {0, 1, 2}, {id, fav, random} */
+    /** {0, 1, 2}, {id, fav, random} */
     public void setFirstLayerUrl(int resolution, int sorting){
         this.select[0] = resolution;
         this.select[1] = sorting;
