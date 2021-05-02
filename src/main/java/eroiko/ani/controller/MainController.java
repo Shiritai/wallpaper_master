@@ -6,7 +6,6 @@ import java.util.ResourceBundle;
 
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
-import eroiko.ani.controller.ControllerSupporter.MinimizeWindow;
 import eroiko.ani.controller.PrimaryControllers.PropertiesController;
 import eroiko.ani.controller.PrimaryControllers.TestingController;
 import javafx.application.Platform;
@@ -131,7 +130,6 @@ public class MainController implements Initializable {
     @FXML
     void hitMinimize(ActionEvent event) {
         MainApp.mainStage.hide();
-        MainApp.trayIcon.show();
     }
 
     @Override
@@ -143,8 +141,6 @@ public class MainController implements Initializable {
             }
         });
         initializeKeyBoardShortcuts();
-        // initializeMinimizedMenu();
-        // MinimizeWindow.minimizeWindow(MainApp.mainStage);
     }
 
     public void initializeKeyBoardShortcuts(){
