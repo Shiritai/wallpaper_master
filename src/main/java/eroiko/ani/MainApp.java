@@ -7,6 +7,7 @@ import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
 import eroiko.ani.controller.MainController;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
@@ -19,6 +20,8 @@ import javafx.stage.*;
 
 public class MainApp extends Application{
         
+    public static boolean isTesting = true;
+    
     public static Stage mainStage;
     public static Scene mainScene;
     public static MenuItem [] menuItems;
@@ -50,7 +53,6 @@ public class MainApp extends Application{
         });
         mainStage.setOnShowing(e -> {
             if (SystemTray.isSupported() && trayIcon.isShowing()){
-                
                 trayIcon.clear();
                 trayIcon.hide();
             }
@@ -73,6 +75,11 @@ public class MainApp extends Application{
         mainStage.setScene(mainScene);
         mainStage.show();
 
+        mainStage.setOnCloseRequest((e) -> {
+            mainStage.close();
+            Platform.exit();
+            System.exit(0);
+        });
     }
 
     private void setMinimizedMenu() {

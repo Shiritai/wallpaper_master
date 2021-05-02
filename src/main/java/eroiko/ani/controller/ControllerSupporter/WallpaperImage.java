@@ -3,10 +3,13 @@ package eroiko.ani.controller.ControllerSupporter;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.DirectoryStream;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+import eroiko.ani.MainApp;
+import eroiko.ani.controller.TestFunctions;
 import javafx.scene.image.Image;
 
 
@@ -15,11 +18,19 @@ public class WallpaperImage {
     private DirectoryStream<Path> root;
     private ArrayList<Path> wallpapers; 
     private int current;
-    public WallpaperImage(String directory){
-        // this.directory = dir;
+    /** 
+     * @param directory is the root directory or the image folder of this project
+     * @param certain : is true if  {@code directory} is in testing mode
+     */
+    public WallpaperImage(String directory, boolean certain){
         this.directory = Path.of(directory);
         try {
-            root = Files.newDirectoryStream(Path.of(this.directory.toString(), "src", "main", "java", "eroiko", "ani", "img"), "*.{jpg,jpeg,png}");
+            if (certain){
+                root = Files.newDirectoryStream(TestFunctions.testWallpaperPath, "*.{jpg,jpeg,png}");
+            }
+            else {
+                root = Files.newDirectoryStream(Path.of(this.directory.toString(), "src", "main", "java", "eroiko", "ani", "img"), "*.{jpg,jpeg,png}");
+            }
         } catch (IOException e) {
             System.out.println(e.toString());
         }
@@ -28,8 +39,25 @@ public class WallpaperImage {
         wallpapers.sort((a, b) -> pathNameCompare(a.getFileName(), b.getFileName()));
     }
     
-    public Path getNextWallpaperPath(){
+    public WallpaperImage(){
+        this(FileSystems.getDefault().getPath("").toAbsolutePath().toString(), MainApp.isTesting);
+    }
+
+    public Path getCurrentWallpaperPath(){
         return wallpapers.get(current);
+    }
+    
+    public Path getNextWallpaperPath(){
+        return wallpapers.get(++current);
+    }
+
+    public Image getCurrentWallpaper(){
+        try {
+            return new Image(wallpapers.get(current).toUri().toURL().toString());
+        } catch (MalformedURLException e) {
+            System.out.println(e.toString());
+        }
+        return null;
     }
 
     public Image getNextWallpaper(){
@@ -50,8 +78,14 @@ public class WallpaperImage {
         return null;
     }
 
+    public static WallpaperImage copy(WallpaperImage wp){
+        var newWp = new WallpaperImage(wp.directory.toString(), MainApp.isTesting);
+        newWp.current = wp.current;
+        return newWp;
+    }
+
     /* 比較同類型, 以編號區分的檔案 */
-    private int pathNameCompare(Path a, Path b){
+    private static int pathNameCompare(Path a, Path b){
         var aChar = a.toString().toCharArray();
         var bChar = b.toString().toCharArray();
         int length = (aChar.length < bChar.length) ? aChar.length : bChar.length;

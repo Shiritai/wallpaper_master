@@ -2,7 +2,6 @@ package eroiko.ani.controller;
 
 import java.io.*;
 import java.net.URL;
-import java.nio.file.FileSystems;
 import java.util.ResourceBundle;
 
 import eroiko.ani.MainApp;
@@ -10,6 +9,7 @@ import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
 import eroiko.ani.controller.PrimaryControllers.PropertiesController;
 import eroiko.ani.controller.PrimaryControllers.TestingController;
+import eroiko.ani.controller.PrimaryControllers.WallpaperViewController;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
@@ -24,6 +24,7 @@ import javafx.stage.Stage;
 public class MainController implements Initializable {
     /* Support variables */
     public static WallpaperImage preview;
+    public static Stage wallpaperViewStage = new Stage();
     /* Terminal */
     private static PrintStream stdOut = new PrintStream(System.out);
     public PipedInputStream pipIn = new PipedInputStream();
@@ -42,7 +43,7 @@ public class MainController implements Initializable {
         Exit();
     }
 
-    void Exit() {
+    public void Exit() {
         if (terminalThread != null){
             killTerminal();
         }
@@ -54,13 +55,13 @@ public class MainController implements Initializable {
     @FXML
     void OpenTestingWindow(ActionEvent event) {
         TestingController.quit = quit;
+        // System.out.println("Meow");
         try {
-            var stage = new Stage();
-            stage.setTitle("Testing Window");
-            // stage.setScene(new Scene(FXMLLoader.load(new File("src/main/java/eroiko/ani/view/TestingWindow.fxml").toURL())));
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/TestingWindow.fxml"))));
-            stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
-            stage.show();
+            wallpaperViewStage = new Stage();
+            wallpaperViewStage.setTitle("Wallpaper viewer");
+            wallpaperViewStage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/TestingWindow.fxml"))));
+            wallpaperViewStage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+            wallpaperViewStage.show();
         } catch (Exception e){
             System.out.println(e.toString());
             if (!quit){
@@ -134,11 +135,55 @@ public class MainController implements Initializable {
         MainApp.mainStage.hide();
     }
 
+    void OpenWallpaperViewWindow(WallpaperImage wp) {
+        WallpaperViewController.quit = quit;
+        WallpaperViewController.wp = WallpaperImage.copy(wp);
+        try {
+            var stage = new Stage();
+            stage.setTitle("Wallpaper Viewer");
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperViewWindow.fxml"))));
+            stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+            stage.show();
+        } catch (Exception e){
+            e.printStackTrace();
+            System.out.println(e.toString());
+            if (!quit){
+                System.err.println(e.toString());
+            }
+        }
+    }
+
+
     @Override
     public void initialize(URL url, ResourceBundle rb){
-        preview = new WallpaperImage(FileSystems.getDefault().getPath("").toAbsolutePath().toString());
+        preview = new WallpaperImage();
         imagePreview.setImage(preview.getNextWallpaper());
         initializeKeyBoardShortcuts();
+        initializeMouseEvents();
+    }
+
+    public void initializeMouseEvents(){
+        imagePreview.setOnMouseEntered((e) -> {
+            System.out.println("You touched the image!");
+            if (!quit){
+                System.err.println("You touched the image!");
+            }
+        });
+        imagePreview.setOnMouseClicked((e) -> {
+            if (e.getClickCount() == 2){
+                OpenWallpaperViewWindow(preview);
+            }
+        });
+        imagePreview.setOnScroll((ScrollEvent e) -> {
+            var dist = e.getDeltaY();
+            if (dist > 0){
+                imagePreview.setImage(preview.getNextWallpaper());
+            }
+            else if (dist < 0){
+                imagePreview.setImage(preview.getLastWallpaper());
+            }
+            e.consume();
+        });
     }
 
     public void initializeKeyBoardShortcuts(){
@@ -180,21 +225,6 @@ public class MainController implements Initializable {
             else if (new KeyCodeCombination(KeyCode.L, KeyCodeCombination.CONTROL_DOWN).match(e)){
                 Terminal_out.clear();
                 e.consume();
-            }
-        });
-        imagePreview.setOnMouseEntered((e) -> {
-            System.out.println("You touched the image!");
-            if (!quit){
-                System.err.println("You touched the image!");
-            }
-        });
-        imagePreview.setOnScroll((ScrollEvent e) -> {
-            var dist = e.getDeltaY();
-            if (dist > 0){
-                imagePreview.setImage(preview.getNextWallpaper());
-            }
-            else if (dist < 0){
-                imagePreview.setImage(preview.getLastWallpaper());
             }
         });
     }
