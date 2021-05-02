@@ -7,10 +7,8 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.Set;
 
 class WallpaperImage {
     // private String directory;
@@ -31,14 +29,14 @@ class WallpaperImage {
             }
         }
         int ja;
-        for (ja = aChar.length; ja > i; --ja){
+        for (ja = aChar.length - 1; ja > i; --ja){
             if (aChar[ja] == '.'){
                 break;
             }
         }
         int jb;
-        for (jb = aChar.length; jb > i; --jb){
-            if (aChar[ja] == '.'){
+        for (jb = bChar.length - 1; jb > i; --jb){
+            if (bChar[jb] == '.'){
                 break;
             }
         }
