@@ -7,16 +7,31 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 
 class WallpaperImage {
-    // private String directory;
     private Path directory;
     private DirectoryStream<Path> root;
     private ArrayList<Path> wallpapers; 
     private Iterator<Path> it;
-
+    public WallpaperImage(String dir){
+        // this.directory = dir;
+        directory = Path.of(dir);
+        try {
+            root = Files.newDirectoryStream(Path.of(directory.toString(), "src", "main", "java", "eroiko", "ani", "img"), "*.{jpg,jpeg,png}");
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
+        wallpapers = new ArrayList<Path>();
+        root.forEach(p -> wallpapers.add(p));
+        wallpapers.sort((a, b) -> pathNameCompare(a.getFileName(), b.getFileName()));
+        it = wallpapers.iterator();
+    }
+    
+    public Path getNextWallpaper(){
+        return (it.hasNext()) ? it.next() : null;
+    }
+    
     /* 比較同類型, 以編號區分的檔案 */
     private int pathNameCompare(Path a, Path b){
         var aChar = a.toString().toCharArray();
@@ -41,24 +56,6 @@ class WallpaperImage {
             }
         }
         return Integer.parseInt(a.toString().substring(i, ja)) - Integer.parseInt(b.toString().substring(i, jb));
-    }
-    
-    public WallpaperImage(String dir){
-        // this.directory = dir;
-        directory = Path.of(dir);
-        try {
-            root = Files.newDirectoryStream(Path.of(directory.toString(), "src", "main", "java", "eroiko", "ani", "img"), "*.{jpg,jpeg,png}");
-        } catch (IOException e) {
-            System.out.println(e.toString());
-        }
-        wallpapers = new ArrayList<Path>();
-        root.forEach(p -> wallpapers.add(p));
-        Collections.sort(wallpapers, (a, b) -> pathNameCompare(a.getFileName(), b.getFileName()));
-        it = wallpapers.iterator();
-    }
-    
-    public Path getNextWallpaper(){
-        return (it.hasNext()) ? it.next() : null;
     }
 }
 

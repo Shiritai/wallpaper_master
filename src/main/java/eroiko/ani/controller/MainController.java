@@ -2,10 +2,12 @@ package eroiko.ani.controller;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.FileSystems;
 import java.util.ResourceBundle;
 
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
+import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
 import eroiko.ani.controller.PrimaryControllers.PropertiesController;
 import eroiko.ani.controller.PrimaryControllers.TestingController;
 import javafx.application.Platform;
@@ -21,7 +23,7 @@ import javafx.stage.Stage;
 
 public class MainController implements Initializable {
     /* Support variables */
-    public static ImageView preview;
+    public static WallpaperImage preview;
     /* Terminal */
     private static PrintStream stdOut = new PrintStream(System.out);
     public PipedInputStream pipIn = new PipedInputStream();
@@ -66,11 +68,6 @@ public class MainController implements Initializable {
             }
         }
     }
-
-    // @FXML
-    // void ChangeImage(ScrollEvent event) {
-    //     if (event.getDeltaY())
-    // }
 
     @FXML
     void GoSearch(ActionEvent event) {
@@ -139,12 +136,8 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb){
-        imagePreview.setOnMouseEntered((e) -> {
-            System.out.println("You touched the image!");
-            if (!quit){
-                System.err.println("You touched the image!");
-            }
-        });
+        preview = new WallpaperImage(FileSystems.getDefault().getPath("").toAbsolutePath().toString());
+        imagePreview.setImage(preview.getNextWallpaper());
         initializeKeyBoardShortcuts();
     }
 
@@ -189,14 +182,19 @@ public class MainController implements Initializable {
                 e.consume();
             }
         });
+        imagePreview.setOnMouseEntered((e) -> {
+            System.out.println("You touched the image!");
+            if (!quit){
+                System.err.println("You touched the image!");
+            }
+        });
         imagePreview.setOnScroll((ScrollEvent e) -> {
             var dist = e.getDeltaY();
-            System.out.println(dist);
             if (dist > 0){
-                // imagePreview.setImage(getNextWallpaper());
+                imagePreview.setImage(preview.getNextWallpaper());
             }
             else if (dist < 0){
-
+                imagePreview.setImage(preview.getLastWallpaper());
             }
         });
     }
