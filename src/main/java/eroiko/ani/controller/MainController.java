@@ -67,6 +67,11 @@ public class MainController implements Initializable {
         }
     }
 
+    // @FXML
+    // void ChangeImage(ScrollEvent event) {
+    //     if (event.getDeltaY())
+    // }
+
     @FXML
     void GoSearch(ActionEvent event) {
         Alert alert = new Alert(AlertType.INFORMATION);
@@ -182,6 +187,16 @@ public class MainController implements Initializable {
             else if (new KeyCodeCombination(KeyCode.L, KeyCodeCombination.CONTROL_DOWN).match(e)){
                 Terminal_out.clear();
                 e.consume();
+            }
+        });
+        imagePreview.setOnScroll((ScrollEvent e) -> {
+            var dist = e.getDeltaY();
+            System.out.println(dist);
+            if (dist > 0){
+                // imagePreview.setImage(getNextWallpaper());
+            }
+            else if (dist < 0){
+
             }
         });
     }

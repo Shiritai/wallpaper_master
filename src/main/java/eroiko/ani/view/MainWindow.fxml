@@ -134,9 +134,9 @@
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: gray;">
                                  <children>
-                                    <ImageView fx:id="imagePreview" fitHeight="192.0" fitWidth="264.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="imagePreview" fitHeight="261.0" fitWidth="262.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true">
                                        <image>
-                                          <Image url="@../img/Violet%20Evergarden/previews/wallpaper130.jpg" />
+                                          <Image url="@../img/wallpaper228.jpg" />
                                        </image>
                                     </ImageView>
                                  </children>
