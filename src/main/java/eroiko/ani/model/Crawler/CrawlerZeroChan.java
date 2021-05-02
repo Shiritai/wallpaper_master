@@ -10,6 +10,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import eroiko.ani.controller.MainController;
 import eroiko.ani.util.myPair;
 
 
@@ -52,6 +53,9 @@ public class CrawlerZeroChan extends Crawler{
             }
         }
         System.out.println(res.size());
+        if (!MainController.quit){
+            System.err.println(res.size());
+        }
         return res;
     }
 
@@ -63,6 +67,9 @@ public class CrawlerZeroChan extends Crawler{
                 .timeout(10000)
                 .get();
             System.out.println(doc.title()); // 印出標頭, 確保目標正確
+            if (!MainController.quit){
+                System.err.println(doc.title()); // 印出標頭, 確保目標正確
+            }
 
             Elements links = doc.select("img[title]"); // 抓取預覽圖, 預覽圖都有 title
             Elements target = doc.select("a[tabindex=1]");
@@ -84,7 +91,6 @@ public class CrawlerZeroChan extends Crawler{
                     i--;
                 }
             }
-
             return data;
         } catch (Exception e){
             e.printStackTrace();
@@ -111,12 +117,18 @@ public class CrawlerZeroChan extends Crawler{
                             .timeout(10000)
                             .get();
                         // System.out.println(doc.title()); // just for sure!
+                        if (!MainController.quit){
+                            // System.out.println(doc.title()); // just for sure!
+                        }
                         Element target = doc.select("a[class=preview]").first();
                         if (target != null){
                             res = this.downloadPicture(target.attr("href"), true);
                         }
                         else {
                             System.out.println("There is a null full image with url : " + str);
+                            if (!MainController.quit){
+                                System.err.println("There is a null full image with url : " + str);
+                            }
                         }
                     } catch (Exception e){
                         e.printStackTrace();
@@ -137,9 +149,27 @@ public class CrawlerZeroChan extends Crawler{
     public static final String [][] select_content = {{"0", "1", "2"}, {"id", "fav", "random"}};
     private int [] select = new int [2];
     
-    public CrawlerZeroChan(String folder_path, String [] keywords){
-        this.folder_path = folder_path;
+    public CrawlerZeroChan(String folder_path, String [] keywords, int resolution, int sorting) throws IOException{
         this.query = String.join("+", keywords);
+        this.select[0] = resolution;
+        this.select[1] = sorting;
+        var tmp = new StringBuilder();
+        tmp.append(CrawlerZeroChan.url_head).append(this.query).append('?')
+            .append(CrawlerZeroChan.select_header[0]).append(CrawlerZeroChan.select_content[0][this.select[0]])
+            .append('&').append(CrawlerZeroChan.select_header[1]).append(CrawlerZeroChan.select_content[1][this.select[1]]);
+        this.first_layer_url = tmp.toString();
+
+        /* 確認關鍵字無誤 */
+        var doc = Jsoup.connect(this.first_layer_url)
+            .userAgent(Crawler.UserAgent)
+            .timeout(10000)
+            .get();
+        System.out.println(doc.title()); // 印出標頭, 確保目標正確
+        if (!MainController.quit){
+            System.err.println(doc.title()); // 印出標頭, 確保目標正確
+        }
+        /* 確認關鍵字無誤後, [新建 / 確認] 資料夾 */
+        this.folder_path = folder_path;
         File outRoot = new File(this.folder_path); // 確認目標地址存在
         this.folder_path += "/" + String.join(" ", keywords);
         File outFull = new File(this.folder_path); // 確認目標地址存在
@@ -155,8 +185,12 @@ public class CrawlerZeroChan extends Crawler{
         }
     }
 
+    public CrawlerZeroChan(String folder_path, String [] keywords) throws IOException{
+        this(folder_path, keywords, 2, 1);
+    }
+
     /** {0, 1, 2}, {id, fav, random} */
-    public void setFirstLayerUrl(int resolution, int sorting){
+    public void setFirstLayerUrl(int resolution, int sorting) {
         this.select[0] = resolution;
         this.select[1] = sorting;
         var tmp = new StringBuilder();

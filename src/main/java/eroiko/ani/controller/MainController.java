@@ -17,6 +17,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -30,7 +31,7 @@ public class MainController implements Initializable {
     private static PrintStream stdOut = new PrintStream(System.out);
     public PipedInputStream pipIn = new PipedInputStream();
     private Thread terminalThread;
-    boolean quit = true;
+    public static boolean quit = true;
     /* FXML variables */
     // @FXML private TextArea Terminal_out = new TextArea();
     @FXML private TextArea Terminal_out = new TextArea();
@@ -80,11 +81,19 @@ public class MainController implements Initializable {
     
     void Search(){
         String keywords = searchBar.getText();
-        var crawler = new CrawlerZeroChan(TestFunctions.testWallpaperPath.toString(), keywords.split(" "));
-        crawler.setFirstLayerUrl(2, 1);
-        var service = Executors.newCachedThreadPool();
-        crawler.readMultiplePagesAndDownloadPreviews(10, service);
-        service.shutdown();    
+        CrawlerZeroChan crawler = null;
+        try {
+            crawler = new CrawlerZeroChan(TestFunctions.testWallpaperPath.toString(), keywords.split(" "), 2, 1);
+            var service = Executors.newCachedThreadPool();
+            var previewResult = crawler.readMultiplePagesAndDownloadPreviews(20, service);
+            
+            service.shutdown();
+        } catch (IOException e) {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.titleProperty().set("Message");
+            alert.headerTextProperty().set("Wrong keywords, please check and search again.");
+            alert.showAndWait();
+        }
     }
 
     @FXML
@@ -188,12 +197,6 @@ public class MainController implements Initializable {
                 searchBar.setText(">  Search Artwork");
             }
         });
-        // imagePreview.setOnMouseEntered((e) -> {
-        //     System.out.println("You touched the image!");
-        //     if (!quit){
-        //         System.err.println("You touched the image!");
-        //     }
-        // });
         imagePreview.setOnMouseClicked((e) -> {
             if (e.getClickCount() == 2){
                 OpenWallpaperViewWindow(preview);

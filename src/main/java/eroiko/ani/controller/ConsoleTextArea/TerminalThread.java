@@ -29,7 +29,7 @@ public class TerminalThread implements Runnable {
     public synchronized void run(){
         while (Thread.currentThread() == outPuller){
             try {
-                wait(100l);
+                wait(50l);
             } catch (InterruptedException ie){
                 System.out.println(ie.toString());
                 System.err.println(ie.toString());

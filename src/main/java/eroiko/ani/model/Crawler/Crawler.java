@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.*;
 import java.util.regex.Pattern;
 
+import eroiko.ani.controller.MainController;
 import eroiko.ani.util.Dumper;
 
 public class Crawler {
@@ -45,7 +46,10 @@ public class Crawler {
                 successful = false;
             }
             if (successful){
-                System.out.println((isFull) ? "f" + Integer.toString(Crawler.fullCnt - 1) : "p" + Integer.toString(Crawler.prevCnt - 1));
+                System.out.printf("%s\t", (isFull) ? "f" + Integer.toString(Crawler.fullCnt - 1) : "p" + Integer.toString(Crawler.prevCnt - 1));
+                if (!MainController.quit){
+                    System.err.printf("%s\t", (isFull) ? "f" + Integer.toString(Crawler.fullCnt - 1) : "p" + Integer.toString(Crawler.prevCnt - 1));
+                }
             }
         }
         return successful;
