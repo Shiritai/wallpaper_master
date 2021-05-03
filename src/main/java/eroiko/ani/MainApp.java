@@ -8,7 +8,6 @@ import com.dustinredmond.fxtrayicon.FXTrayIcon;
 import eroiko.ani.controller.MainController;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.control.Alert;

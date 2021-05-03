@@ -1,20 +1,12 @@
 package eroiko.ani.model.Crawler;
 
-import java.io.IOError;
 import java.io.IOException;
 import java.util.concurrent.Executors;
 
 import eroiko.ani.controller.MainController;
 import eroiko.ani.controller.TestFunctions;
 import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
-import eroiko.ani.controller.PrimaryControllers.WallpaperViewController;
 import eroiko.ani.util.SourceRedirector;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
 
 public class OldCrawlerManager implements Runnable {
     private boolean quit;

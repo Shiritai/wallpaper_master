@@ -4,8 +4,6 @@ import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import de.jensd.fx.glyphs.GlyphsDude;
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
@@ -196,8 +194,7 @@ public class MainController implements Initializable {
         staticImagePreview = imagePreview;
         imagePreview.setImage(preview.getCurrentWallpaper());
         Terminal_out.setEditable(false);
-        openWindowsFileExplorer.setCenter(GlyphsDude.createIcon(FontAwesomeIcons.BARCODE, "400px"));
-        (GlyphsDude.createIcon(FontAwesomeIcons.FOLDER, "40px"));
+        // GlyphsDude.createIcon(FontAwesomeIcons.FOLDER, "40px");
         mainPbar = MainCtrlPbar;
         searchProgressIndicator = MainCtrlPin;
         initializeKeyBoardShortcuts();
@@ -235,6 +232,18 @@ public class MainController implements Initializable {
                 imagePreview.setImage(preview.getLastWallpaper());
             }
             e.consume();
+        });
+        openWindowsFileExplorer.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2){
+                try {
+                    Runtime.getRuntime().exec("explorer /select," + TestFunctions.testWallpaperPath.toAbsolutePath().toString());
+                } catch (IOException ex) {
+                    System.out.println(ex.toString());
+                    if (!quit){
+                        System.err.println(ex.toString());
+                    }
+                }
+            }
         });
     }
 
