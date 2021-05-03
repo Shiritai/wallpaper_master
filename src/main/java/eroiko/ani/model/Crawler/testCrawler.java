@@ -2,6 +2,7 @@ package eroiko.ani.model.Crawler;
 
 import static java.lang.System.*;
 
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 
@@ -9,9 +10,14 @@ public class testCrawler {
     public static void main(String[] args) {
         var console = new Scanner(in);
 
-        var zch = new CrawlerZeroChan(
-            "D:/ShiZu_Code/Java/animazation/src/main/java/eroiko/ani/worldpaper/img",
-            console.nextLine().split(" "));
+        CrawlerZeroChan zch = null;
+        try {
+            zch = new CrawlerZeroChan(
+                "D:/ShiZu_Code/Java/animazation/src/main/java/eroiko/ani/worldpaper/img",
+                console.nextLine().split(" "));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         zch.setFirstLayerUrl(2, 1);
         System.out.println(zch.getFirstLayerUrl());
 

@@ -14,6 +14,7 @@ import eroiko.ani.controller.PrimaryControllers.PropertiesController;
 import eroiko.ani.controller.PrimaryControllers.TestingController;
 import eroiko.ani.controller.PrimaryControllers.WallpaperViewController;
 import eroiko.ani.model.Crawler.CrawlerZeroChan;
+import eroiko.ani.util.SourceRedirector;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
@@ -29,7 +30,7 @@ import javafx.stage.Stage;
 public class MainController implements Initializable {
     /* Support variables */
     public static WallpaperImage preview;
-    public static Stage wallpaperViewStage = new Stage();
+    // public static Stage wallpaperViewStage = new Stage();
     /* Terminal */
     private static PrintStream stdOut = new PrintStream(System.out);
     public PipedInputStream pipIn = new PipedInputStream();
@@ -65,8 +66,8 @@ public class MainController implements Initializable {
     void OpenTestingWindow(ActionEvent event) {
         TestingController.quit = quit;
         try {
-            wallpaperViewStage = new Stage();
-            wallpaperViewStage.setTitle("Wallpaper viewer");
+            var wallpaperViewStage = new Stage();
+            wallpaperViewStage.setTitle("Testing window");
             wallpaperViewStage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/TestingWindow.fxml"))));
             wallpaperViewStage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
             wallpaperViewStage.show();
@@ -92,6 +93,34 @@ public class MainController implements Initializable {
             var previewResult = crawler.readMultiplePagesAndDownloadPreviews(20, service);
 
             service.shutdown();
+            WallpaperImage wp = null;
+            if (SourceRedirector.preViewOrNot){
+                System.out.println("Opening Preview Viewing Window... " + crawler.getPreviewsFolderPath().replace('/', '\\'));
+                if (!quit){
+                    System.err.println("Opening Preview Viewing Window... " + crawler.getPreviewsFolderPath().replace('/', '\\'));
+                }
+                wp = new WallpaperImage(crawler.getPreviewsFolderPath().replace('/', '\\'), false);
+            }
+            else {
+                var service2 = Executors.newCachedThreadPool();
+                crawler.downloadSelectedImagesUsingPAIRs(previewResult, service2);
+                service2.shutdown();
+                while (!service2.isShutdown()); // 等待線程關閉
+                System.out.println("Download complete!");
+                if (!quit){
+                    System.err.println("Download complete!");
+                }
+                System.out.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
+                if (!quit){
+                    System.err.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
+                }
+                wp = new WallpaperImage(crawler.getFolderPath().replace('/', '\\'), false);
+            }
+            preview = wp;
+            imagePreview.setImage(preview.getCurrentWallpaper());
+            if (SourceRedirector.showWallpapersAfterCrawling){
+                OpenWallpaperViewWindow(wp, 960, 600);
+            }
         } catch (IOException e) {
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.titleProperty().set("Message");
@@ -157,14 +186,21 @@ public class MainController implements Initializable {
         MainApp.mainStage.hide();
     }
 
-    void OpenWallpaperViewWindow(WallpaperImage wp) {
+    void OpenWallpaperViewWindow(WallpaperImage wp, int width, int height) {
         WallpaperViewController.quit = quit;
-        WallpaperViewController.wp = WallpaperImage.copy(wp);
+        int serialNumber = SourceRedirector.addWallpaper(wp);
         try {
             var stage = new Stage();
+            if (width != 0){
+                stage.setWidth(width);
+                stage.setHeight(height);
+            }
             stage.setTitle("Wallpaper Viewer");
             stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperViewWindow.fxml"))));
             stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+            stage.setOnCloseRequest(e -> {
+                SourceRedirector.deleteWallpaper(serialNumber);
+            });
             stage.show();
         } catch (Exception e){
             e.printStackTrace();
@@ -173,6 +209,10 @@ public class MainController implements Initializable {
                 System.err.println(e.toString());
             }
         }
+    }
+
+    void OpenWallpaperViewWindow(WallpaperImage wp) {
+        OpenWallpaperViewWindow(wp, 0, 0);
     }
 
     @Override

@@ -205,6 +205,7 @@ public class CrawlerZeroChan extends Crawler{
     }
     
     public String getFolderPath(){ return this.folder_path; }
+    public String getPreviewsFolderPath(){ return this.folder_path + "/previews"; }
     public String getQuery(){ return this.query; }
     public String getFirstLayerUrl(){ return this.first_layer_url; }
 }

@@ -1,6 +1,6 @@
 package eroiko.ani.util;
 
-public class myPair<K, V> {
+public class myPair<K extends Comparable<K>, V>{
     public K key;
     public V value;
     public myPair(K key, V value){

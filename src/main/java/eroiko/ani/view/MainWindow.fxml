@@ -20,6 +20,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -43,8 +44,8 @@
             <Menu mnemonicParsing="false" text="Mode">
                <items>
                   <MenuItem mnemonicParsing="false" text="Wallpaper" />
-                  <MenuItem mnemonicParsing="false" text="Music" />
-                  <MenuItem mnemonicParsing="false" text="Advance (password needed)" />
+                  <MenuItem mnemonicParsing="false" text="Music (not support now)" />
+                  <MenuItem mnemonicParsing="false" text="Advance ((not support now, password needed)" />
                </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -137,7 +138,11 @@
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: gray;">
                                  <children>
-                                    <ImageView fx:id="imagePreview" fitHeight="261.0" fitWidth="262.0" layoutX="2.0" pickOnBounds="true" preserveRatio="true" />
+                                    <StackPane prefHeight="261.0" prefWidth="264.0">
+                                       <children>
+                                          <ImageView fx:id="imagePreview" fitHeight="261.0" fitWidth="262.0" pickOnBounds="true" preserveRatio="true" />
+                                       </children>
+                                    </StackPane>
                                  </children>
                               </AnchorPane>
                           </items>

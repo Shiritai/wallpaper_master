@@ -20,7 +20,12 @@
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
                   <ScrollBar layoutX="404.0" orientation="VERTICAL" prefHeight="478.0" prefWidth="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="404.0" AnchorPane.topAnchor="0.0" />
-                  <CheckBox fx:id="showWallpapersAfterCrawling" layoutY="14.0" mnemonicParsing="false" text="Open Wallpaper view window after searching artworks">
+                  <CheckBox fx:id="showWallpapers" layoutY="14.0" mnemonicParsing="false" text="Open Wallpaper view window after searching artworks">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </CheckBox>
+                  <CheckBox fx:id="previewOrNot" layoutY="44.0" mnemonicParsing="false" selected="true" text="Search and view &quot;Preview&quot; wallpaper before download the full size image">
                      <font>
                         <Font size="14.0" />
                      </font>
