@@ -1,6 +1,5 @@
 package eroiko.ani.util;
 
-import java.util.ArrayList;
 import java.util.TreeMap;
 
 import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
@@ -29,6 +28,7 @@ public class SourceRedirector {
     /* 是否需要預覽篩選 */
     public static boolean preViewOrNot = true;
     public static boolean showWallpapersAfterCrawling = false;
+    public static boolean useOldCrawlerForFullSpeedMode = false;
     
     
     /* For selection */
