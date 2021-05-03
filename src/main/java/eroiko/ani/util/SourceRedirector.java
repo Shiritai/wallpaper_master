@@ -32,5 +32,5 @@ public class SourceRedirector {
     
     
     /* For selection */
-    public static TreeMap<Integer, ArrayList<ArrayList<myPair<String, String>>>> aboutToSelectImageLinks = new TreeMap<>();
+    public static TreeMap<Integer, myPair<String, String>> aboutToSelectImageLinks = new TreeMap<>();
 }

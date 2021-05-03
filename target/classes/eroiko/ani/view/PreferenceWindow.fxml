@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eroiko.ani.controller.PrimaryControllers.PreferenceController">
+   <children>
+      <ScrollBar layoutX="886.0" orientation="VERTICAL" prefHeight="478.0" prefWidth="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="886.0" AnchorPane.topAnchor="0.0" />
+      <CheckBox fx:id="showWallpapers" layoutX="14.0" layoutY="83.0" mnemonicParsing="false" selected="true" text="Open Wallpaper view window after searching process has completed">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="previewOrNot" layoutX="15.0" layoutY="183.0" mnemonicParsing="false" text="Search and view &quot;Preview&quot; wallpaper before download the full size image">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </CheckBox>
+      <CheckBox fx:id="fullSpeedMode" layoutX="15.0" layoutY="219.0" mnemonicParsing="false" text="Full speed Mode (can't choose image while downloading, one who makes choice is just a child, I need all!)">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </CheckBox>
+      <Label layoutX="14.0" layoutY="37.0" text="Normal Setting">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+      <Label layoutX="15.0" layoutY="139.0" text="Download Behavior">
+         <font>
+            <Font name="System Bold" size="20.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>

@@ -10,10 +10,11 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
-import eroiko.ani.controller.PrimaryControllers.PropertiesController;
+import eroiko.ani.controller.PrimaryControllers.PreferenceController;
 import eroiko.ani.controller.PrimaryControllers.TestingController;
 import eroiko.ani.controller.PrimaryControllers.WallpaperViewController;
 import eroiko.ani.model.Crawler.CrawlerZeroChan;
+import eroiko.ani.model.Crawler.OldCrawlerManager;
 import eroiko.ani.util.SourceRedirector;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -30,17 +31,21 @@ import javafx.stage.Stage;
 public class MainController implements Initializable {
     /* Support variables */
     public static WallpaperImage preview;
+    public static ImageView staticImagePreview;
     // public static Stage wallpaperViewStage = new Stage();
     /* Terminal */
     private static PrintStream stdOut = new PrintStream(System.out);
     public PipedInputStream pipIn = new PipedInputStream();
     private Thread terminalThread;
     public static boolean quit = true;
+    /* Progress bar and indicator */
+    public static ProgressBar MainCtrlPbar = new ProgressBar();
+    public static ProgressIndicator MainCtrlPin = new ProgressIndicator();
     /* FXML variables */
-    // @FXML private TextArea Terminal_out = new TextArea();
     @FXML private TextArea Terminal_out = new TextArea();
     @FXML private TextField Terminal_in = new TextField();  
-    @FXML private ProgressBar pbar;  
+    @FXML private ProgressBar mainPbar;
+    @FXML private ProgressIndicator searchProgressIndicator;
     @FXML private ImageView imagePreview;
     @FXML private TreeView<String> treeFileExplorer;
     @FXML private Label pathLabel;
@@ -85,57 +90,60 @@ public class MainController implements Initializable {
     }
     
     void Search(){
-        String keywords = searchBar.getText();
-        CrawlerZeroChan crawler = null;
-        try {
-            crawler = new CrawlerZeroChan(TestFunctions.testWallpaperPath.toString(), keywords.split(" "), 2, 1);
-            var service = Executors.newCachedThreadPool();
-            var previewResult = crawler.readMultiplePagesAndDownloadPreviews(20, service);
+        new OldCrawlerManager(searchBar.getText(), quit);
+        // try {
+        //     CrawlerZeroChan crawler = new CrawlerZeroChan(TestFunctions.testWallpaperPath.toString(), keywords.split(" "), 2, 1);
+        //     var service = Executors.newCachedThreadPool();
+        //     var previewResult = crawler.readMultiplePagesAndDownloadPreviews(5, service);
 
-            service.shutdown();
-            WallpaperImage wp = null;
-            if (SourceRedirector.preViewOrNot){
-                System.out.println("Opening Preview Viewing Window... " + crawler.getPreviewsFolderPath().replace('/', '\\'));
-                if (!quit){
-                    System.err.println("Opening Preview Viewing Window... " + crawler.getPreviewsFolderPath().replace('/', '\\'));
-                }
-                wp = new WallpaperImage(crawler.getPreviewsFolderPath().replace('/', '\\'), false);
-            }
-            else {
-                var service2 = Executors.newCachedThreadPool();
-                crawler.downloadSelectedImagesUsingPAIRs(previewResult, service2);
-                service2.shutdown();
-                while (!service2.isShutdown()); // 等待線程關閉
-                System.out.println("Download complete!");
-                if (!quit){
-                    System.err.println("Download complete!");
-                }
-                System.out.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
-                if (!quit){
-                    System.err.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
-                }
-                wp = new WallpaperImage(crawler.getFolderPath().replace('/', '\\'), false);
-            }
-            preview = wp;
-            imagePreview.setImage(preview.getCurrentWallpaper());
-            if (SourceRedirector.showWallpapersAfterCrawling){
-                OpenWallpaperViewWindow(wp, 960, 600);
-            }
-        } catch (IOException e) {
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.titleProperty().set("Message");
-            alert.headerTextProperty().set("Wrong keywords, please check and search again.");
-            alert.showAndWait();
-        }
+        //     service.shutdown();
+        //     WallpaperImage wp = null;
+        //     if (SourceRedirector.preViewOrNot){
+        //         System.out.println("Opening Preview Viewing Window... " + crawler.getPreviewsFolderPath().replace('/', '\\'));
+        //         if (!quit){
+        //             System.err.println("Opening Preview Viewing Window... " + crawler.getPreviewsFolderPath().replace('/', '\\'));
+        //         }
+        //         wp = new WallpaperImage(crawler.getPreviewsFolderPath().replace('/', '\\'), false);
+        //     }
+        //     else {
+        //         var service2 = Executors.newCachedThreadPool();
+        //         crawler.downloadSelectedImagesUsingPAIRs(previewResult, service2);
+        //         service2.shutdown();
+        //         while (!service2.isShutdown()); // 等待線程關閉
+        //         System.out.println("Download complete!");
+        //         if (!quit){
+        //             System.err.println("Download complete!");
+        //         }
+        //         System.out.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
+        //         if (!quit){
+        //             System.err.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
+        //         }
+        //         wp = new WallpaperImage(crawler.getFolderPath().replace('/', '\\'), false);
+        //     }
+        //     preview = wp;
+        //     imagePreview.setImage(preview.getCurrentWallpaper());
+        //     if (SourceRedirector.showWallpapersAfterCrawling){
+        //         OpenWallpaperViewWindow(wp, 960, 600);
+        //     }
+        // } catch (IOException e) {
+        //     Alert alert = new Alert(AlertType.INFORMATION);
+        //     alert.titleProperty().set("Message");
+        //     alert.headerTextProperty().set("Wrong keywords, please check and search again.");
+        //     alert.showAndWait();
+        // }
     }
 
     @FXML
-    public void OpenPropertiesWindow(ActionEvent event) {
-        PropertiesController.quit = quit;
+    void OpenPreferenceWindow(ActionEvent event) {
+        OpenPreferenceWindow();
+    }
+    
+    public void OpenPreferenceWindow(){
+        PreferenceController.quit = quit;
         try {
             var stage = new Stage();
             stage.setTitle("Properties");
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/PropertiesWindow.fxml"))));
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/PreferenceWindow.fxml"))));
             stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
             stage.show();
         } catch (Exception e){
@@ -218,10 +226,13 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb){
         preview = new WallpaperImage();
-        imagePreview.setImage(preview.getNextWallpaper());
+        staticImagePreview = imagePreview;
+        imagePreview.setImage(preview.getCurrentWallpaper());
         Terminal_out.setEditable(false);
         openWindowsFileExplorer.setCenter(GlyphsDude.createIcon(FontAwesomeIcons.BARCODE, "400px"));
         // (GlyphsDude.createIcon(FontAwesomeIcons.FOLDER, "40px"));
+        mainPbar = MainCtrlPbar;
+        searchProgressIndicator = MainCtrlPin;
         initializeKeyBoardShortcuts();
         initializeMouseEvents();
     }

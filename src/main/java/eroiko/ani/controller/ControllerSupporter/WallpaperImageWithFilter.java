@@ -11,21 +11,22 @@ import java.util.ArrayList;
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.TestFunctions;
 import eroiko.ani.util.WallpaperComparator;
+import eroiko.ani.util.myPair;
 import javafx.scene.image.Image;
 
-
 /** 實作類似 Iterator 的資料結構, 所有 get functions (除了 Current) 都會移動 Index */
-public class WallpaperImage {
+public class WallpaperImageWithFilter {
     private Path directory;
     private DirectoryStream<Path> root;
-    private ArrayList<Path> wallpapers;
-    // private TreeMap<Integer, Path> wallpapers;
+    private ArrayList<myPair<Boolean, Path>> wallpapers;
+
     private int current;
+    private int size;
     /** 
      * @param directory is the testing directory or the image folder of this project
      * @param certain : is true if  {@code directory} is in testing mode
      */
-    public WallpaperImage(String directory, boolean certain){
+    public WallpaperImageWithFilter(String directory, boolean certain){
         this.directory = Path.of(directory);
         try {
             if (certain){
@@ -38,38 +39,42 @@ public class WallpaperImage {
         } catch (IOException e) {
             System.out.println(e.toString());
         }
-        wallpapers = new ArrayList<Path>();
-        // wallpapers = new TreeSet<Path>((e1, e2) -> pathNameCompare(a, b));
-        // wallpapers = new TreeMap<Integer, Path>();
-        root.forEach(p -> wallpapers.add(p));
-        // root.forEach(p -> wallpapers.put(takeWallpaperSerialNumber(p), p));
-        wallpapers.sort((a, b) -> WallpaperComparator.pathNameCompare(a.getFileName(), b.getFileName())); // 讓圖片照順序排佈
+        wallpapers = new ArrayList<>();
+        root.forEach(p -> wallpapers.add(new myPair<>(true, p)));
+        wallpapers.sort((a, b) -> WallpaperComparator.pathNameCompare(a.value.getFileName(), b.value.getFileName())); // 讓圖片照順序排佈
+        size = wallpapers.size();
     }
     
-    public WallpaperImage(){
+    public WallpaperImageWithFilter(){
         this(FileSystems.getDefault().getPath("").toAbsolutePath().toString(), MainApp.isTesting);
     }
 
-    public Path getCurrentWallpaperPath(){
-        return wallpapers.get(current);
-    }
-    
-    public Path getNextWallpaperPath(){
-        return wallpapers.get(++current);
+    public void delete(int certainNumber){
+        wallpapers.get(certainNumber).key = false;
     }
 
+    public Path getCurrentWallpaperPath(){
+        return wallpapers.get(current).value;
+    }
+    
     public Image getCurrentWallpaper(){
         try {
-            return new Image(wallpapers.get(current).toUri().toURL().toString());
+            return new Image(wallpapers.get(current).value.toUri().toURL().toString());
         } catch (MalformedURLException e) {
             System.out.println(e.toString());
         }
         return null;
     }
-
+    
+    public Path getNextWallpaperPath(){
+        while (!wallpapers.get((current + 1 == size) ? (current = 0) : ++current).key);
+        return wallpapers.get(current).value;
+    }
+    
     public Image getNextWallpaper(){
+        while (!wallpapers.get((current + 1 == size) ? (current = 0) : ++current).key);
         try {
-            return (++current < wallpapers.size()) ? new Image(wallpapers.get(current).toUri().toURL().toString()) : new Image(wallpapers.get((current = 0)).toUri().toURL().toString());
+            return new Image(wallpapers.get(current).value.toUri().toURL().toString());
         } catch (MalformedURLException e) {
             System.out.println(e.toString());
         }
@@ -77,18 +82,13 @@ public class WallpaperImage {
     }
     
     public Image getLastWallpaper(){
+        while (!wallpapers.get((current == 0) ? (current = size - 1) : --current).key);
         try {
-            return (--current >= 0) ? new Image(wallpapers.get(current).toUri().toURL().toString()) : new Image(wallpapers.get((current = wallpapers.size() - 1)).toUri().toURL().toString());
+            return new Image(wallpapers.get(current).value.toUri().toURL().toString());
         } catch (MalformedURLException e) {
             System.out.println(e.toString());
         }
         return null;
-    }
-
-    public static WallpaperImage copy(WallpaperImage wp){
-        var newWp = new WallpaperImage(wp.directory.toString(), MainApp.isTesting);
-        newWp.current = wp.current;
-        return newWp;
     }
 }
 

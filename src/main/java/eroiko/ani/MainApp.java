@@ -60,7 +60,7 @@ public class MainApp extends Application{
         /* 定義全視窗快捷鍵 */
         mainScene.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> { //  彈出 Properties 視窗, 因為是對整個 Scene, 因此宣告在此
             if (new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN).match(e)){
-                new MainController().OpenPropertiesWindow(new ActionEvent());
+                new MainController().OpenPreferenceWindow();
                 e.consume();
             }
         });

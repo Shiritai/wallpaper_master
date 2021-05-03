@@ -4,8 +4,9 @@ import java.io.*;
 import java.net.*;
 import java.util.regex.Pattern;
 
-import eroiko.ani.controller.MainController;
 import eroiko.ani.util.Dumper;
+
+// import eroiko.ani.controller.MainController;
 
 public class Crawler {
     protected final static String UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101 Firefox/87.0";
@@ -23,14 +24,14 @@ public class Crawler {
             try {
                 src = new URL(url);
             } catch (MalformedURLException e) {
-                System.out.println("The url was malformed!");
+                // System.out.println("The url was malformed!");
                 successful = false;
             }
             URLConnection uri = null;
             try {
                 uri = src.openConnection();
             } catch (IOException e) {
-                System.out.println("Connection " + url + " failed!");
+                // System.out.println("Connection " + url + " failed!");
                 successful = false;
             }
             try {
@@ -38,19 +39,19 @@ public class Crawler {
                 OutputStream out = new FileOutputStream(new File(
                     (isFull) ? this.folder_path : this.folder_path + "/previews",
                     String.format("wallpaper%d%s", (isFull) ? Crawler.fullCnt++ : Crawler.prevCnt++, suffix))
+                    // uri.toString())
                 );
-                Dumper.dump(in, out);
+                new Dumper().dump(in, out);
             } catch (IOException e){    
                 System.out.println("IO failed!");
-                // e.printStackTrace();
                 successful = false;
             }
-            if (successful){
-                System.out.printf("%s\t", (isFull) ? "f" + Integer.toString(Crawler.fullCnt - 1) : "p" + Integer.toString(Crawler.prevCnt - 1));
-                if (!MainController.quit){
-                    System.err.printf("%s\t", (isFull) ? "f" + Integer.toString(Crawler.fullCnt - 1) : "p" + Integer.toString(Crawler.prevCnt - 1));
-                }
-            }
+            // if (successful){
+            //     System.out.printf("%s\t", (isFull) ? "f" + Integer.toString(Crawler.fullCnt - 1) : "p" + Integer.toString(Crawler.prevCnt - 1));
+            //     if (!MainController.quit){
+            //         System.err.printf("%s\t", (isFull) ? "f" + Integer.toString(Crawler.fullCnt - 1) : "p" + Integer.toString(Crawler.prevCnt - 1));
+            //     }
+            // }
         }
         return successful;
     }
