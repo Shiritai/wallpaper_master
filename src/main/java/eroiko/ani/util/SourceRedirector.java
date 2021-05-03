@@ -25,10 +25,11 @@ public class SourceRedirector {
     }
     
 
-    /* 是否需要預覽篩選 */
+    /* Properties 設定 */
     public static boolean preViewOrNot = true;
     public static boolean showWallpapersAfterCrawling = false;
     public static boolean useOldCrawlerForFullSpeedMode = false;
+    public static int pagesToDownload = 4;
     
     
     /* For selection */

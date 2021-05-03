@@ -3,7 +3,6 @@ package eroiko.ani.controller;
 import java.io.*;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.Executors;
 
 import de.jensd.fx.glyphs.GlyphsDude;
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcons;
@@ -13,15 +12,14 @@ import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
 import eroiko.ani.controller.PrimaryControllers.PreferenceController;
 import eroiko.ani.controller.PrimaryControllers.TestingController;
 import eroiko.ani.controller.PrimaryControllers.WallpaperViewController;
-import eroiko.ani.model.Crawler.CrawlerZeroChan;
 import eroiko.ani.model.Crawler.OldCrawlerManager;
+import eroiko.ani.model.NewCrawler.CrawlerThread;
 import eroiko.ani.util.SourceRedirector;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -90,47 +88,16 @@ public class MainController implements Initializable {
     }
     
     void Search(){
-        new OldCrawlerManager(searchBar.getText(), quit);
-        // try {
-        //     CrawlerZeroChan crawler = new CrawlerZeroChan(TestFunctions.testWallpaperPath.toString(), keywords.split(" "), 2, 1);
-        //     var service = Executors.newCachedThreadPool();
-        //     var previewResult = crawler.readMultiplePagesAndDownloadPreviews(5, service);
-
-        //     service.shutdown();
-        //     WallpaperImage wp = null;
-        //     if (SourceRedirector.preViewOrNot){
-        //         System.out.println("Opening Preview Viewing Window... " + crawler.getPreviewsFolderPath().replace('/', '\\'));
-        //         if (!quit){
-        //             System.err.println("Opening Preview Viewing Window... " + crawler.getPreviewsFolderPath().replace('/', '\\'));
-        //         }
-        //         wp = new WallpaperImage(crawler.getPreviewsFolderPath().replace('/', '\\'), false);
-        //     }
-        //     else {
-        //         var service2 = Executors.newCachedThreadPool();
-        //         crawler.downloadSelectedImagesUsingPAIRs(previewResult, service2);
-        //         service2.shutdown();
-        //         while (!service2.isShutdown()); // 等待線程關閉
-        //         System.out.println("Download complete!");
-        //         if (!quit){
-        //             System.err.println("Download complete!");
-        //         }
-        //         System.out.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
-        //         if (!quit){
-        //             System.err.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
-        //         }
-        //         wp = new WallpaperImage(crawler.getFolderPath().replace('/', '\\'), false);
-        //     }
-        //     preview = wp;
-        //     imagePreview.setImage(preview.getCurrentWallpaper());
-        //     if (SourceRedirector.showWallpapersAfterCrawling){
-        //         OpenWallpaperViewWindow(wp, 960, 600);
-        //     }
-        // } catch (IOException e) {
-        //     Alert alert = new Alert(AlertType.INFORMATION);
-        //     alert.titleProperty().set("Message");
-        //     alert.headerTextProperty().set("Wrong keywords, please check and search again.");
-        //     alert.showAndWait();
-        // }
+        if (SourceRedirector.useOldCrawlerForFullSpeedMode){
+            new OldCrawlerManager(searchBar.getText(), SourceRedirector.pagesToDownload, quit);
+        }
+        else {
+            new CrawlerThread(TestFunctions.testWallpaperPath.toAbsolutePath().toString(), searchBar.getText().split(" "));
+        }
+    //     Alert alert = new Alert(AlertType.INFORMATION);
+    //     alert.titleProperty().set("Message");
+    //     alert.headerTextProperty().set("Wrong keywords, please check and search again.");
+    //     alert.showAndWait();
     }
 
     @FXML
@@ -230,7 +197,7 @@ public class MainController implements Initializable {
         imagePreview.setImage(preview.getCurrentWallpaper());
         Terminal_out.setEditable(false);
         openWindowsFileExplorer.setCenter(GlyphsDude.createIcon(FontAwesomeIcons.BARCODE, "400px"));
-        // (GlyphsDude.createIcon(FontAwesomeIcons.FOLDER, "40px"));
+        (GlyphsDude.createIcon(FontAwesomeIcons.FOLDER, "40px"));
         mainPbar = MainCtrlPbar;
         searchProgressIndicator = MainCtrlPin;
         initializeKeyBoardShortcuts();

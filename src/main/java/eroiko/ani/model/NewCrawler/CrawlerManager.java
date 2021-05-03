@@ -31,7 +31,7 @@ public class CrawlerManager {
     
     public CrawlerManager(String folderPath, String [] keywords){
         fullSavePath = folderPath + "\\" + String.join(" ", keywords);
-        prevSavePath = fullSavePath + "\\preview";
+        prevSavePath = fullSavePath + "\\previews";
         this.crawlers = CrawlersGenerator(keywords);
         /* 確認關鍵字無誤後, [新建 / 確認] 資料夾 */
         File outRoot = new File(folderPath); // 確認目標地址存在
@@ -136,7 +136,7 @@ public class CrawlerManager {
         var service = Executors.newCachedThreadPool();
         /* 蒐集 callable */
         var calls = new ArrayList<Callable<Boolean>>();
-        for (int i = previousSizeForPreview; i < currentSize; ++i){
+        for (int i = 0; i < wpLinks.size(); ++i){
             int thisIndex = i;
             calls.add(() -> {
                 var tmp = wpLinks.get(thisIndex);

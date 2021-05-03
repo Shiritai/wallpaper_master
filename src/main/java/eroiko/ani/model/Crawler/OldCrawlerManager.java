@@ -19,9 +19,11 @@ import javafx.stage.Stage;
 public class OldCrawlerManager implements Runnable {
     private boolean quit;
     private String keywords;
+    private int pages;
     Thread runner;
-    public OldCrawlerManager(String keywords, boolean quit){
+    public OldCrawlerManager(String keywords, int pages, boolean quit){
         this.quit = quit;
+        this.pages = pages;
         this.keywords = keywords;
         this.runner = new Thread(this);
         this.runner.setDaemon(true);
@@ -32,7 +34,7 @@ public class OldCrawlerManager implements Runnable {
         try {
             CrawlerZeroChan crawler = new CrawlerZeroChan(TestFunctions.testWallpaperPath.toString(), keywords.split(" "), 2, 1);
             var service = Executors.newCachedThreadPool();
-            var previewResult = crawler.readMultiplePagesAndDownloadPreviews(5, service);
+            var previewResult = crawler.readMultiplePagesAndDownloadPreviews(pages, service);
     
             service.shutdown();
             WallpaperImage wp = null;
@@ -60,26 +62,6 @@ public class OldCrawlerManager implements Runnable {
             }
             MainController.preview = wp;
             MainController.staticImagePreview.setImage(MainController.preview.getCurrentWallpaper());
-            if (SourceRedirector.showWallpapersAfterCrawling){
-                WallpaperViewController.quit = quit;
-                int serialNumber = SourceRedirector.addWallpaper(wp);
-                try {
-                    var stage = new Stage();
-                    stage.setTitle("Wallpaper Viewer");
-                    stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperViewWindow.fxml"))));
-                    stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
-                    stage.setOnCloseRequest(e -> {
-                        SourceRedirector.deleteWallpaper(serialNumber);
-                    });
-                    stage.show();
-                } catch (Exception e){
-                    e.printStackTrace();
-                    System.out.println(e.toString());
-                    if (!quit){
-                        System.err.println(e.toString());
-                    }
-                }
-            }
         } catch (IOException e){
             System.out.println(e.toString());
             if (!quit){
