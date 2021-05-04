@@ -95,8 +95,8 @@ public class MainApp extends Application{
         menu.getItems().addAll(childMenu[0], childMenu[1]);
         
         menuItems = new MenuItem [2];
-        menuItems[0] = new MenuItem("Properties");
-        menuItems[0].setOnAction(e -> new Alert(Alert.AlertType.INFORMATION, "Show Properties!").showAndWait());
+        menuItems[0] = new MenuItem("Preference");
+        menuItems[0].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
         menuItems[1] = new MenuItem("Process");
         menuItems[1].setOnAction(e -> new Alert(Alert.AlertType.INFORMATION, "Clicked on Process Menu!").showAndWait());
     }

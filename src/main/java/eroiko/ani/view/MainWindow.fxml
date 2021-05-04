@@ -30,7 +30,7 @@
 
 <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="640.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eroiko.ani.controller.MainController">
    <children>
-      <MenuBar style="-fx-background-color: #efb6c6;">
+      <MenuBar style="-fx-background-color: #d0b4dc;">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -118,8 +118,8 @@
                                                                      <children>
                                                                         <TableView fx:id="searchQueue" layoutX="-41.0" layoutY="72.0" prefHeight="272.0" prefWidth="262.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                           <columns>
-                                                                            <TableColumn fx:id="keywords" prefWidth="127.0" text="Keywords" />
-                                                                            <TableColumn fx:id="amount" prefWidth="157.0" text="Amount" />
+                                                                            <TableColumn fx:id="keywords" prefWidth="109.0" text="Keywords" />
+                                                                            <TableColumn fx:id="amount" prefWidth="175.0" text="Amount" />
                                                                           </columns>
                                                                         </TableView>
                                                                      </children>
@@ -340,7 +340,7 @@
                                                                         </AnchorPane>
                                                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                                            <children>
-                                                                              <ProgressBar fx:id="pbar" layoutX="-218.0" prefHeight="24.0" prefWidth="432.0" progress="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                              <ProgressBar fx:id="mainPbar" layoutX="-218.0" prefHeight="24.0" prefWidth="513.0" progress="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                            </children>
                                                                         </AnchorPane>
                                                                     </items>

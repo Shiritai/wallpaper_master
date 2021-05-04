@@ -8,10 +8,13 @@ import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.PrimaryControllers.*;
 import eroiko.ani.model.Crawler.OldCrawlerManager;
+import eroiko.ani.model.NewCrawler.CrawlerManager;
 import eroiko.ani.model.NewCrawler.CrawlerThread;
 import eroiko.ani.util.*;
 import eroiko.ani.util.WallpaperClass.*;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 // import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -30,6 +33,9 @@ public class MainController implements Initializable {
     /* Support variables */
     public static WallpaperImage preview;
     public static ImageView staticImagePreview;
+    public static boolean hasFull;
+    public static BooleanProperty hasChangedPreview = new SimpleBooleanProperty(false);
+    public static Label staticPathLabel;
     // public static boolean downloadDeliver = false;
     // public static BooleanProperty downloadViewOpener = new SimpleBooleanProperty(false);
     // public static Stage wallpaperViewStage = new Stage();
@@ -104,8 +110,8 @@ public class MainController implements Initializable {
         if ((data = searchQueue.getItems()).size() > 0){
             for (var d : data){
                 int mode = switch (d.value){
-                    case "Many (hundreds)" -> 10;
-                    case "Decent (about 100)" -> 5;
+                    case "Many (hundreds)" -> 12;
+                    case "Decent (about 100)" -> 6;
                     case "Snapshot (several dozen)" -> 2;
                     default -> -1;
                 };
@@ -161,10 +167,12 @@ public class MainController implements Initializable {
         try {
             if (WallpaperComparator.isImage(file)){
                 preview = new WallpaperImage(file.getParent().toAbsolutePath().toString(), false, file);
+                hasChangedPreview.set(true);
                 imagePreview.setImage(preview.getCurrentWallpaper());    
             }
             else {
                 preview = new WallpaperImage(file.toAbsolutePath().toString(), false);
+                hasChangedPreview.set(true);
                 imagePreview.setImage(preview.getCurrentWallpaper());
             }
         } catch (IOException e) {
@@ -293,16 +301,22 @@ public class MainController implements Initializable {
             System.out.println(e.toString());
         }
         staticImagePreview = imagePreview;
+        hasFull = false;
+        staticPathLabel = pathLabel;
         imagePreview.setImage(preview.getCurrentWallpaper());
         Terminal_out.setEditable(false);
-        // downloadAmountChoice = new ChoiceBox<>();
         searchBar.setPromptText(">  Search Artwork");
         Terminal_in.setPromptText(" <Terminal_Input>");
         downloadAmountChoice.getItems().addAll(modes[0], modes[1], modes[2]);
         downloadAmountChoice.setValue(modes[1]);
-        mainPbar = MainCtrlPbar;
         pathLabel.setText(SourceRedirector.defaultDataPath.toString());
-        // searchProgressIndicator = MainCtrlPin;
+        // mainPbar = new ProgressBar();
+        hasChangedPreview.addListener((a, b, c) -> {
+            pathLabel.setText(preview.getCurrentWallpaperPath().getParent().toString());
+            hasChangedPreview.set(false);
+        });
+        CrawlerManager.progress.addListener((a, b, c) -> mainPbar.progressProperty().bind(CrawlerManager.progress));
+        
         initializeKeyBoardShortcuts();
         initializeMouseEvents();
         initSearchQueue();
@@ -311,7 +325,12 @@ public class MainController implements Initializable {
     public void initializeMouseEvents(){
         imagePreview.setOnMouseClicked((e) -> {
             if (e.getClickCount() == 2){
-                OpenWallpaperViewWindow(preview);
+                if (hasFull){
+                    OpenWallpaperViewWindow(SourceRedirector.wallpaperImageWithFilter);
+                }
+                else {
+                    OpenWallpaperViewWindow(preview);
+                }
             }
         });
         imagePreview.setOnScroll((ScrollEvent e) -> {
@@ -324,9 +343,6 @@ public class MainController implements Initializable {
             }
             e.consume();
         });
-        // imagePreview.setOnMouseDragReleased(e -> {
-            
-        // });
         addButton.setOnMouseClicked(e -> addSearchQueue());
         deleteSelectedButton.setOnMouseClicked(e -> deleteSelectedSearchQueue());
         openWindowsFileExplorer.setOnMouseClicked(e -> {
@@ -396,19 +412,38 @@ public class MainController implements Initializable {
 
     private void initSearchQueue(){
         /* Set the two columns */
-        keywords.setMinWidth(150);
+        keywords.setMinWidth(120);
+        keywords.setPrefWidth(120);
         keywords.setCellValueFactory(new PropertyValueFactory<>("key"));
         amount.setMinWidth(150);
+        amount.setPrefWidth(165);
         amount.setCellValueFactory(new PropertyValueFactory<>("value"));
     }
 
+    /** 新增至佇列, 並確認是否合法 */
     private void addSearchQueue(){
-        var tmpData = new myPair<String, String>(
-            searchBar.getText(), downloadAmountChoice.getValue()
-        );
-        searchBar.clear();
-        System.out.println("Add " + tmpData.key + " : " + tmpData.value + " to Search Queue");
-        searchQueue.getItems().add(tmpData);
+        String keyword = searchBar.getText();
+        // Callable<Boolean> checkValid = (() -> {
+        //     Platform.runLater(() -> {
+
+        //     });
+        //     return CrawlerManager.checkValidation(keyword);
+        // });
+
+        if (CrawlerManager.checkValidation(keyword)){
+            var tmpData = new myPair<String, String>(
+                keyword, downloadAmountChoice.getValue()
+            );
+            searchBar.clear();
+            System.out.println("Add " + tmpData.key + " : " + tmpData.value + " to Search Queue");
+            searchQueue.getItems().add(tmpData);
+            searchBar.setStyle("-fx-background-color: #ffffff;");
+        }
+        else {
+            searchBar.setStyle("-fx-background-color: #efb261;");
+            searchBar.selectAll();
+            new Alert(Alert.AlertType.INFORMATION, "Invalid keywords! Please check again :)").showAndWait();
+        }
     }
 
     private void deleteSelectedSearchQueue(){

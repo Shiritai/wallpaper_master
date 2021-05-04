@@ -15,17 +15,17 @@ public class WallpaperComparator {
         if (m1.find() && m2.find()){
             return Integer.parseInt(m1.group(0)) - Integer.parseInt(m2.group(0));
         }
-        return 0;
+        return a.toString().compareTo(b.toString());
     }
 
     public static int pathNameCompare(String a, String b){
         var numberMatcher = Pattern.compile("\\d+");
-        Matcher m1 = numberMatcher.matcher(a.toString());
-        Matcher m2 = numberMatcher.matcher(b.toString());
+        Matcher m1 = numberMatcher.matcher(a);
+        Matcher m2 = numberMatcher.matcher(b);
         if (m1.find() && m2.find()){
             return Integer.parseInt(m1.group(0)) - Integer.parseInt(m2.group(0));
         }
-        return 0;
+        return a.compareTo(b);
     }
 
     /* 取得各桌布的 Serial Number 直接建成 Map 比較有效率... */

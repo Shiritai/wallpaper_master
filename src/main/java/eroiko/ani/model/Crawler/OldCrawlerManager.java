@@ -52,6 +52,7 @@ public class OldCrawlerManager implements Runnable {
                 wp = new WallpaperImage(crawler.getFolderPath().replace('/', '\\'), false);
             }
             MainController.preview = wp;
+            MainController.hasChangedPreview.set(true);
             MainController.staticImagePreview.setImage(MainController.preview.getCurrentWallpaper());
         } catch (IOException e){
             System.out.println(e.toString());

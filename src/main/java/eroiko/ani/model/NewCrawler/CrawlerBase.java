@@ -15,4 +15,6 @@ public abstract class CrawlerBase {
 
     /** 傳入特定頁面與線程池, 讀取單一頁面預覽圖, 保證將結果傳入 {@code downloadSelectedImagesUsingPAIR} 可以順利下載 */
     public abstract ArrayList<myPair<String, String>> fetchImageLinks(int page, ExecutorService service);
+    public abstract boolean isValidKeyword(String keyword);
+    public abstract int numberOfImageInPages(int page);
 }

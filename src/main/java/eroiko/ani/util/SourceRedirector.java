@@ -43,6 +43,7 @@ public class SourceRedirector {
     
     /* For selection */
     public static WallpaperImageWithFilter wallpaperImageWithFilter;
+    
 
     
 }

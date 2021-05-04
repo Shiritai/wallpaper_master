@@ -8,11 +8,49 @@ import java.util.concurrent.ExecutorService;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
-// import eroiko.ani.controller.MainController;
+import eroiko.ani.controller.MainController;
 import eroiko.ani.util.myPair;
 
 
 public class CrawlerZeroChan extends CrawlerBase{
+    public static final String url_head = "https://www.zerochan.net/";
+    public static final String [] select_header = {"d=", "s="};
+    public static final String [][] select_content = {{"0", "1", "2"}, {"id", "fav", "random"}};
+
+    private static int _setting_resolution = 2;
+    private static int _setting_sorting = 1;
+
+    private int [] select = new int []{_setting_resolution, _setting_sorting};
+    
+    public CrawlerZeroChan(String [] keywords) throws IOException{
+        this.query = String.join("+", keywords);
+        this.select[0] = _setting_resolution;
+        this.select[1] = _setting_sorting;
+        var tmp = new StringBuilder();
+        tmp.append(CrawlerZeroChan.url_head).append(this.query).append('?')
+            .append(CrawlerZeroChan.select_header[0]).append(CrawlerZeroChan.select_content[0][this.select[0]])
+            .append('&').append(CrawlerZeroChan.select_header[1]).append(CrawlerZeroChan.select_content[1][this.select[1]]);
+        this.first_layer_url = tmp.toString();
+        /* 確認關鍵字無誤 */
+        var doc = Jsoup.connect(this.first_layer_url)
+            .userAgent(CrawlerBase.UserAgent)
+            // .proxy(proxy)
+            .timeout(10000)
+            .get();
+        System.out.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
+        if (!MainController.quit){
+            System.err.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
+        }
+    }
+    
+    /** 設定畫質, 2 (僅高) ~ 0 (高低都有) */
+    public void setDefaultResolution(int res){
+        _setting_resolution = res;
+    }
+    /** 設定排序, 0 {@code by id}, 1 {@code by popularity}, 2 {@code random} */
+    public void setDefaultSorting(int sorting){
+        _setting_sorting = sorting;
+    }
 
     @Override
     public ArrayList<myPair<String, String>> fetchImageLinks(int page, ExecutorService service) {
@@ -24,9 +62,9 @@ public class CrawlerZeroChan extends CrawlerBase{
                 .timeout(10000)
                 .get();
             System.out.println(doc.title()); // 印出標頭, 確保目標正確
-            // if (!MainController.quit){
-            //     System.err.println(doc.title()); // 印出標頭, 確保目標正確
-            // }
+            if (!MainController.quit){
+                System.err.println(doc.title()); // 印出標頭, 確保目標正確
+            }
     
             Elements links = doc.select("img[title]"); // 抓取預覽圖, 預覽圖都有 title
             Elements target = doc.select("a[tabindex=1]");
@@ -90,9 +128,9 @@ public class CrawlerZeroChan extends CrawlerBase{
                 .timeout(10000)
                 .get();
             System.out.println(doc.title()); // just for sure!
-            // if (!MainController.quit){
-            //     System.err.println(doc.title()); // just for sure!
-            // }
+            if (!MainController.quit){
+                System.err.println(doc.title()); // just for sure!
+            }
             return doc.select("a[class=preview]").first().attr("href");
         } catch (Exception e){
             System.out.println(e.toString());
@@ -101,42 +139,46 @@ public class CrawlerZeroChan extends CrawlerBase{
         }
     }
 
-    public static final String url_head = "https://www.zerochan.net/";
-    public static final String [] select_header = {"d=", "s="};
-    public static final String [][] select_content = {{"0", "1", "2"}, {"id", "fav", "random"}};
+    public CrawlerZeroChan(){} // for validation check
 
-    private static int _setting_resolution = 2;
-    private static int _setting_sorting = 1;
-
-    private int [] select = new int [2];
-    
-    public CrawlerZeroChan(String [] keywords) throws IOException{
-        this.query = String.join("+", keywords);
-        this.select[0] = _setting_resolution;
-        this.select[1] = _setting_sorting;
+    @Override
+    public boolean isValidKeyword(String keyword) {
         var tmp = new StringBuilder();
-        tmp.append(CrawlerZeroChan.url_head).append(this.query).append('?')
+        tmp.append(CrawlerZeroChan.url_head).append(keyword).append('?')
             .append(CrawlerZeroChan.select_header[0]).append(CrawlerZeroChan.select_content[0][this.select[0]])
             .append('&').append(CrawlerZeroChan.select_header[1]).append(CrawlerZeroChan.select_content[1][this.select[1]]);
-        this.first_layer_url = tmp.toString();
         /* 確認關鍵字無誤 */
-        var doc = Jsoup.connect(this.first_layer_url)
-            .userAgent(CrawlerBase.UserAgent)
-            // .proxy(proxy)
-            .timeout(10000)
-            .get();
-        System.out.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
-        // if (!MainController.quit){
-        //     System.err.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
-        // }
+        try {
+            var doc = Jsoup.connect(tmp.toString())
+                .userAgent(CrawlerBase.UserAgent)
+                // .proxy(proxy)
+                .timeout(10000)
+                .get();
+            System.out.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
+            if (!MainController.quit){
+                System.err.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
+            }
+        } catch (IOException ie){
+            return false;
+        }
+        return true;
     }
 
-    /** 設定畫質, 2 (僅高) ~ 0 (高低都有) */
-    public void setDefaultResolution(int res){
-        _setting_resolution = res;
-    }
-    /** 設定排序, 0 {@code by id}, 1 {@code by popularity}, 2 {@code random} */
-    public void setDefaultSorting(int sorting){
-        _setting_sorting = sorting;
+    @Override
+    public int numberOfImageInPages(int page) {
+        int res = 0;
+        try {
+            for (int i = 1; i <= page; ++i){
+                var doc = Jsoup.connect(this.first_layer_url + "&p=" + Integer.toString(page))
+                    .userAgent(CrawlerBase.UserAgent)
+                    // .proxy(proxy)
+                    .timeout(10000)
+                    .get();
+                res += doc.select("img[title]").size(); // 抓取預覽圖, 預覽圖都有 title
+            }
+        } catch (IOException ie){
+            System.out.println(ie.toString());
+        }
+        return res;
     }
 }
