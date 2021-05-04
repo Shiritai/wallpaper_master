@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.StackedAreaChart?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.ScrollBar?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
@@ -58,9 +59,9 @@
           </Menu>
         </menus>
       </MenuBar>
-      <AnchorPane prefHeight="609.0" prefWidth="900.0">
+      <AnchorPane onDragDropped="#WholeDragDropped" onDragOver="#WholeDragOver" prefHeight="609.0" prefWidth="900.0">
          <children>
-            <SplitPane dividerPositions="0.3" prefHeight="550.0" prefWidth="898.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <SplitPane dividerPositions="0.32516703786191536" prefHeight="550.0" prefWidth="898.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                      <children>
@@ -72,11 +73,11 @@
                                       <items>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                              <children>
-                                                <SplitPane dividerPositions="0.7269230769230769" layoutY="-74.0" prefHeight="28.0" prefWidth="262.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                <SplitPane dividerPositions="0.5901060070671378" layoutY="-74.0" prefHeight="28.0" prefWidth="262.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                   <items>
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                          <children>
-                                                            <TextField fx:id="searchBar" layoutX="-168.0" layoutY="-271.0" prefHeight="26.0" prefWidth="228.0" text="&gt;  Search Artwork" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <TextField fx:id="searchBar" layoutX="-168.0" layoutY="-271.0" prefHeight="26.0" prefWidth="228.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <font>
                                                                   <Font name="Fira Code Regular" size="12.0" />
                                                                </font>
@@ -85,16 +86,16 @@
                                                       </AnchorPane>
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                          <children>
-                                                            <SplitPane dividerPositions="0.57" layoutX="-79.0" layoutY="-66.0" prefHeight="27.0" prefWidth="68.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <SplitPane dividerPositions="0.652542372881356" layoutX="-7.0" layoutY="-66.0" prefHeight="27.0" prefWidth="75.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-7.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                               <items>
                                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                                                      <children>
-                                                                        <Button mnemonicParsing="false" onAction="#GoSearch" prefHeight="27.0" prefWidth="34.0" text="Go!" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                        <ChoiceBox fx:id="downloadAmountChoice" layoutX="-57.0" prefHeight="25.0" prefWidth="68.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                      </children>
                                                                   </AnchorPane>
-                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="25.0" prefWidth="32.0">
                                                                      <children>
-                                                                        <ProgressIndicator fx:id="searchProgressIndicator" layoutX="-13.0" layoutY="-7.0" prefHeight="47.0" prefWidth="25.0" progress="0.0" AnchorPane.bottomAnchor="-22.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                        <Button fx:id="addButton" layoutX="7.0" layoutY="5.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="35.0" text="Add" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                                                                      </children>
                                                                   </AnchorPane>
                                                               </items>
@@ -107,39 +108,61 @@
                                           </AnchorPane>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                              <children>
-                                                <ImageView fitHeight="150.0" fitWidth="200.0" layoutX="14.0" layoutY="101.0" pickOnBounds="true" preserveRatio="true" />
-                                                <TabPane layoutX="14.0" layoutY="22.0" prefHeight="243.0" prefWidth="262.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                  <tabs>
-                                                    <Tab text="Properties">
-                                                      <content>
-                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                                               <children>
-                                                                  <TableView layoutX="-41.0" layoutY="72.0" prefHeight="272.0" prefWidth="262.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                    <columns>
-                                                                      <TableColumn prefWidth="86.0" text="Metadata" />
-                                                                      <TableColumn prefWidth="175.0" text="Value" />
-                                                                    </columns>
-                                                                  </TableView>
-                                                               </children>
-                                                            </AnchorPane>
-                                                      </content>
-                                                    </Tab>
-                                                    <Tab text="List">
-                                                      <content>
-                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                                               <children>
-                                                                  <TableView layoutX="-32.0" layoutY="-24.0" prefHeight="272.0" prefWidth="262.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                    <columns>
-                                                                      <TableColumn prefWidth="186.0" text="Name" />
-                                                                      <TableColumn prefWidth="75.0" text="Number" />
-                                                                    </columns>
-                                                                  </TableView>
-                                                               </children>
-                                                            </AnchorPane>
-                                                      </content>
-                                                    </Tab>
-                                                  </tabs>
-                                                </TabPane>
+                                                <StackPane prefHeight="301.0" prefWidth="285.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                   <children>
+                                                      <TabPane prefHeight="243.0" prefWidth="262.0" tabClosingPolicy="UNAVAILABLE">
+                                                        <tabs>
+                                                          <Tab text="Queue">
+                                                            <content>
+                                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                     <children>
+                                                                        <TableView fx:id="searchQueue" layoutX="-41.0" layoutY="72.0" prefHeight="272.0" prefWidth="262.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                          <columns>
+                                                                            <TableColumn fx:id="keywords" prefWidth="142.0" text="Keywords" />
+                                                                            <TableColumn fx:id="amount" prefWidth="142.0" text="Amount" />
+                                                                          </columns>
+                                                                        </TableView>
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                            </content>
+                                                          </Tab>
+                                                          <Tab text="List">
+                                                            <content>
+                                                              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                     <children>
+                                                                        <TableView layoutX="-32.0" layoutY="-24.0" prefHeight="272.0" prefWidth="262.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                          <columns>
+                                                                            <TableColumn prefWidth="186.0" text="Name" />
+                                                                            <TableColumn prefWidth="75.0" text="Number" />
+                                                                          </columns>
+                                                                        </TableView>
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                            </content>
+                                                          </Tab>
+                                                            <Tab text="Properties">
+                                                               <content>
+                                                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                                     <children>
+                                                                        <TableView layoutX="-41.0" layoutY="72.0" prefHeight="272.0" prefWidth="262.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                           <columns>
+                                                                              <TableColumn prefWidth="86.0" text="Metadata" />
+                                                                              <TableColumn prefWidth="175.0" text="Value" />
+                                                                           </columns>
+                                                                        </TableView>
+                                                                     </children>
+                                                                  </AnchorPane>
+                                                               </content>
+                                                            </Tab>
+                                                        </tabs>
+                                                      </TabPane>
+                                                      <Button fx:id="deleteSelectedButton" mnemonicParsing="false" text="Delete selected" translateY="2.0" StackPane.alignment="TOP_RIGHT">
+                                                         <StackPane.margin>
+                                                            <Insets />
+                                                         </StackPane.margin>
+                                                      </Button>
+                                                   </children>
+                                                </StackPane>
                                              </children>
                                           </AnchorPane>
                                       </items>
@@ -148,9 +171,9 @@
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: gray;">
                                  <children>
-                                    <StackPane prefHeight="261.0" prefWidth="264.0">
+                                    <StackPane onDragDropped="#PreviewDragDropped" onDragOver="#PreviewDragOver" prefHeight="261.0" prefWidth="287.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
-                                          <ImageView fx:id="imagePreview" fitHeight="261.0" fitWidth="262.0" pickOnBounds="true" preserveRatio="true" />
+                                          <ImageView fx:id="imagePreview" fitHeight="261.0" fitWidth="283.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER" />
                                        </children>
                                     </StackPane>
                                  </children>
@@ -346,7 +369,7 @@
                                                                     <items>
                                                                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="25.0" prefWidth="435.0">
                                                                            <children>
-                                                                              <TextField fx:id="Terminal_in" prefHeight="25.0" prefWidth="418.0" text=" &lt;Terminal_Input&gt;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                              <TextField fx:id="Terminal_in" prefHeight="25.0" prefWidth="418.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                                  <font>
                                                                                     <Font name="Fira Code Regular" size="12.0" />
                                                                                  </font></TextField>

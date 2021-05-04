@@ -3,6 +3,9 @@ package eroiko.ani.util;
 import java.util.TreeMap;
 
 import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
+import eroiko.ani.controller.ControllerSupporter.WallpaperImageWithFilter;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 
 public class SourceRedirector {
     /* For preview */
@@ -30,8 +33,9 @@ public class SourceRedirector {
     public static boolean showWallpapersAfterCrawling = false;
     public static boolean useOldCrawlerForFullSpeedMode = false;
     public static int pagesToDownload = 4;
-    
+    public static boolean quit;
+    public static BooleanProperty openPreviewFilter = new SimpleBooleanProperty(false);
     
     /* For selection */
-    public static TreeMap<Integer, myPair<String, String>> aboutToSelectImageLinks = new TreeMap<>();
+    public static WallpaperImageWithFilter wallpaperImageWithFilter;
 }

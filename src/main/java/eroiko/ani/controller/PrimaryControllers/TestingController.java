@@ -13,7 +13,7 @@ public class TestingController implements Initializable {
     @FXML
     void DivideByZero(ActionEvent event) {
         try {
-            int x = 1 / 0;
+            if (1 / 0 == 0);
         } catch (Exception e){
             System.out.println(e.toString());
             if (!quit){

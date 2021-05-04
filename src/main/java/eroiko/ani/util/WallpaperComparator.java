@@ -35,4 +35,8 @@ public class WallpaperComparator {
         }
         throw new IllegalArgumentException("Fail to take wallpaper's serial Number");
     }
+
+    public static boolean isImage(Path pathOfFile){
+        return Dumper.imagePattern.matcher(pathOfFile.getFileName().toString()).find();
+    }
 }

@@ -38,6 +38,8 @@ public class MainApp extends Application{
         Parent root = FXMLLoader.load(getClass().getResource("view/MainWindow.fxml"));
         mainScene = new Scene(root);
 
+        // setListeners();
+
         if (SystemTray.isSupported()){
             setMinimizedMenu();
             initTrayIcon();

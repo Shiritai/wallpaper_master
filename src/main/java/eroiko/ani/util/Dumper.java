@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
 
 public class Dumper {
-    private static Pattern imagePattern = Pattern.compile(".*?jpe?g|png|gif$");
+    public static Pattern imagePattern = Pattern.compile(".*?jpe?g|png|gif$");
 
     /* 負責讀資料 + 寫檔案 */
     public void dump(InputStream in, OutputStream out) throws IOException {

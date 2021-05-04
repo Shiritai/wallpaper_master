@@ -8,11 +8,13 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import eroiko.ani.controller.MainController;
+import eroiko.ani.controller.ControllerSupporter.WallpaperImageWithFilter;
 import eroiko.ani.util.Dumper;
+import eroiko.ani.util.SourceRedirector;
 import eroiko.ani.util.myPair;
 // import eroiko.ani.util.ProgressProperty;
 import eroiko.ani.util.myTriple;
-
 /** 管理多線程搜尋 / 過濾 / 下載操作 */
 public class CrawlerManager {
     // private ProgressProperty prog = new ProgressProperty(Types.CRAWLER_ZERO_CHAN);
@@ -136,7 +138,7 @@ public class CrawlerManager {
         var service = Executors.newCachedThreadPool();
         /* 蒐集 callable */
         var calls = new ArrayList<Callable<Boolean>>();
-        for (int i = 0; i < wpLinks.size(); ++i){
+        for (int i = previousSizeForPreview; i < wpLinks.size(); ++i){
             int thisIndex = i;
             calls.add(() -> {
                 var tmp = wpLinks.get(thisIndex);
@@ -159,6 +161,19 @@ public class CrawlerManager {
             }
         }
         service.shutdown();
+    }
+    public void C_openWallpaperFilterViewer(){
+        SourceRedirector.wallpaperImageWithFilter = new WallpaperImageWithFilter(this.prevSavePath, false);
+        try {
+            MainController.preview = new WallpaperImageWithFilter(this.prevSavePath, false);
+            MainController.staticImagePreview.setImage(MainController.preview.getCurrentWallpaper());
+        } catch (Exception e){
+            // System.out.println(e.toString());
+            e.printStackTrace();
+            if (!SourceRedirector.quit){
+                System.err.println(e.toString());
+            }
+        }
     }
     /** 與 WallpaperImageFilter 一同協作, 搭配圖形介面 WallpaperChooseController */
     public void C_deletePictureChoose(int serialNumber){

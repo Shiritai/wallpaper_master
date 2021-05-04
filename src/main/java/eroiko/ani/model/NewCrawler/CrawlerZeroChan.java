@@ -20,6 +20,7 @@ public class CrawlerZeroChan extends CrawlerBase{
             System.out.println(this.first_layer_url + "&p=" + Integer.toString(page));
             var doc = Jsoup.connect(this.first_layer_url + "&p=" + Integer.toString(page))
                 .userAgent(CrawlerBase.UserAgent)
+                // .proxy(proxy)
                 .timeout(10000)
                 .get();
             System.out.println(doc.title()); // 印出標頭, 確保目標正確
@@ -85,6 +86,7 @@ public class CrawlerZeroChan extends CrawlerBase{
         try {
             var doc = Jsoup.connect(url)
                 .userAgent(CrawlerBase.UserAgent)
+                // .proxy(proxy)
                 .timeout(10000)
                 .get();
             System.out.println(doc.title()); // just for sure!
@@ -120,6 +122,7 @@ public class CrawlerZeroChan extends CrawlerBase{
         /* 確認關鍵字無誤 */
         var doc = Jsoup.connect(this.first_layer_url)
             .userAgent(CrawlerBase.UserAgent)
+            // .proxy(proxy)
             .timeout(10000)
             .get();
         System.out.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確

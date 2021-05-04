@@ -4,7 +4,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
 
-import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
+import eroiko.ani.controller.ControllerSupporter.WallpaperImageWithFilter;
 import eroiko.ani.util.SourceRedirector;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,7 +22,7 @@ public class WallpaperChooseController implements Initializable{
     public final static KeyCodeCombination CtrlPlus = new KeyCodeCombination(KeyCode.PLUS, KeyCodeCombination.CONTROL_DOWN);
     public final static KeyCodeCombination CtrlMinus = new KeyCodeCombination(KeyCode.MINUS, KeyCodeCombination.CONTROL_DOWN);
     
-    WallpaperImage wp;
+    WallpaperImageWithFilter wp;
     
     @FXML private ImageView view;
     @FXML private StackPane stackPane;
@@ -36,7 +36,11 @@ public class WallpaperChooseController implements Initializable{
     @Override
     public void initialize(URL url, ResourceBundle rb){
         final int serialNumber = SourceRedirector.getSerialNumberImmediately();
-        wp = SourceRedirector.getWallpaperImage(serialNumber);
+        var tmp = SourceRedirector.getWallpaperImage(serialNumber);
+        if (tmp instanceof WallpaperImageWithFilter){
+            wp = (WallpaperImageWithFilter) tmp;
+        }
+        // wp = SourceRedirector.wallpaperImageWithFilter;
         view.setImage(wp.getCurrentWallpaper());
         currentPath = wp.getCurrentWallpaperPath();
         wallpaperName.setText("Current Wallpaper : " + currentPath.getFileName().toString());
@@ -49,6 +53,14 @@ public class WallpaperChooseController implements Initializable{
             switchImage(e.getDeltaY());
             e.consume();
         });
+
+        addImage.setOnMouseEntered((e) -> addImage.setOpacity(0.2));
+        addImage.setOnMouseExited((e) -> addImage.setOpacity(1.));
+        addImage.setOnMouseClicked(e -> switchNextImage());
+        
+        deleteImage.setOnMouseEntered((e) -> deleteImage.setOpacity(0.2));
+        deleteImage.setOnMouseExited((e) -> deleteImage.setOpacity(1.));
+        // deleteImage.setOnMouseClicked(e -> switchNextImage());
 
         next.setOnMouseEntered((e) -> next.setOpacity(0.2));
         next.setOnMouseExited((e) -> next.setOpacity(1.));

@@ -15,7 +15,7 @@ import eroiko.ani.util.myPair;
 import javafx.scene.image.Image;
 
 /** 實作類似 Iterator 的資料結構, 所有 get functions (除了 Current) 都會移動 Index */
-public class WallpaperImageWithFilter {
+public class WallpaperImageWithFilter extends WallpaperImage{
     private Path directory;
     private DirectoryStream<Path> root;
     private ArrayList<myPair<Boolean, Path>> wallpapers;
@@ -24,7 +24,7 @@ public class WallpaperImageWithFilter {
     private int size;
     /** 
      * @param directory is the testing directory or the image folder of this project
-     * @param certain : is true if  {@code directory} is in testing mode
+     * @param certain : is true if {@code directory} is in testing mode
      */
     public WallpaperImageWithFilter(String directory, boolean certain){
         this.directory = Path.of(directory);

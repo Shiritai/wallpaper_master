@@ -10,7 +10,6 @@ public class myPair<K, V>{
     public myPair(K key){
         this(key, null);
     }
-    public void setValue(V value){
-        this.value = value;
-    }
+    public K getKey(){ return key; }
+    public V getValue(){ return value; }
 }

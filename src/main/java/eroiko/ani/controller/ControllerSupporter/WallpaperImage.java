@@ -19,6 +19,7 @@ public class WallpaperImage {
     private Path directory;
     private DirectoryStream<Path> root;
     private ArrayList<Path> wallpapers;
+    private int initIndex = -1;
     // private TreeMap<Integer, Path> wallpapers;
     private int current;
     /** 
@@ -48,6 +49,19 @@ public class WallpaperImage {
     
     public WallpaperImage(){
         this(FileSystems.getDefault().getPath("").toAbsolutePath().toString(), MainApp.isTesting);
+    }
+
+    public boolean setInitImage(Path p){
+        return (initIndex = wallpapers.indexOf(p)) != -1;
+    }
+
+    public Image getInitImage(){
+        try {
+            return new Image(wallpapers.get(initIndex).toUri().toURL().toString());
+        } catch (Exception e) { // 包含 initIndex == -1 的例外
+            System.out.println(e.toString());
+            return null;
+        }
     }
 
     public Path getCurrentWallpaperPath(){

@@ -7,17 +7,23 @@ import java.util.ResourceBundle;
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
+import eroiko.ani.controller.ControllerSupporter.WallpaperImageWithFilter;
 import eroiko.ani.controller.PrimaryControllers.PreferenceController;
 import eroiko.ani.controller.PrimaryControllers.TestingController;
 import eroiko.ani.controller.PrimaryControllers.WallpaperViewController;
 import eroiko.ani.model.Crawler.OldCrawlerManager;
 import eroiko.ani.model.NewCrawler.CrawlerThread;
 import eroiko.ani.util.SourceRedirector;
+import eroiko.ani.util.WallpaperComparator;
+import eroiko.ani.util.myPair;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -28,6 +34,8 @@ public class MainController implements Initializable {
     /* Support variables */
     public static WallpaperImage preview;
     public static ImageView staticImagePreview;
+    // public static boolean downloadDeliver = false;
+    // public static BooleanProperty downloadViewOpener = new SimpleBooleanProperty(false);
     // public static Stage wallpaperViewStage = new Stage();
     /* Terminal */
     private static PrintStream stdOut = new PrintStream(System.out);
@@ -41,13 +49,21 @@ public class MainController implements Initializable {
     @FXML private TextArea Terminal_out = new TextArea();
     @FXML private TextField Terminal_in = new TextField();  
     @FXML private ProgressBar mainPbar;
-    @FXML private ProgressIndicator searchProgressIndicator;
+    // @FXML private ProgressIndicator searchProgressIndicator;
     @FXML private ImageView imagePreview;
     @FXML private TreeView<String> treeFileExplorer;
     @FXML private Label pathLabel;
     @FXML private TextField searchBar;
     @FXML private Label progressBarText;
     @FXML private BorderPane openWindowsFileExplorer = new BorderPane();
+    
+    
+    @FXML private Button addButton;
+    @FXML private ChoiceBox<String> downloadAmountChoice;
+    @FXML private TableView<myPair<String, String>> searchQueue;
+    @FXML private TableColumn<myPair<String, String>, String> keywords;
+    @FXML private TableColumn<myPair<String, String>, String> amount;
+    @FXML private Button deleteSelectedButton;
 
     @FXML
     void hitExit(ActionEvent event) {
@@ -79,11 +95,6 @@ public class MainController implements Initializable {
             }
         }
     }
-
-    @FXML
-    void GoSearch(ActionEvent event) {
-        Search();
-    }
     
     void Search(){
         if (SourceRedirector.useOldCrawlerForFullSpeedMode){
@@ -91,6 +102,7 @@ public class MainController implements Initializable {
         }
         else {
             new CrawlerThread(TestFunctions.testWallpaperPath.toAbsolutePath().toString(), searchBar.getText().split(" "));
+
         }
     //     Alert alert = new Alert(AlertType.INFORMATION);
     //     alert.titleProperty().set("Message");
@@ -120,6 +132,39 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    void PreviewDragOver(DragEvent event) { // 當檔案拖曳到 preview (stack pane) 時, 顯示可以放上來
+        if (event.getDragboard().hasFiles()){
+            event.acceptTransferModes(TransferMode.ANY);
+        }
+    }
+    
+    @FXML
+    void PreviewDragDropped(DragEvent event) {
+        var files = event.getDragboard().getFiles();
+        var file = files.get(0).toPath();
+        if (WallpaperComparator.isImage(file)){
+            preview = new WallpaperImage(file.getParent().toAbsolutePath().toString(), false);
+            imagePreview.setImage(preview.getCurrentWallpaper());    
+        }
+    }
+    
+    @FXML
+    void WholeDragOver(DragEvent event) {
+        if (event.getDragboard().hasFiles()){
+            event.acceptTransferModes(TransferMode.ANY);
+        }
+    }
+    
+    @FXML
+    void WholeDragDropped(DragEvent event) {
+        var files = event.getDragboard().getFiles();
+        var file = files.get(0).toPath();
+        if (WallpaperComparator.isImage(file)){
+            OpenWallpaperViewWindow(new WallpaperImage(file.getParent().toAbsolutePath().toString(), false));
+        }
+    }
+
+    @FXML
     void startTerminal(ActionEvent event) {
         try {
             pipIn = new PipedInputStream();
@@ -128,6 +173,7 @@ public class MainController implements Initializable {
             System.err.println(e1.toString());
         }
         quit = false;
+        SourceRedirector.quit = quit;
         new TerminalThread(pipIn, terminalThread, Terminal_out, quit);
         System.out.println("GUI Terminal is activated!" + "\nUse Ctrl + C to cancel the terminal, and Ctrl + L to clear the text.");
     }
@@ -141,6 +187,7 @@ public class MainController implements Initializable {
         if (!quit){
             System.out.println("Closing GUI Terminal..."); // 在 GUI Terminal 上輸出
             quit = true;
+            SourceRedirector.quit = quit;
             notifyAll();
             try {
                 this.terminalThread.join(1000l);
@@ -168,12 +215,24 @@ public class MainController implements Initializable {
                 stage.setWidth(width);
                 stage.setHeight(height);
             }
-            stage.setTitle("Wallpaper Viewer");
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperViewWindow.fxml"))));
-            stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
-            stage.setOnCloseRequest(e -> {
-                SourceRedirector.deleteWallpaper(serialNumber);
-            });
+            if (wp instanceof WallpaperImageWithFilter){
+                System.out.println("Open Wallpaper Filter...");
+                stage.setTitle("Wallpaper Filter");
+                stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperChooseWindow.fxml"))));
+                stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+                stage.setOnCloseRequest(e -> {
+                    SourceRedirector.deleteWallpaper(serialNumber);
+                });
+            }
+            else {
+                System.out.println("Open Wallpaper Viewer...");
+                stage.setTitle("Wallpaper Viewer");
+                stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperViewWindow.fxml"))));
+                stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+                stage.setOnCloseRequest(e -> {
+                    SourceRedirector.deleteWallpaper(serialNumber);
+                });
+            }
             stage.show();
         } catch (Exception e){
             e.printStackTrace();
@@ -194,30 +253,19 @@ public class MainController implements Initializable {
         staticImagePreview = imagePreview;
         imagePreview.setImage(preview.getCurrentWallpaper());
         Terminal_out.setEditable(false);
-        // GlyphsDude.createIcon(FontAwesomeIcons.FOLDER, "40px");
+        // downloadAmountChoice = new ChoiceBox<>();
+        searchBar.setPromptText(">  Search Artwork");
+        Terminal_in.setPromptText(" <Terminal_Input>");
+        downloadAmountChoice.getItems().addAll("Many (hundreds)", "Decent (about 100)", "Snapshot (several dozen)");
+        downloadAmountChoice.setValue("Decent (about 100)");
         mainPbar = MainCtrlPbar;
-        searchProgressIndicator = MainCtrlPin;
+        // searchProgressIndicator = MainCtrlPin;
         initializeKeyBoardShortcuts();
         initializeMouseEvents();
+        initSearchQueue();
     }
 
     public void initializeMouseEvents(){
-        Terminal_in.focusedProperty().addListener((arg, oldProperty, newProperty) -> {
-            if (newProperty){
-                Terminal_in.setText("");
-            }
-            else if (Terminal_in.getText().length() == 0){
-                Terminal_in.setText(" <Terminal_Input>");
-            }
-        });
-        searchBar.focusedProperty().addListener((arg, oldProperty, newProperty) -> {
-            if (newProperty){
-                searchBar.setText("");
-            }
-            else if (searchBar.getText().length() == 0){
-                searchBar.setText(">  Search Artwork");
-            }
-        });
         imagePreview.setOnMouseClicked((e) -> {
             if (e.getClickCount() == 2){
                 OpenWallpaperViewWindow(preview);
@@ -233,6 +281,11 @@ public class MainController implements Initializable {
             }
             e.consume();
         });
+        // imagePreview.setOnMouseDragReleased(e -> {
+            
+        // });
+        addButton.setOnMouseClicked(e -> addSearchQueue());
+        deleteSelectedButton.setOnMouseClicked(e -> deleteSelectedSearchQueue());
         openWindowsFileExplorer.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2){
                 try {
@@ -290,9 +343,45 @@ public class MainController implements Initializable {
         });
         searchBar.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> {
             if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
-                Search();
+                // Search();
+                addSearchQueue();
                 e.consume();
             }
         });
     }
+
+    private void initSearchQueue(){
+        // keywords = new TableColumn<>("Keywords");
+        keywords.setMinWidth(150);
+        keywords.setCellValueFactory(new PropertyValueFactory<>("key"));
+
+        // amount = new TableColumn<>("Amount");
+        amount.setMinWidth(150);
+        amount.setCellValueFactory(new PropertyValueFactory<>("value"));
+
+        // searchQueue = new TableView<>();
+        // searchQueue.getColumns().add(keywords);
+        // searchQueue.getColumns().add(amount);
+        // searchQueue.getItems();
+    }
+
+    private void addSearchQueue(){
+        var tmpData = new myPair<String, String>(
+            searchBar.getText(), downloadAmountChoice.getValue()
+        );
+        searchBar.clear();
+        System.out.println("Add " + tmpData.key + " : " + tmpData.value + " to Search Queue");
+        searchQueue.getItems().add(tmpData);
+    }
+
+    private void deleteSelectedSearchQueue(){
+        var allData = searchQueue.getItems();
+        var selectedData = searchQueue.getSelectionModel().getSelectedItems();
+        selectedData.forEach(allData::remove);
+    }
+
+    // public ObservableList<myPair<String, String>> getQueueList(){
+    //     ObservableList<myPair<String, String>> list = FXCollections.observableArrayList();
+        
+    // }
 }
