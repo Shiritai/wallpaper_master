@@ -116,11 +116,12 @@ public class MainController implements Initializable {
                     new OldCrawlerManager(searchBar.getText(), mode, quit);
                 }
             }
+            searchQueue.getItems().clear();
         }
         else {
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.titleProperty().set("Message");
-            alert.headerTextProperty().set("No input keyword...");
+            alert.headerTextProperty().set("No input keywords...");
             alert.showAndWait();
         }
     }
@@ -300,6 +301,7 @@ public class MainController implements Initializable {
         downloadAmountChoice.getItems().addAll(modes[0], modes[1], modes[2]);
         downloadAmountChoice.setValue(modes[1]);
         mainPbar = MainCtrlPbar;
+        pathLabel.setText(SourceRedirector.defaultDataPath.toString());
         // searchProgressIndicator = MainCtrlPin;
         initializeKeyBoardShortcuts();
         initializeMouseEvents();
@@ -412,7 +414,9 @@ public class MainController implements Initializable {
     private void deleteSelectedSearchQueue(){
         var allData = searchQueue.getItems();
         var selectedData = searchQueue.getSelectionModel().getSelectedItems();
-        selectedData.forEach(allData::remove);
+        for (int i = selectedData.size() - 1; i >= 0; --i){
+            allData.remove(selectedData.get(i));
+        }
     }
 
     // public ObservableList<myPair<String, String>> getQueueList(){

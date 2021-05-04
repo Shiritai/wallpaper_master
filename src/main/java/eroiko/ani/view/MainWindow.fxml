@@ -118,8 +118,8 @@
                                                                      <children>
                                                                         <TableView fx:id="searchQueue" layoutX="-41.0" layoutY="72.0" prefHeight="272.0" prefWidth="262.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                           <columns>
-                                                                            <TableColumn fx:id="keywords" prefWidth="142.0" text="Keywords" />
-                                                                            <TableColumn fx:id="amount" prefWidth="142.0" text="Amount" />
+                                                                            <TableColumn fx:id="keywords" prefWidth="127.0" text="Keywords" />
+                                                                            <TableColumn fx:id="amount" prefWidth="157.0" text="Amount" />
                                                                           </columns>
                                                                         </TableView>
                                                                      </children>
@@ -156,7 +156,7 @@
                                                             </Tab>
                                                         </tabs>
                                                       </TabPane>
-                                                      <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="51.0" text="GO!" translateX="-5.0" translateY="-5.0" StackPane.alignment="BOTTOM_RIGHT">
+                                                      <Button mnemonicParsing="false" onAction="#GoSearch" prefHeight="36.0" prefWidth="51.0" text="GO!" translateX="-5.0" translateY="-5.0" StackPane.alignment="BOTTOM_RIGHT">
                                                          <font>
                                                             <Font name="System Italic" size="16.0" />
                                                          </font>

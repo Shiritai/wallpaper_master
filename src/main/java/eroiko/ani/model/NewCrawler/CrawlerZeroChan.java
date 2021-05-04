@@ -39,7 +39,7 @@ public class CrawlerZeroChan extends CrawlerBase{
                 prevLinks[i] = links.get(i).attr("src");
             }
             
-            int span = 4;
+            int span = 2;
             String [] fullLinks = new String [size];
             var calls = new ArrayList<Callable<Boolean>>(span);
             for (int i = 0; i < size; i += span){

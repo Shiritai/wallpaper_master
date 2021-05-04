@@ -107,7 +107,7 @@ public class CrawlerManager {
                     int sizeOfStatus = status.size();
                     for (int h = 0; h < sizeOfStatus; ++h){
                         if (!status.get(h).isDone()){
-                            --h;
+                            h -= 2;
                         }
                     }
                     int curSerialNumber = previousSize;
