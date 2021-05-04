@@ -4,9 +4,8 @@ import java.io.IOException;
 import java.util.concurrent.Executors;
 
 import eroiko.ani.controller.MainController;
-import eroiko.ani.controller.TestFunctions;
-import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
 import eroiko.ani.util.SourceRedirector;
+import eroiko.ani.util.WallpaperClass.WallpaperImage;
 
 public class OldCrawlerManager implements Runnable {
     private boolean quit;
@@ -24,7 +23,7 @@ public class OldCrawlerManager implements Runnable {
     
     public synchronized void run(){
         try {
-            CrawlerZeroChan crawler = new CrawlerZeroChan(TestFunctions.testWallpaperPath.toString(), keywords.split(" "), 2, 1);
+            CrawlerZeroChan crawler = new CrawlerZeroChan(SourceRedirector.defaultDataPath.toString(), keywords.split(" "), 2, 1);
             var service = Executors.newCachedThreadPool();
             var previewResult = crawler.readMultiplePagesAndDownloadPreviews(pages, service);
     

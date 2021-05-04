@@ -4,8 +4,8 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
 
-import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
 import eroiko.ani.util.SourceRedirector;
+import eroiko.ani.util.WallpaperClass.WallpaperImage;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.image.ImageView;

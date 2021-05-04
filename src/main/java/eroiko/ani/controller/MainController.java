@@ -6,23 +6,19 @@ import java.util.ResourceBundle;
 
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
-import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
-import eroiko.ani.controller.ControllerSupporter.WallpaperImageWithFilter;
-import eroiko.ani.controller.PrimaryControllers.PreferenceController;
-import eroiko.ani.controller.PrimaryControllers.TestingController;
-import eroiko.ani.controller.PrimaryControllers.WallpaperViewController;
+import eroiko.ani.controller.PrimaryControllers.*;
 import eroiko.ani.model.Crawler.OldCrawlerManager;
 import eroiko.ani.model.NewCrawler.CrawlerThread;
-import eroiko.ani.util.SourceRedirector;
-import eroiko.ani.util.WallpaperComparator;
-import eroiko.ani.util.myPair;
+import eroiko.ani.util.*;
+import eroiko.ani.util.WallpaperClass.*;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
+// import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -51,13 +47,15 @@ public class MainController implements Initializable {
     @FXML private ProgressBar mainPbar;
     // @FXML private ProgressIndicator searchProgressIndicator;
     @FXML private ImageView imagePreview;
+    
     @FXML private TreeView<String> treeFileExplorer;
     @FXML private Label pathLabel;
     @FXML private TextField searchBar;
     @FXML private Label progressBarText;
     @FXML private BorderPane openWindowsFileExplorer = new BorderPane();
     
-    
+    /* About Search */
+    public static final String [] modes = {"Many (hundreds)", "Decent (about 100)", "Snapshot (several dozen)"};
     @FXML private Button addButton;
     @FXML private ChoiceBox<String> downloadAmountChoice;
     @FXML private TableView<myPair<String, String>> searchQueue;
@@ -95,19 +93,36 @@ public class MainController implements Initializable {
             }
         }
     }
+
+    @FXML
+    void GoSearch(ActionEvent event) {
+        Search();
+    }
     
     void Search(){
-        if (SourceRedirector.useOldCrawlerForFullSpeedMode){
-            new OldCrawlerManager(searchBar.getText(), SourceRedirector.pagesToDownload, quit);
+        ObservableList<myPair<String, String>> data;
+        if ((data = searchQueue.getItems()).size() > 0){
+            for (var d : data){
+                int mode = switch (d.value){
+                    case "Many (hundreds)" -> 10;
+                    case "Decent (about 100)" -> 5;
+                    case "Snapshot (several dozen)" -> 2;
+                    default -> -1;
+                };
+                if (!SourceRedirector.useOldCrawlerForFullSpeedMode){
+                    new CrawlerThread(SourceRedirector.defaultDataPath.toAbsolutePath().toString(), d.key.split(" "), mode);
+                }
+                else {
+                    new OldCrawlerManager(searchBar.getText(), mode, quit);
+                }
+            }
         }
         else {
-            new CrawlerThread(TestFunctions.testWallpaperPath.toAbsolutePath().toString(), searchBar.getText().split(" "));
-
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.titleProperty().set("Message");
+            alert.headerTextProperty().set("No input keyword...");
+            alert.showAndWait();
         }
-    //     Alert alert = new Alert(AlertType.INFORMATION);
-    //     alert.titleProperty().set("Message");
-    //     alert.headerTextProperty().set("Wrong keywords, please check and search again.");
-    //     alert.showAndWait();
     }
 
     @FXML
@@ -142,10 +157,27 @@ public class MainController implements Initializable {
     void PreviewDragDropped(DragEvent event) {
         var files = event.getDragboard().getFiles();
         var file = files.get(0).toPath();
-        if (WallpaperComparator.isImage(file)){
-            preview = new WallpaperImage(file.getParent().toAbsolutePath().toString(), false);
-            imagePreview.setImage(preview.getCurrentWallpaper());    
+        try {
+            if (WallpaperComparator.isImage(file)){
+                preview = new WallpaperImage(file.getParent().toAbsolutePath().toString(), false, file);
+                imagePreview.setImage(preview.getCurrentWallpaper());    
+            }
+            else {
+                preview = new WallpaperImage(file.toAbsolutePath().toString(), false);
+                imagePreview.setImage(preview.getCurrentWallpaper());
+            }
+        } catch (IOException e) {
+            return;
         }
+    }
+    
+    @FXML
+    void PreviewImageDragOut(MouseEvent event) {
+        Dragboard db = imagePreview.startDragAndDrop(TransferMode.ANY);
+        var cb  = new ClipboardContent();
+        cb.putImage(preview.getCurrentWallpaper());
+        db.setContent(cb);
+        event.consume();
     }
     
     @FXML
@@ -159,11 +191,16 @@ public class MainController implements Initializable {
     void WholeDragDropped(DragEvent event) {
         var files = event.getDragboard().getFiles();
         var file = files.get(0).toPath();
-        if (WallpaperComparator.isImage(file)){
-            OpenWallpaperViewWindow(new WallpaperImage(file.getParent().toAbsolutePath().toString(), false));
+        try {
+            if (WallpaperComparator.isImage(file)){
+                OpenWallpaperViewWindow(new WallpaperImage(file.getParent().toAbsolutePath().toString(), false, file));
+            }
+            OpenWallpaperViewWindow(new WallpaperImage(file.toAbsolutePath().toString(), false));
+        } catch (IOException e) {
+            System.out.println(e.toString());
         }
     }
-
+    
     @FXML
     void startTerminal(ActionEvent event) {
         try {
@@ -249,15 +286,19 @@ public class MainController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb){
-        preview = new WallpaperImage();
+        try {
+            preview = new WallpaperImage();
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
         staticImagePreview = imagePreview;
         imagePreview.setImage(preview.getCurrentWallpaper());
         Terminal_out.setEditable(false);
         // downloadAmountChoice = new ChoiceBox<>();
         searchBar.setPromptText(">  Search Artwork");
         Terminal_in.setPromptText(" <Terminal_Input>");
-        downloadAmountChoice.getItems().addAll("Many (hundreds)", "Decent (about 100)", "Snapshot (several dozen)");
-        downloadAmountChoice.setValue("Decent (about 100)");
+        downloadAmountChoice.getItems().addAll(modes[0], modes[1], modes[2]);
+        downloadAmountChoice.setValue(modes[1]);
         mainPbar = MainCtrlPbar;
         // searchProgressIndicator = MainCtrlPin;
         initializeKeyBoardShortcuts();
@@ -289,7 +330,7 @@ public class MainController implements Initializable {
         openWindowsFileExplorer.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2){
                 try {
-                    Runtime.getRuntime().exec("explorer /select," + TestFunctions.testWallpaperPath.toAbsolutePath().toString());
+                    Runtime.getRuntime().exec("explorer /select," + SourceRedirector.defaultDataPath.toAbsolutePath().toString());
                 } catch (IOException ex) {
                     System.out.println(ex.toString());
                     if (!quit){
@@ -343,26 +384,20 @@ public class MainController implements Initializable {
         });
         searchBar.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> {
             if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
-                // Search();
-                addSearchQueue();
+                if (searchBar.getText().length() > 0){
+                    addSearchQueue();
+                }
                 e.consume();
             }
         });
     }
 
     private void initSearchQueue(){
-        // keywords = new TableColumn<>("Keywords");
+        /* Set the two columns */
         keywords.setMinWidth(150);
         keywords.setCellValueFactory(new PropertyValueFactory<>("key"));
-
-        // amount = new TableColumn<>("Amount");
         amount.setMinWidth(150);
         amount.setCellValueFactory(new PropertyValueFactory<>("value"));
-
-        // searchQueue = new TableView<>();
-        // searchQueue.getColumns().add(keywords);
-        // searchQueue.getColumns().add(amount);
-        // searchQueue.getItems();
     }
 
     private void addSearchQueue(){

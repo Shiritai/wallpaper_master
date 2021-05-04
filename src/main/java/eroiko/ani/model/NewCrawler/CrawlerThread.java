@@ -4,10 +4,25 @@ import eroiko.ani.util.SourceRedirector;
 
 public class CrawlerThread {
     private CrawlerManager cw;
+    public CrawlerThread(String folderPath, String [] keywords, Integer pages){
+        var tmp = new Thread(() -> {
+            cw = new CrawlerManager(folderPath, keywords);
+            cw.A_getLinks(pages / 2);
+            cw.B_download();
+            cw.C_openWallpaperFilterViewer();
+            cw.D_lastDownloadStage();
+            // var wp = new WallpaperImage(cw.fullSavePath, false);
+            
+            // UI update is run on the Application thread
+        });
+        // Platform.runLater(tmp);
+        tmp.setDaemon(true);
+        tmp.start();
+    }
     public CrawlerThread(String folderPath, String [] keywords){
         var tmp = new Thread(() -> {
             cw = new CrawlerManager(folderPath, keywords);
-            cw.A_getLinks(SourceRedirector.pagesToDownload / 4);
+            cw.A_getLinks(SourceRedirector.pagesToDownload / 2);
             cw.B_download();
             cw.C_openWallpaperFilterViewer();
             cw.D_lastDownloadStage();

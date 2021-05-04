@@ -156,6 +156,11 @@
                                                             </Tab>
                                                         </tabs>
                                                       </TabPane>
+                                                      <Button mnemonicParsing="false" prefHeight="36.0" prefWidth="51.0" text="GO!" translateX="-5.0" translateY="-5.0" StackPane.alignment="BOTTOM_RIGHT">
+                                                         <font>
+                                                            <Font name="System Italic" size="16.0" />
+                                                         </font>
+                                                      </Button>
                                                       <Button fx:id="deleteSelectedButton" mnemonicParsing="false" text="Delete selected" translateY="2.0" StackPane.alignment="TOP_RIGHT">
                                                          <StackPane.margin>
                                                             <Insets />
@@ -171,7 +176,7 @@
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: gray;">
                                  <children>
-                                    <StackPane onDragDropped="#PreviewDragDropped" onDragOver="#PreviewDragOver" prefHeight="261.0" prefWidth="287.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <StackPane onDragDetected="#PreviewImageDragOut" onDragDropped="#PreviewDragDropped" onDragOver="#PreviewDragOver" prefHeight="261.0" prefWidth="287.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                        <children>
                                           <ImageView fx:id="imagePreview" fitHeight="261.0" fitWidth="283.0" pickOnBounds="true" preserveRatio="true" StackPane.alignment="CENTER" />
                                        </children>

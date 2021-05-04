@@ -1,4 +1,4 @@
-package eroiko.ani.controller.ControllerSupporter;
+package eroiko.ani.util.WallpaperClass;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -9,8 +9,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import eroiko.ani.MainApp;
-import eroiko.ani.controller.TestFunctions;
-import eroiko.ani.util.WallpaperComparator;
+import eroiko.ani.util.SourceRedirector;
 import eroiko.ani.util.myPair;
 import javafx.scene.image.Image;
 
@@ -25,19 +24,16 @@ public class WallpaperImageWithFilter extends WallpaperImage{
     /** 
      * @param directory is the testing directory or the image folder of this project
      * @param certain : is true if {@code directory} is in testing mode
+     * @throws IOException
      */
-    public WallpaperImageWithFilter(String directory, boolean certain){
+    public WallpaperImageWithFilter(String directory, boolean certain) throws IOException{
         this.directory = Path.of(directory);
-        try {
-            if (certain){
-                root = Files.newDirectoryStream(TestFunctions.testWallpaperPath, "*.{jpg,jpeg,png}");
-            }
-            else {
-                root = Files.newDirectoryStream(Path.of(this.directory.toString()), "*.{jpg,jpeg,png}");
-                System.out.println(Path.of(this.directory.toString()));
-            }
-        } catch (IOException e) {
-            System.out.println(e.toString());
+        if (certain){
+            root = Files.newDirectoryStream(SourceRedirector.defaultDataPath, "*.{jpg,jpeg,png}");
+        }
+        else {
+            root = Files.newDirectoryStream(Path.of(this.directory.toString()), "*.{jpg,jpeg,png}");
+            System.out.println(Path.of(this.directory.toString()));
         }
         wallpapers = new ArrayList<>();
         root.forEach(p -> wallpapers.add(new myPair<>(true, p)));
@@ -45,7 +41,7 @@ public class WallpaperImageWithFilter extends WallpaperImage{
         size = wallpapers.size();
     }
     
-    public WallpaperImageWithFilter(){
+    public WallpaperImageWithFilter() throws IOException{
         this(FileSystems.getDefault().getPath("").toAbsolutePath().toString(), MainApp.isTesting);
     }
 

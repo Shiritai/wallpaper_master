@@ -1,10 +1,10 @@
 package eroiko.ani.model.NewCrawler;
 
-import eroiko.ani.controller.TestFunctions;
+import eroiko.ani.util.SourceRedirector;
 
 public class testNewCrawler {
     public static void main(String [] args){
-        var tmp = new CrawlerManager(TestFunctions.testWallpaperPath.toString(), "Girls frontline".split(" "));
+        var tmp = new CrawlerManager(SourceRedirector.defaultDataPath.toString(), "Girls frontline".split(" "));
         tmp.A_getLinks(2);
         System.out.println("Finish first Stage");
         tmp.print();

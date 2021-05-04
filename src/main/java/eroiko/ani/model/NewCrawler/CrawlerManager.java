@@ -9,12 +9,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import eroiko.ani.controller.MainController;
-import eroiko.ani.controller.ControllerSupporter.WallpaperImageWithFilter;
 import eroiko.ani.util.Dumper;
 import eroiko.ani.util.SourceRedirector;
 import eroiko.ani.util.myPair;
 // import eroiko.ani.util.ProgressProperty;
 import eroiko.ani.util.myTriple;
+import eroiko.ani.util.WallpaperClass.WallpaperImageWithFilter;
 /** 管理多線程搜尋 / 過濾 / 下載操作 */
 public class CrawlerManager {
     // private ProgressProperty prog = new ProgressProperty(Types.CRAWLER_ZERO_CHAN);
@@ -75,7 +75,7 @@ public class CrawlerManager {
         return null;
     }
 
-    /** 僅取得連結, 傳入批次頁面的次數數, 單一 Crawler 每次 4 頁, 欲支援滾動下載 */
+    /** @param times {@code two pages} a time, 傳入批次頁面的次數數, 單一 Crawler 每次 2 頁, 欲支援滾動下載 */
     public void A_getLinks(int times){
         var service = Executors.newCachedThreadPool();
         /** 批次請求不同網站 */
@@ -163,8 +163,8 @@ public class CrawlerManager {
         service.shutdown();
     }
     public void C_openWallpaperFilterViewer(){
-        SourceRedirector.wallpaperImageWithFilter = new WallpaperImageWithFilter(this.prevSavePath, false);
         try {
+            SourceRedirector.wallpaperImageWithFilter = new WallpaperImageWithFilter(this.prevSavePath, false);
             MainController.preview = new WallpaperImageWithFilter(this.prevSavePath, false);
             MainController.staticImagePreview.setImage(MainController.preview.getCurrentWallpaper());
         } catch (Exception e){

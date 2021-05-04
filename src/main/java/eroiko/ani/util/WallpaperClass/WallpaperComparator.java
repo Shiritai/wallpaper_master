@@ -1,8 +1,10 @@
-package eroiko.ani.util;
+package eroiko.ani.util.WallpaperClass;
 
 import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import eroiko.ani.util.Dumper;
 
 public class WallpaperComparator {
     /* 比較同類型, 以編號區分的檔案, 使用正則表達式, 適用於 ArrayList, Set */

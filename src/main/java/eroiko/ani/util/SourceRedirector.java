@@ -1,13 +1,18 @@
 package eroiko.ani.util;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.TreeMap;
 
-import eroiko.ani.controller.ControllerSupporter.WallpaperImage;
-import eroiko.ani.controller.ControllerSupporter.WallpaperImageWithFilter;
+import eroiko.ani.util.WallpaperClass.WallpaperImage;
+import eroiko.ani.util.WallpaperClass.WallpaperImageWithFilter;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 public class SourceRedirector {
+    public static Path defaultDataPath = FileSystems.getDefault().getPath("data").toAbsolutePath();
+
+
     /* For preview */
     public static TreeMap<Integer, WallpaperImage> wallpapersForViewWindows = new TreeMap<>();
     private static int lastWallpaperNumber = 0;
@@ -38,4 +43,6 @@ public class SourceRedirector {
     
     /* For selection */
     public static WallpaperImageWithFilter wallpaperImageWithFilter;
+
+    
 }

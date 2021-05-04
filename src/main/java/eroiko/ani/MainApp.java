@@ -74,6 +74,7 @@ public class MainApp extends Application{
         mainStage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
         mainStage.setTitle("Wallpaper Master");
         mainStage.setScene(mainScene);
+        mainStage.setResizable(false);
         mainStage.show();
 
         mainStage.setOnCloseRequest((e) -> {
