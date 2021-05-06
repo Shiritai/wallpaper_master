@@ -7,9 +7,7 @@ import java.util.ResourceBundle;
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.PrimaryControllers.*;
-import eroiko.ani.model.Crawler.OldCrawlerManager;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
-import eroiko.ani.model.NewCrawler.CrawlerThread;
 import eroiko.ani.util.*;
 import eroiko.ani.util.WallpaperClass.*;
 import javafx.application.Platform;
@@ -17,16 +15,20 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 // import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.*;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class MainController implements Initializable {
@@ -36,6 +38,7 @@ public class MainController implements Initializable {
     public static boolean hasFull;
     public static BooleanProperty hasChangedPreview = new SimpleBooleanProperty(false);
     public static Label staticPathLabel;
+
     // public static boolean downloadDeliver = false;
     // public static BooleanProperty downloadViewOpener = new SimpleBooleanProperty(false);
     // public static Stage wallpaperViewStage = new Stage();
@@ -49,25 +52,34 @@ public class MainController implements Initializable {
     public static ProgressIndicator MainCtrlPin = new ProgressIndicator();
     /* FXML variables */
     @FXML private TextArea Terminal_out = new TextArea();
-    @FXML private TextField Terminal_in = new TextField();  
-    @FXML private ProgressBar mainPbar;
-    // @FXML private ProgressIndicator searchProgressIndicator;
+    @FXML private TextField Terminal_in = new TextField();
+    @FXML private SplitPane terminalButtonDivider;
+
     @FXML private ImageView imagePreview;
     
     @FXML private TreeView<String> treeFileExplorer;
     @FXML private Label pathLabel;
-    @FXML private TextField searchBar;
-    @FXML private Label progressBarText;
     @FXML private BorderPane openWindowsFileExplorer = new BorderPane();
     
     /* About Search */
-    public static final String [] modes = {"Many (hundreds)", "Decent (about 100)", "Snapshot (several dozen)"};
+    @FXML private TextField searchBar;
+    public static final String [] modes = {"Many (hundreds)", "Decent (about 200)", "Snapshot (about 100)"};
+    public static boolean okToGo;
     @FXML private Button addButton;
     @FXML private ChoiceBox<String> downloadAmountChoice;
     @FXML private TableView<myPair<String, String>> searchQueue;
     @FXML private TableColumn<myPair<String, String>, String> keywords;
     @FXML private TableColumn<myPair<String, String>, String> amount;
-    @FXML private Button deleteSelectedButton;
+    /* About downloading processing */
+    @FXML private ProgressBar mainPbar;
+    // @FXML private ProgressIndicator searchProgressIndicator;
+    @FXML private TextField nowProcessingText;
+    @FXML private Label progressBarText;
+    @FXML private Text percentageMark;
+
+    // public static boolean isHaltOrRun = false;
+    
+    private Service<Void> crawlerThread;
 
     @FXML
     void hitExit(ActionEvent event) {
@@ -99,37 +111,94 @@ public class MainController implements Initializable {
             }
         }
     }
+    
+    @FXML
+    void DeleteAllQueue(ActionEvent event) {
+        searchQueue.getItems().clear();
+    }
+    
+    @FXML
+    void DeleteSelectedQueue(ActionEvent event) {
+        deleteSelectedSearchQueue();
+    }
 
     @FXML
     void GoSearch(ActionEvent event) {
-        Search();
-    }
-    
-    void Search(){
-        ObservableList<myPair<String, String>> data;
-        if ((data = searchQueue.getItems()).size() > 0){
-            for (var d : data){
-                int mode = switch (d.value){
-                    case "Many (hundreds)" -> 12;
-                    case "Decent (about 100)" -> 6;
-                    case "Snapshot (several dozen)" -> 2;
-                    default -> -1;
-                };
-                if (!SourceRedirector.useOldCrawlerForFullSpeedMode){
-                    new CrawlerThread(SourceRedirector.defaultDataPath.toAbsolutePath().toString(), d.key.split(" "), mode);
-                }
-                else {
-                    new OldCrawlerManager(searchBar.getText(), mode, quit);
-                }
-            }
-            searchQueue.getItems().clear();
+        if (searchQueue.getItems().size() > 0 && okToGo){
+            okToGo = false;
+            StartWalkingQueue();
+        }
+        else if (!okToGo){
+            new Alert(Alert.AlertType.INFORMATION, "We are downloading for you... please wait a minute :)").showAndWait();
         }
         else {
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.titleProperty().set("Message");
-            alert.headerTextProperty().set("No input keywords...");
-            alert.showAndWait();
+            new Alert(Alert.AlertType.INFORMATION, "Please add some keywords :)").showAndWait();
         }
+    }
+    
+    void StartWalkingQueue(){
+        ObservableList<myPair<String, String>> data = searchQueue.getItems();
+        int size = data.size();
+        crawlerThread = new Service<Void>(){
+            @Override
+            protected Task<Void> createTask(){
+                return new Task<Void>(){
+                    @Override
+                    protected Void call() throws Exception {
+                        for (int i = 0; i < size; ++i){
+                            if (isCancelled()){
+                                throw new InterruptedException();
+                            }
+                            int mode = switch (data.get(i).value){
+                                case "Many (hundreds)" -> 6;
+                                case "Decent (about 200)" -> 2;
+                                case "Snapshot (about 100)" -> 1;
+                                default -> -1;
+                            };
+                            updateMessage("Ready...");
+                            var cw = new CrawlerManager(SourceRedirector.defaultDataPath.toAbsolutePath().toString(), SourceRedirector.capitalize(data.get(i).key).split(" "), mode);
+                            // var cw = new CrawlerManager(SourceRedirector.defaultDataPath.toAbsolutePath().toString(), SourceRedirector.capitalize(data.get(i).key).split(" "), 1);
+                            updateMessage("Fetch image information");
+                            cw.A_getLinks();
+                            updateMessage("Download preview wallpapers");
+                            cw.B_download();
+
+                            updateMessage("Peek links");
+                            cw.print();
+
+                            updateMessage("Open preview view window...");        //////////////////
+                            cw.C_openWallpaperFilterViewer();        //////////////////
+                            updateMessage("Download full wallpapers");       //////////////////
+                            cw.D_lastDownloadStage();        //////////////////
+                            updateMessage("Open full view window...");       //////////////////
+                            cw.E_openFullWallpaperFilterViewer();        //////////////////
+                            updateMessage("Done!");      //////////////////
+                        }
+                        return null;
+                    }
+                };
+            }
+        };
+        percentageMark.setText("Pending...");
+        progressBarText.textProperty().bind(crawlerThread.messageProperty());
+        var it = data.iterator();
+        progressBarText.textProperty().addListener((a, b, c) -> {
+            if (c.equals("Ready...") && it.hasNext()){
+                nowProcessingText.setText("Now Processing : " + it.next().key);
+            }
+        });
+        // percentageMark.textProperty().bind(CrawlerManager.progress.asString());
+        crawlerThread.setOnSucceeded(new EventHandler<WorkerStateEvent>(){
+            @Override
+            public void handle(WorkerStateEvent e){
+                System.out.println("Done, closing crawlerThread.");
+                progressBarText.textProperty().unbind();
+                searchQueue.getItems().clear();
+                nowProcessingText.clear();
+                okToGo = true;
+            }
+        });
+        crawlerThread.restart();
     }
 
     @FXML
@@ -221,7 +290,7 @@ public class MainController implements Initializable {
         quit = false;
         SourceRedirector.quit = quit;
         new TerminalThread(pipIn, terminalThread, Terminal_out, quit);
-        System.out.println("GUI Terminal is activated!" + "\nUse Ctrl + C to cancel the terminal, and Ctrl + L to clear the text.");
+        System.out.println("@2021/05/01 by Eroiko\n" + "GUI Terminal is activated!" + "\nUse Ctrl + C to cancel the terminal, and Ctrl + L to clear the text.");
     }
 
     @FXML
@@ -245,6 +314,43 @@ public class MainController implements Initializable {
         else {
             System.out.println("Terminal has already been shutdown.");
         }
+    }
+
+    @FXML
+    void TerminateProcess(ActionEvent event) {
+        if (crawlerThread != null && crawlerThread.isRunning()){
+            System.out.println(crawlerThread.getState().toString());
+            if (!quit){
+                System.err.println(crawlerThread.getState().toString());
+            }
+            crawlerThread.cancel();
+        }
+        else {
+            new Alert(Alert.AlertType.INFORMATION, "There is nothing running now...").showAndWait();
+        }
+    }
+    
+    @FXML
+    void RestartProcessThread(ActionEvent event) {
+        if (crawlerThread != null && crawlerThread.isRunning()){
+            System.out.println(crawlerThread.getState().toString());
+            if (!quit){
+                System.err.println(crawlerThread.getState().toString());
+            }
+            crawlerThread.restart();
+        }
+        else {
+            new Alert(Alert.AlertType.INFORMATION, "There is nothing running now...").showAndWait();
+        }
+    }
+    
+    @FXML
+    void ResetWindow(ActionEvent event) {
+        System.out.println("Resetting...");
+        if (!quit){
+            System.err.println("Resetting...");
+        }
+        initialize(null, null);
     }
 
     @FXML
@@ -292,30 +398,68 @@ public class MainController implements Initializable {
     void OpenWallpaperViewWindow(WallpaperImage wp) {
         OpenWallpaperViewWindow(wp, 0, 0);
     }
+    
+    @FXML
+    void SwitchBackToImgPath(ActionEvent event) {
+        try {
+            preview = new WallpaperImage();
+            imagePreview.setImage(preview.getCurrentWallpaper());
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
+    }
+
+    @FXML
+    void MenuFileOpenFileExplorer(ActionEvent event) {
+        OpenFileExplorer();
+    }
+
+    public void OpenFileExplorer(){
+        try {
+            Runtime.getRuntime().exec("explorer /select," + preview.getCurrentWallpaperPath());
+        } catch (IOException ex) {
+            System.out.println(ex.toString());
+            if (!quit){
+                System.err.println(ex.toString());
+            }
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb){
+
         try {
             preview = new WallpaperImage();
         } catch (IOException e) {
             System.out.println(e.toString());
         }
+        okToGo = true;
         staticImagePreview = imagePreview;
         hasFull = false;
         staticPathLabel = pathLabel;
         imagePreview.setImage(preview.getCurrentWallpaper());
+
         Terminal_out.setEditable(false);
+
         searchBar.setPromptText(">  Search Artwork");
-        Terminal_in.setPromptText(" <Terminal_Input>");
+
+        terminalButtonDivider.setMinWidth(100);
+        
         downloadAmountChoice.getItems().addAll(modes[0], modes[1], modes[2]);
         downloadAmountChoice.setValue(modes[1]);
-        pathLabel.setText(SourceRedirector.defaultDataPath.toString());
+        pathLabel.setText(" " + SourceRedirector.defaultDataPath.toString()) ;
         // mainPbar = new ProgressBar();
         hasChangedPreview.addListener((a, b, c) -> {
-            pathLabel.setText(preview.getCurrentWallpaperPath().getParent().toString());
+            pathLabel.setText(" " + preview.getCurrentWallpaperPath().getParent().toString());
             hasChangedPreview.set(false);
+            imagePreview.setImage(MainController.preview.getCurrentWallpaper());
         });
-        CrawlerManager.progress.addListener((a, b, c) -> mainPbar.progressProperty().bind(CrawlerManager.progress));
+        searchQueue.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        CrawlerManager.progress.addListener((a, b, c) -> {
+            mainPbar.progressProperty().bind(CrawlerManager.progress);
+            percentageMark.textProperty().bind(myDoubleToStringProperty.toStringProperty(CrawlerManager.progress));
+        });
+        nowProcessingText.setEditable(false);
         
         initializeKeyBoardShortcuts();
         initializeMouseEvents();
@@ -343,18 +487,23 @@ public class MainController implements Initializable {
             }
             e.consume();
         });
-        addButton.setOnMouseClicked(e -> addSearchQueue());
-        deleteSelectedButton.setOnMouseClicked(e -> deleteSelectedSearchQueue());
+        addButton.setOnMouseClicked(e -> {
+            var tmp = searchBar.getText();
+            if (tmp.length() > 0){
+                if (tmp.length() > 3 && tmp.charAt(0) != '\n' && tmp.charAt(0) != '\r'){
+                    addSearchQueue();
+                }
+                else if (tmp.length() <= 3 && tmp.charAt(0) != '\n'){
+                    new Alert(Alert.AlertType.INFORMATION, "keyword is too short! Please check again :)").showAndWait();
+                }
+            }
+            else {
+                searchBar.clear();
+            }
+        });
         openWindowsFileExplorer.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2){
-                try {
-                    Runtime.getRuntime().exec("explorer /select," + SourceRedirector.defaultDataPath.toAbsolutePath().toString());
-                } catch (IOException ex) {
-                    System.out.println(ex.toString());
-                    if (!quit){
-                        System.err.println(ex.toString());
-                    }
-                }
+                OpenFileExplorer();
             }
         });
     }
@@ -402,8 +551,20 @@ public class MainController implements Initializable {
         });
         searchBar.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> {
             if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
-                if (searchBar.getText().length() > 0){
-                    addSearchQueue();
+                var tmp = searchBar.getText();
+                if (tmp.length() > 0){
+                    if (tmp.length() >= 60){
+                        new Alert(Alert.AlertType.INFORMATION, "Bad keyword! Please check again :)").showAndWait();
+                    }
+                    else if (tmp.length() <= 3 && tmp.charAt(0) != '\n'){
+                        new Alert(Alert.AlertType.INFORMATION, "keyword is too short! Please check again :)").showAndWait();
+                    }
+                    else if (tmp.length() > 3 && tmp.charAt(0) != '\n' && tmp.charAt(0) != '\r'){
+                        addSearchQueue();
+                    }
+                }
+                else {
+                    searchBar.clear();
                 }
                 e.consume();
             }
@@ -412,38 +573,49 @@ public class MainController implements Initializable {
 
     private void initSearchQueue(){
         /* Set the two columns */
-        keywords.setMinWidth(120);
-        keywords.setPrefWidth(120);
+        keywords.setMinWidth(170);
+        keywords.setPrefWidth(170);
         keywords.setCellValueFactory(new PropertyValueFactory<>("key"));
-        amount.setMinWidth(150);
-        amount.setPrefWidth(165);
+        amount.setMinWidth(130);
+        amount.setPrefWidth(130);
         amount.setCellValueFactory(new PropertyValueFactory<>("value"));
     }
 
     /** 新增至佇列, 並確認是否合法 */
     private void addSearchQueue(){
         String keyword = searchBar.getText();
-        // Callable<Boolean> checkValid = (() -> {
-        //     Platform.runLater(() -> {
-
-        //     });
-        //     return CrawlerManager.checkValidation(keyword);
-        // });
-
-        if (CrawlerManager.checkValidation(keyword)){
-            var tmpData = new myPair<String, String>(
-                keyword, downloadAmountChoice.getValue()
-            );
-            searchBar.clear();
-            System.out.println("Add " + tmpData.key + " : " + tmpData.value + " to Search Queue");
-            searchQueue.getItems().add(tmpData);
-            searchBar.setStyle("-fx-background-color: #ffffff;");
-        }
-        else {
-            searchBar.setStyle("-fx-background-color: #efb261;");
-            searchBar.selectAll();
-            new Alert(Alert.AlertType.INFORMATION, "Invalid keywords! Please check again :)").showAndWait();
-        }
+        searchBar.clear();
+        Service<Boolean> check = new Service<Boolean>(){
+            @Override
+            protected Task<Boolean> createTask(){
+                return new Task<Boolean>(){
+                    @Override 
+                    protected Boolean call(){
+                        return CrawlerManager.checkValidation(SourceRedirector.capitalize(keyword));
+                    }
+                };
+            }
+        };
+        check.setOnSucceeded(new EventHandler<WorkerStateEvent>(){
+            @Override
+            public void handle(WorkerStateEvent e){
+                if (check.getValue()){
+                    var tmpData = new myPair<String, String>(
+                        SourceRedirector.capitalize(keyword), downloadAmountChoice.getValue()
+                    );
+                    System.out.println("Add " + tmpData.key + " : " + tmpData.value + " to Search Queue");
+                    searchQueue.getItems().add(tmpData);
+                    searchBar.setStyle("-fx-background-color: #ffffff;");
+                }
+                else {
+                    searchBar.setText(keyword);
+                    searchBar.setStyle("-fx-background-color: #efb261;");
+                    searchBar.selectAll();
+                    new Alert(Alert.AlertType.INFORMATION, "Invalid keywords! Please check again :)").showAndWait();
+                }
+            }
+        });
+        check.restart();
     }
 
     private void deleteSelectedSearchQueue(){
@@ -453,9 +625,4 @@ public class MainController implements Initializable {
             allData.remove(selectedData.get(i));
         }
     }
-
-    // public ObservableList<myPair<String, String>> getQueueList(){
-    //     ObservableList<myPair<String, String>> list = FXCollections.observableArrayList();
-        
-    // }
 }

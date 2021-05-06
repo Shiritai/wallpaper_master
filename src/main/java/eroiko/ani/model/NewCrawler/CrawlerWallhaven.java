@@ -6,66 +6,47 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 
+
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import eroiko.ani.controller.MainController;
 import eroiko.ani.util.TimeWait;
 import eroiko.ani.util.myTriple;
+import eroiko.ani.util.WallpaperClass.WallpaperComparator;
 
+// example : https://wallhaven.cc/search?q=Girls%27%20last%20tour&page=2
+public class CrawlerWallhaven extends CrawlerBase {
 
-public class CrawlerZeroChan extends CrawlerBase{
-
-    public static final String url_head = "https://www.zerochan.net/";
-    public static final String [] select_header = {"d=", "s="};
-    public static final String [][] select_content = {{"0", "1", "2"}, {"id", "fav", "random"}};
-
-    private static int _setting_resolution = 2;
-    private static int _setting_sorting = 1;
-
-    private int [] select = new int []{_setting_resolution, _setting_sorting};
-
-    private static int timeDelate = 0;
-    
-    public CrawlerZeroChan(String [] keywords) throws IOException{
-        CRAWLER_TYPE = CRAWLER_ZEROCHAN;
+    public static final String url_head = "https://wallhaven.cc/";
+    /* Advance selection may implement int the future... */
+    // public static final String [] select_header = {"categories=", "purity=", "atleast=", "ratios=", "sorting=", "order=", "colors="};
+    // public static final String [][] select_content = {null, null, };
+    public CrawlerWallhaven(String [] keywords) throws IOException {
+        CRAWLER_TYPE = CRAWLER_WALLHAVEN;
 
         this.query = String.join("+", keywords);
-        this.select[0] = _setting_resolution;
-        this.select[1] = _setting_sorting;
         var tmp = new StringBuilder();
-        tmp.append(CrawlerZeroChan.url_head).append(this.query).append('?')
-            .append(CrawlerZeroChan.select_header[0]).append(CrawlerZeroChan.select_content[0][this.select[0]])
-            .append('&').append(CrawlerZeroChan.select_header[1]).append(CrawlerZeroChan.select_content[1][this.select[1]]);
+        tmp.append(CrawlerWallhaven.url_head).append("search?q=").append(this.query);
         this.first_layer_url = tmp.toString();
         /* 確認關鍵字無誤 */
         var doc = Jsoup.connect(this.first_layer_url)
             .userAgent(CrawlerBase.UserAgent)
-            // .proxy(proxy)
             .timeout(10000)
             .get();
-        System.out.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
+        System.out.println("Wallhaven : " + doc.title()); // 印出標頭, 確保目標正確
         if (!MainController.quit){
-            System.err.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
+            System.err.println("Wallhaven : " + doc.title()); // 印出標頭, 確保目標正確
         }
-    }
-    
-    /** 設定畫質, 2 (僅高) ~ 0 (高低都有) */
-    public void setDefaultResolution(int res){
-        _setting_resolution = res;
-    }
-    /** 設定排序, 0 {@code by id}, 1 {@code by popularity}, 2 {@code random} */
-    public void setDefaultSorting(int sorting){
-        _setting_sorting = sorting;
     }
 
     @Override
     public ArrayList<myTriple<Integer, String, String>> fetchImageLinks(int page, ExecutorService service) {
         try {
-            System.out.println(this.first_layer_url + "&p=" + Integer.toString(page));
-            var doc = Jsoup.connect(this.first_layer_url + "&p=" + Integer.toString(page))
+            System.out.println(this.first_layer_url + "&page=" + Integer.toString(page));
+            var doc = Jsoup.connect(this.first_layer_url + "&page=" + Integer.toString(page))
                 .userAgent(CrawlerBase.UserAgent)
-                // .proxy(proxy)
                 .timeout(10000)
                 .get();
             System.out.println(doc.title()); // 印出標頭, 確保目標正確
@@ -73,15 +54,15 @@ public class CrawlerZeroChan extends CrawlerBase{
                 System.err.println(doc.title()); // 印出標頭, 確保目標正確
             }
     
-            Elements links = doc.select("img[title]"); // 抓取預覽圖, 預覽圖都有 title
-            Elements target = doc.select("a[tabindex=1]");
+            Elements links = doc.select("img[data-src]"); // 抓取預覽圖, 預覽圖都有 title
+            Elements target = doc.select("a[class=preview][target=_blank]");
 
             var size = links.size();
             var data = new ArrayList<myTriple<Integer, String, String>>(size);
 
             String [] prevLinks = new String [size];
             for (int i = 0; i < size; ++i){
-                prevLinks[i] = links.get(i).attr("src");
+                prevLinks[i] = links.get(i).attr("data-src");
             }
             
             int span = 2;
@@ -91,7 +72,7 @@ public class CrawlerZeroChan extends CrawlerBase{
                 for (int j = 0; j < span && i + j < size; ++j){
                     int thisIndex = i + j;
                     calls.add(() -> {
-                        fullLinks[thisIndex] = fetchFullLink(CrawlerZeroChan.url_head + target.get(thisIndex).attr("href") + "#full");
+                        fullLinks[thisIndex] = fetchFullLink(target.get(thisIndex).attr("href"));
                         return true;
                     });
                 }
@@ -104,12 +85,15 @@ public class CrawlerZeroChan extends CrawlerBase{
                 }
                 calls.clear();
             }
+            for (int i = 0; i < size; ++i){
+                fullLinks[i] = fetchFullLink(target.get(i).attr("href"));
+            }
             /* 可以火力全開 */
             calls = new ArrayList<Callable<Boolean>>(size);
             for (int i = 0; i < size; ++i){
                 int thisIndex = i;
                 calls.add(() -> {
-                    data.add(new myTriple<Integer, String, String>(CRAWLER_ZEROCHAN, prevLinks[thisIndex], fullLinks[thisIndex]));
+                    data.add(new myTriple<Integer, String, String>(CRAWLER_WALLHAVEN, prevLinks[thisIndex], fullLinks[thisIndex]));
                     return true;
                 });
             }
@@ -129,49 +113,45 @@ public class CrawlerZeroChan extends CrawlerBase{
 
     private String fetchFullLink(String url){
         try {
-            ++timeDelate;
-            if (timeDelate > 6){
-                new TimeWait(2000 * (timeDelate + 1));
-                timeDelate--;
-            }
-            new TimeWait(500); // 限制性等待
-            var doc = Jsoup.connect(url)
+            new TimeWait(1000);
+            Document doc = Jsoup.connect(url)
                 .userAgent(CrawlerBase.UserAgent)
                 .timeout(10000)
                 .get();
+            System.out.printf(">> ");
             System.out.println(doc.title()); // just for sure!
             if (!MainController.quit){
                 System.err.println(doc.title()); // just for sure!
             }
-            return doc.select("a[class=preview]").first().attr("href");
+            return doc.select("img[id=wallpaper]").first().attr("src");
         } catch (NullPointerException ne){
             return null; // 避免讀空後進入無窮遞迴
         } catch (Exception e){
             System.out.println(e.toString());
             System.out.println("Try re-request...");
-            timeDelate += 2;
+            new TimeWait(3000);
             return fetchFullLink(url);
         }
     }
 
-    public CrawlerZeroChan(){ CRAWLER_TYPE = CRAWLER_ZEROCHAN; } // for validation check
+    public CrawlerWallhaven(){ CRAWLER_TYPE = CRAWLER_WALLHAVEN; } // for validation check
 
     @Override
     public boolean isValidKeyword(String keyword) {
         var tmp = new StringBuilder();
-        tmp.append(CrawlerZeroChan.url_head).append(keyword).append('?')
-            .append(CrawlerZeroChan.select_header[0]).append(CrawlerZeroChan.select_content[0][this.select[0]])
-            .append('&').append(CrawlerZeroChan.select_header[1]).append(CrawlerZeroChan.select_content[1][this.select[1]]);
+        this.first_layer_url = tmp.append(CrawlerWallhaven.url_head).append("search?q=").append(keyword.replace(' ', '+')).toString();
         /* 確認關鍵字無誤 */
         try {
-            var doc = Jsoup.connect(tmp.toString())
+            Document doc = Jsoup.connect(tmp.toString())
                 .userAgent(CrawlerBase.UserAgent)
-                // .proxy(proxy)
                 .timeout(10000)
                 .get();
-            System.out.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
+            if (WallpaperComparator.hasSubstring(doc.title(), "null")){
+                return false;
+            }
+            System.out.println("Wallhaven : " + doc.title()); // 印出標頭, 確保目標正確
             if (!MainController.quit){
-                System.err.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
+                System.err.println("Wallhaven : " + doc.title()); // 印出標頭, 確保目標正確
             }
         } catch (SocketTimeoutException ie){
             return isValidKeyword(keyword);
@@ -186,12 +166,11 @@ public class CrawlerZeroChan extends CrawlerBase{
         int res = 0;
         try {
             for (int i = 1; i <= page; ++i){
-                var doc = Jsoup.connect(this.first_layer_url + "&p=" + Integer.toString(i))
+                var doc = Jsoup.connect(this.first_layer_url + "&page=" + Integer.toString(i))
                     .userAgent(CrawlerBase.UserAgent)
-                    // .proxy(proxy)
                     .timeout(10000)
                     .get();
-                res += doc.select("img[title]").size(); // 抓取預覽圖, 預覽圖都有 title
+                res += doc.select("img[data-src]").size();
             }
         } catch (IOException ie){
             System.out.println(ie.toString());

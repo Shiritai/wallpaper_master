@@ -70,7 +70,8 @@ public class Dumper {
                 );
                 dump(in, out);
             } catch (IOException e){    
-                System.out.println("IO failed!");
+                System.out.println(e.toString());
+                // System.out.println("IO failed!");
                 successful = false;
             }
         }

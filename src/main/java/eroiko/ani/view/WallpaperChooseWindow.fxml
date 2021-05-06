@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.Group?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
@@ -18,25 +19,48 @@
             <Font name="Fira Code Regular" size="16.0" />
          </font>
       </Text>
-      <Text fx:id="next" fill="#dacfcf" scaleX="2.0" scaleY="2.0" scaleZ="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="&gt;" translateX="-40.0" translateY="-20.0" StackPane.alignment="BOTTOM_RIGHT">
-         <font>
-            <Font name="Fira Code Bold" size="16.0" />
-         </font>
-      </Text>
-      <Text fx:id="previous" fill="#dacfcf" scaleX="2.0" scaleY="2.0" scaleZ="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="&lt;" translateX="-80.0" translateY="-20.0" StackPane.alignment="BOTTOM_RIGHT">
-         <font>
-            <Font name="Fira Code Bold" size="16.0" />
-         </font>
-      </Text>
-      <Text fx:id="addImage" fill="#dacfcf" scaleX="2.0" scaleY="2.0" scaleZ="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="+" translateX="-40.0" translateY="-60.0" StackPane.alignment="BOTTOM_RIGHT">
-         <font>
-            <Font name="Fira Code Bold" size="16.0" />
-         </font>
-      </Text>
-      <Text fx:id="deleteImage" fill="#dacfcf" scaleX="2.0" scaleY="2.0" scaleZ="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" translateX="-80.0" translateY="-60.0" StackPane.alignment="BOTTOM_RIGHT">
-         <font>
-            <Font name="Fira Code Bold" size="16.0" />
-         </font>
-      </Text>
+      <Group translateX="-40.0" translateY="-20.0" StackPane.alignment="BOTTOM_RIGHT">
+         <children>
+            <Text fx:id="next" fill="#dacfcf" layoutX="40.0" layoutY="40.0" scaleX="2.0" scaleY="2.0" scaleZ="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="&gt;" translateX="-40.0" translateY="-20.0">
+               <font>
+                  <Font name="Fira Code Bold" size="24.0" />
+               </font>
+            </Text>
+            <Text fx:id="previous" fill="#dacfcf" layoutY="40.0" scaleX="2.0" scaleY="2.0" scaleZ="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="&lt;" translateX="-80.0" translateY="-20.0">
+               <font>
+                  <Font name="Fira Code Bold" size="24.0" />
+               </font>
+            </Text>
+            <Text fx:id="addImage" fill="#dacfcf" layoutX="40.0" scaleX="2.0" scaleY="2.0" scaleZ="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="+" translateX="-40.0" translateY="-60.0">
+               <font>
+                  <Font name="Fira Code Bold" size="24.0" />
+               </font>
+            </Text>
+            <Text fx:id="deleteImage" fill="#dacfcf" scaleX="2.0" scaleY="2.0" scaleZ="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="-" translateX="-80.0" translateY="-60.0">
+               <font>
+                  <Font name="Fira Code Bold" size="24.0" />
+               </font>
+            </Text>
+         </children>
+      </Group>
+      <Group fx:id="choosePercentage" translateX="15.0" translateY="-60.0" StackPane.alignment="BOTTOM_LEFT">
+         <children>
+            <Text fx:id="numerator" fill="#e848a0" layoutX="-7.0" layoutY="28.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Remain" translateX="80.0" translateY="-80.0">
+               <font>
+                  <Font name="Fira Code Regular" size="20.0" />
+               </font>
+            </Text>
+            <Text fx:id="denominator" fill="#dadad8" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="All" translateX="10.0" translateY="-60.0">
+               <font>
+                  <Font name="Fira Code Regular" size="20.0" />
+               </font>
+            </Text>
+            <Text fill="#c3bcbc" layoutX="-8.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\\" translateX="62.0" translateY="-69.0">
+               <font>
+                  <Font size="34.0" />
+               </font>
+            </Text>
+         </children>
+      </Group>
    </children>
 </StackPane>

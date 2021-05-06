@@ -19,6 +19,7 @@ public class WallpaperViewController implements Initializable{
     public static boolean quit;
     public static Path currentPath;
     public static Stage stage;
+
     public final static KeyCodeCombination CtrlPlus = new KeyCodeCombination(KeyCode.PLUS, KeyCodeCombination.CONTROL_DOWN);
     public final static KeyCodeCombination CtrlMinus = new KeyCodeCombination(KeyCode.MINUS, KeyCodeCombination.CONTROL_DOWN);
     
@@ -40,6 +41,14 @@ public class WallpaperViewController implements Initializable{
         wallpaperName.setText("Current Wallpaper : " + currentPath.getFileName().toString());
         wallpaperPosition.setText("Wallpaper Path : " + currentPath.toString());
         setMouseBehavior();
+        stackPane.setOnKeyPressed(e -> {
+            if (e.getCode().equals(KeyCode.RIGHT)){
+                switchNextImage();
+            }
+            else if (e.getCode().equals(KeyCode.LEFT)){
+                switchPreviousImage();
+            }
+        });
     }
     
     private void setMouseBehavior(){
@@ -85,5 +94,4 @@ public class WallpaperViewController implements Initializable{
         wallpaperName.setText("Current Wallpaper : " + currentPath.getFileName().toString());
         wallpaperPosition.setText("Wallpaper Path : " + currentPath.toString());
     }
-
 }

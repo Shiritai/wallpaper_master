@@ -1,5 +1,6 @@
 package eroiko.ani.util.WallpaperClass;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.DirectoryStream;
@@ -59,6 +60,12 @@ public class WallpaperImage {
     public WallpaperImage() throws IOException{
         this(FileSystems.getDefault().getPath("").toAbsolutePath().toString(), MainApp.isTesting);
     }
+
+    /* 此四為了繼承之用 */
+    public void add() throws EOFException{}
+    public void add(int serialNumber) throws EOFException{}
+    public void delete() throws EOFException{}
+    public void delete(int serialNumber) throws EOFException{}
 
     public boolean setInitImage(Path p){
         return (initIndex = wallpapers.indexOf(p)) != -1;

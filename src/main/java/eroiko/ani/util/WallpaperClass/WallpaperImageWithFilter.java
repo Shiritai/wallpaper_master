@@ -17,7 +17,7 @@ import javafx.scene.image.Image;
 public class WallpaperImageWithFilter extends WallpaperImage{
     private Path directory;
     private DirectoryStream<Path> root;
-    private ArrayList<myPair<Boolean, Path>> wallpapers;
+    private ArrayList<myPair<Integer, Path>> wallpapers;
 
     private int current;
     private int size;
@@ -36,7 +36,7 @@ public class WallpaperImageWithFilter extends WallpaperImage{
             System.out.println(Path.of(this.directory.toString()));
         }
         wallpapers = new ArrayList<>();
-        root.forEach(p -> wallpapers.add(new myPair<>(true, p)));
+        root.forEach(p -> wallpapers.add(new myPair<>(0, p)));
         wallpapers.sort((a, b) -> WallpaperComparator.pathNameCompare(a.value.getFileName(), b.value.getFileName())); // 讓圖片照順序排佈
         size = wallpapers.size();
     }
@@ -45,10 +45,58 @@ public class WallpaperImageWithFilter extends WallpaperImage{
         this(FileSystems.getDefault().getPath("").toAbsolutePath().toString(), MainApp.isTesting);
     }
 
-    public void delete(int certainNumber){
-        wallpapers.get(certainNumber).key = false;
+    private int rightShift(){
+        return current = (current + 1 == size) ? (current = 0) : current + 1;
     }
 
+    private int leftShift(){
+        return current = (current == 0) ? (current = size - 1) : current - 1;
+    }
+
+    @Override
+    public void add(int certainNumber){
+        if (size != 0){
+            wallpapers.get(certainNumber).key = 1;
+            --size;
+            if (size > 0){
+                while (wallpapers.get(rightShift()).key != 0);
+            }
+        }
+    }
+    
+    @Override
+    public void add(){
+        if (size != 0){
+            wallpapers.get(current).key = 1;
+            --size;
+            if (size > 0){
+                while (wallpapers.get(rightShift()).key != 0);
+            }
+        }
+    }
+    
+    @Override
+    public void delete(int certainNumber){
+        if (size != 0){
+            wallpapers.get(certainNumber).key = -1;
+            --size;
+            if (size > 0){
+                while (wallpapers.get(rightShift()).key != 0);
+            }
+        }
+    }
+    
+    @Override
+    public void delete(){
+        if (size != 0){
+            wallpapers.get(current).key = -1;
+            --size;
+            if (size > 0){
+                while (wallpapers.get(rightShift()).key != 0);
+            }
+        }
+    }
+    
     public Path getCurrentWallpaperPath(){
         return wallpapers.get(current).value;
     }
@@ -63,12 +111,12 @@ public class WallpaperImageWithFilter extends WallpaperImage{
     }
     
     public Path getNextWallpaperPath(){
-        while (!wallpapers.get((current + 1 == size) ? (current = 0) : ++current).key);
+        while (wallpapers.get(rightShift()).key != 0);
         return wallpapers.get(current).value;
     }
     
     public Image getNextWallpaper(){
-        while (!wallpapers.get((current + 1 == size) ? (current = 0) : ++current).key);
+        while (wallpapers.get(rightShift()).key != 0);
         try {
             return new Image(wallpapers.get(current).value.toUri().toURL().toString());
         } catch (MalformedURLException e) {
@@ -78,7 +126,7 @@ public class WallpaperImageWithFilter extends WallpaperImage{
     }
     
     public Image getLastWallpaper(){
-        while (!wallpapers.get((current == 0) ? (current = size - 1) : --current).key);
+        while (wallpapers.get(leftShift()).key != 0);
         try {
             return new Image(wallpapers.get(current).value.toUri().toURL().toString());
         } catch (MalformedURLException e) {
@@ -86,5 +134,8 @@ public class WallpaperImageWithFilter extends WallpaperImage{
         }
         return null;
     }
+
+    public int getSize(){ return size; }
+    public boolean isEmpty(){ return size == 0; }
 }
 

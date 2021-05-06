@@ -41,4 +41,9 @@ public class WallpaperComparator {
     public static boolean isImage(Path pathOfFile){
         return Dumper.imagePattern.matcher(pathOfFile.getFileName().toString()).find();
     }
+
+    public static boolean hasSubstring(String str, String subStr){
+        var numberMatcher = Pattern.compile(String.format("(%s)+", subStr));
+        return numberMatcher.matcher(str).find();
+    } 
 }

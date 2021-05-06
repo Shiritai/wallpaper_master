@@ -8,7 +8,6 @@ import javafx.scene.control.TextArea;
 
 public class TerminalThread implements Runnable {
     private final PipedInputStream outPusher;
-    // private final PipedInputStream errPusher;
     private Thread outPuller;
     private TextArea terminalOutArea;
     private boolean quitFlag = false;
