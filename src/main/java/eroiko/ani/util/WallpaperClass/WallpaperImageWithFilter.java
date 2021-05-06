@@ -21,6 +21,7 @@ public class WallpaperImageWithFilter extends WallpaperImage{
 
     private int current;
     private int size;
+    private int length;
     /** 
      * @param directory is the testing directory or the image folder of this project
      * @param certain : is true if {@code directory} is in testing mode
@@ -39,6 +40,7 @@ public class WallpaperImageWithFilter extends WallpaperImage{
         root.forEach(p -> wallpapers.add(new myPair<>(0, p)));
         wallpapers.sort((a, b) -> WallpaperComparator.pathNameCompare(a.value.getFileName(), b.value.getFileName())); // 讓圖片照順序排佈
         size = wallpapers.size();
+        length = wallpapers.size();
     }
     
     public WallpaperImageWithFilter() throws IOException{
@@ -46,11 +48,11 @@ public class WallpaperImageWithFilter extends WallpaperImage{
     }
 
     private int rightShift(){
-        return current = (current + 1 == size) ? (current = 0) : current + 1;
+        return current = (current + 1 == length) ? (current = 0) : current + 1;
     }
 
     private int leftShift(){
-        return current = (current == 0) ? (current = size - 1) : current - 1;
+        return current = (current == 0) ? (current = length - 1) : current - 1;
     }
 
     @Override

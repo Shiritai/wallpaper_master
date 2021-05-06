@@ -51,6 +51,7 @@ public class WallpaperChooseController implements Initializable{
             wp = (WallpaperImageWithFilter) tmp;
         }
         size = wp.getSize();
+        numerator.setText(Integer.toString(size));
         denominator.setText(Integer.toString(size));
         // wp = SourceRedirector.wallpaperImageWithFilter;
         view.setImage(wp.getCurrentWallpaper());
@@ -179,10 +180,16 @@ public class WallpaperChooseController implements Initializable{
     }
     
     private void refresh(){
-        view.setImage(wp.getCurrentWallpaper());
-        currentPath = wp.getCurrentWallpaperPath();
-        wallpaperName.setText("Current Wallpaper : " + currentPath.getFileName().toString());
-        wallpaperPosition.setText("Wallpaper Path : " + currentPath.toString());
+        if (wp.isEmpty()){
+            wallpaperName.setText("");
+            wallpaperPosition.setText("You have choose all the images!");
+        }
+        else {
+            view.setImage(wp.getCurrentWallpaper());
+            currentPath = wp.getCurrentWallpaperPath();
+            wallpaperName.setText("Current Wallpaper : " + currentPath.getFileName().toString());
+            wallpaperPosition.setText("Wallpaper Path : " + currentPath.toString());
+        }
     }
 
 }
