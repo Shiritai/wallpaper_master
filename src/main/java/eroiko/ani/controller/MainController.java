@@ -166,13 +166,13 @@ public class MainController implements Initializable {
                             updateMessage("Peek links");
                             cw.print();
 
-                            updateMessage("Open preview view window...");        //////////////////
-                            cw.C_openWallpaperFilterViewer();        //////////////////
-                            updateMessage("Download full wallpapers");       //////////////////
-                            cw.D_lastDownloadStage();        //////////////////
-                            updateMessage("Open full view window...");       //////////////////
-                            cw.E_openFullWallpaperFilterViewer();        //////////////////
-                            updateMessage("Done!");      //////////////////
+                            updateMessage("Open preview view window...");
+                            cw.C_openWallpaperFilterViewer();
+                            updateMessage("Download full wallpapers");
+                            cw.D_lastDownloadStage();
+                            updateMessage("Open full view window...");
+                            cw.E_openFullWallpaperFilterViewer();
+                            updateMessage("Done!");
                         }
                         return null;
                     }
@@ -317,34 +317,6 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    void TerminateProcess(ActionEvent event) {
-        if (crawlerThread != null && crawlerThread.isRunning()){
-            System.out.println(crawlerThread.getState().toString());
-            if (!quit){
-                System.err.println(crawlerThread.getState().toString());
-            }
-            crawlerThread.cancel();
-        }
-        else {
-            new Alert(Alert.AlertType.INFORMATION, "There is nothing running now...").showAndWait();
-        }
-    }
-    
-    @FXML
-    void RestartProcessThread(ActionEvent event) {
-        if (crawlerThread != null && crawlerThread.isRunning()){
-            System.out.println(crawlerThread.getState().toString());
-            if (!quit){
-                System.err.println(crawlerThread.getState().toString());
-            }
-            crawlerThread.restart();
-        }
-        else {
-            new Alert(Alert.AlertType.INFORMATION, "There is nothing running now...").showAndWait();
-        }
-    }
-    
-    @FXML
     void ResetWindow(ActionEvent event) {
         System.out.println("Resetting...");
         if (!quit){
@@ -373,6 +345,7 @@ public class MainController implements Initializable {
                 stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperChooseWindow.fxml"))));
                 stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
                 stage.setOnCloseRequest(e -> {
+                    SourceRedirector.popToQueue(serialNumber);
                     SourceRedirector.deleteWallpaper(serialNumber);
                 });
             }

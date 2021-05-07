@@ -139,5 +139,10 @@ public class WallpaperImageWithFilter extends WallpaperImage{
 
     public int getSize(){ return size; }
     public boolean isEmpty(){ return size == 0; }
+    public void printSelection(){
+        for (var arr : wallpapers){
+            System.out.println(arr.key);
+        }
+    }
 }
 

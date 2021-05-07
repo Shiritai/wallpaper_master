@@ -84,9 +84,7 @@ public class WallpaperChooseController implements Initializable{
             if (wp.isEmpty()){
                 view.setImage(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/no_image.png").toString()));
             }
-            else {
-                refresh();
-            }
+            refresh();
         });
         
         deleteImage.setOnMouseEntered(e -> deleteImage.setOpacity(0.2));
@@ -97,9 +95,7 @@ public class WallpaperChooseController implements Initializable{
             if (wp.isEmpty()){
                 view.setImage(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/no_image.png").toString()));
             }
-            else {
-                refresh();
-            }
+            refresh();
         });
 
         next.setOnMouseEntered(e -> next.setOpacity(0.2));

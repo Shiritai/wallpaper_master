@@ -2,6 +2,8 @@ package eroiko.ani.util;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Queue;
 import java.util.TreeMap;
 
 import eroiko.ani.util.WallpaperClass.WallpaperImage;
@@ -23,14 +25,26 @@ public class SourceRedirector {
         return lastWallpaperNumber;
     }
     
+    /** delete unused wallpaper image to release memory using {@code serialNumber} */
+    public static void deleteWallpaper(int serialNumber){
+        System.out.println("Delete wallpaperImage!");
+        wallpapersForViewWindows.remove(serialNumber);
+    }
+    
+    /* For filter! */
+    public static ArrayList<WallpaperImageWithFilter> wallpaperQueue = new ArrayList<WallpaperImageWithFilter>();
+    public static void popToQueue(int serialNumber){
+        var wp = wallpapersForViewWindows.get(serialNumber);
+        if (wp instanceof WallpaperImageWithFilter){
+            ((WallpaperImageWithFilter) wp).printSelection();
+            System.out.println("Add to queue!");
+            wallpaperQueue.add((WallpaperImageWithFilter) wp);
+        }
+    }
+    
     public static int getSerialNumberImmediately(){ return lastWallpaperNumber; }
     
     public static WallpaperImage getWallpaperImage(int serialNumber){ return wallpapersForViewWindows.get(serialNumber); }
-    
-    /** delete unused wallpaper image to release memory using {@code serialNumber} */
-    public static void deleteWallpaper(int serialNumber){
-        wallpapersForViewWindows.remove(serialNumber);
-    }
     
 
     /* Properties 設定 */

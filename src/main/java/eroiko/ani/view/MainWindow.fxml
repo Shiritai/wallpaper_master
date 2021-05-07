@@ -44,8 +44,6 @@
           <Menu mnemonicParsing="false" text="Edit">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#SwitchBackToImgPath" text="Switch wallpaper view back to default path" />
-                <MenuItem mnemonicParsing="false" onAction="#TerminateProcess" text="Terminate Download Process" />
-                  <MenuItem mnemonicParsing="false" onAction="#RestartProcessThread" text="Restart Download Process" />
                   <MenuItem mnemonicParsing="false" onAction="#ResetWindow" text="Reset Window" />
             </items>
           </Menu>
