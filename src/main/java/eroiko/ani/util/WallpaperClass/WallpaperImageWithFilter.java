@@ -139,10 +139,26 @@ public class WallpaperImageWithFilter extends WallpaperImage{
 
     public int getSize(){ return size; }
     public boolean isEmpty(){ return size == 0; }
+    /* For debug */
     public void printSelection(){
         for (var arr : wallpapers){
             System.out.println(arr.key);
         }
+    }
+    /* For Output */
+    public void pullToComputer(Path destination){
+        for (var wp : wallpapers){
+            if (wp.key == 1){
+                // Copy wallpaper to the target position
+                // new File()
+            }
+        }
+        for (var wp : wallpapers){
+            if (wp.key == -1){
+                // Delete file, do this before copying!
+            }
+        }
+        /* Do nothing with wp.key == 0, keep it in eroiko.ani.data (tmp) */
     }
 }
 
