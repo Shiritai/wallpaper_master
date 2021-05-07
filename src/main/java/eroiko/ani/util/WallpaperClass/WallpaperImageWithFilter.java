@@ -147,6 +147,7 @@ public class WallpaperImageWithFilter extends WallpaperImage{
     }
     /* For Output */
     public void pullToComputer(Path destination){
+        /* ABOUT TO APPEND */
         for (var wp : wallpapers){
             if (wp.key == 1){
                 // Copy wallpaper to the target position

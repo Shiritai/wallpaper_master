@@ -77,6 +77,9 @@ public class MainController implements Initializable {
     @FXML private Label progressBarText;
     @FXML private Text percentageMark;
 
+    /* Media */
+    @FXML private MediaView mediaBox;
+
     // public static boolean isHaltOrRun = false;
     
     private Service<Void> crawlerThread;
@@ -437,6 +440,11 @@ public class MainController implements Initializable {
         initializeKeyBoardShortcuts();
         initializeMouseEvents();
         initSearchQueue();
+        initMediaSettings();
+    }
+
+    private void initMediaSettings() {
+
     }
 
     public void initializeMouseEvents(){

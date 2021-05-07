@@ -3,7 +3,6 @@ package eroiko.ani.util;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Queue;
 import java.util.TreeMap;
 
 import eroiko.ani.util.WallpaperClass.WallpaperImage;
