@@ -103,23 +103,6 @@ public class MainController implements Initializable {
         Platform.exit();
         System.exit(0);
     }
-
-    @FXML
-    void OpenTestingWindow(ActionEvent event) {
-        TestingController.quit = quit;
-        try {
-            var wallpaperViewStage = new Stage();
-            wallpaperViewStage.setTitle("Testing window");
-            wallpaperViewStage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/TestingWindow.fxml"))));
-            wallpaperViewStage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
-            wallpaperViewStage.show();
-        } catch (Exception e){
-            System.out.println(e.toString());
-            if (!quit){
-                System.err.println(e.toString());
-            }
-        }
-    }
     
     @FXML
     void DeleteAllQueue(ActionEvent event) {

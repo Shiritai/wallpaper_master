@@ -52,7 +52,7 @@
                <items>
                   <MenuItem mnemonicParsing="false" text="Wallpaper" />
                   <MenuItem mnemonicParsing="false" onAction="#OpenMusicController" text="Open Music Controller" />
-                  <MenuItem mnemonicParsing="false" text="Advance ((not support now, password needed)" />
+                  <MenuItem disable="true" mnemonicParsing="false" text="Advance ((not support now, password needed)" />
                </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -283,7 +283,7 @@
                                                    </children></AnchorPane>
                                           </content>
                                         </Tab>
-                                        <Tab text="Detail">
+                                        <Tab disable="true" text="Detail">
                                           <content>
                                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                    <children>
@@ -301,7 +301,7 @@
                                                 </AnchorPane>
                                           </content>
                                         </Tab>
-                                          <Tab text="Browser">
+                                          <Tab disable="true" text="Browser">
                                              <content>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                    <children>
@@ -405,7 +405,7 @@
                                                             </AnchorPane>
                                                       </content>
                                                     </Tab>
-                                                    <Tab text="Status">
+                                                    <Tab disable="true" text="Status">
                                                       <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                                <children>
