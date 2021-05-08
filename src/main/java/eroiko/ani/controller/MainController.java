@@ -10,6 +10,7 @@ import eroiko.ani.controller.PrimaryControllers.*;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
 import eroiko.ani.util.*;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
+import eroiko.ani.util.NeoWallpaper.WallpaperComparator;
 import eroiko.ani.util.WallpaperClass.*;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;

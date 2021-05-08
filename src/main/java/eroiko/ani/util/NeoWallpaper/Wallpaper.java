@@ -13,7 +13,6 @@ import java.util.TreeSet;
 import eroiko.ani.util.SourceRedirector;
 import eroiko.ani.util.myPair;
 import eroiko.ani.util.myTriple;
-import eroiko.ani.util.WallpaperClass.WallpaperComparator;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.image.Image;
@@ -63,7 +62,7 @@ public class Wallpaper {
         else {
             try { // 讀取當前最大編號並 + 1, 準備序列號種子
                 for (var t : Files.newDirectoryStream(targetDir.toPath())){
-                    
+                     // 晚點更新 todoooo
                 }
                 WallpaperComparator.resetSerialNumber();
             } catch (IOException e) {

@@ -9,7 +9,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import eroiko.ani.MainApp;
-import eroiko.ani.util.WallpaperClass.WallpaperComparator;
+import eroiko.ani.util.NeoWallpaper.WallpaperComparator;
 import javafx.scene.image.Image;
 import javafx.scene.media.Media;
 

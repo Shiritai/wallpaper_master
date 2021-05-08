@@ -1,4 +1,4 @@
-package eroiko.ani.util.WallpaperClass;
+package eroiko.ani.util.NeoWallpaper;
 
 import java.nio.file.Path;
 import java.util.regex.Matcher;
