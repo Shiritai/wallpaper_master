@@ -1,21 +1,22 @@
 package eroiko.ani.util.WallpaperClass;
 
-import java.io.EOFException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import eroiko.ani.MainApp;
 import eroiko.ani.util.SourceRedirector;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.image.Image;
 
 
-/** 實作類似 Iterator 的資料結構, 所有 get functions (除了 Current) 都會移動 Index */
-public class WallpaperImage {
+/** {@code <deprecated>} 實作類似 Iterator 的資料結構, 所有 get functions (除了 Current) 都會移動 Index */
+public class WallpaperImage implements WallpaperProto{
+    public BooleanProperty isChanged;
+
     private Path directory;
     private DirectoryStream<Path> root;
     private ArrayList<Path> wallpapers;
@@ -24,24 +25,17 @@ public class WallpaperImage {
     private int current;
     /** 
      * @param directory : the testing directory or the image folder of this project
-     * @param certain : is true if  {@code directory} is in testing mode
      * @param initImage : set this first image you'd like to see with it's path
      * @throws IOException
      */
-    public WallpaperImage(String directory, boolean certain, Path initImage) throws IOException{
-        this.directory = Path.of(directory);
-        if (certain){
-            root = Files.newDirectoryStream(SourceRedirector.defaultDataPath, "*.{jpg,jpeg,png}");
-        }
-        else {
-            root = Files.newDirectoryStream(Path.of(this.directory.toString()), "*.{jpg,jpeg,png}");
-            System.out.println(Path.of(this.directory.toString()));
-        }
+    public WallpaperImage(Path directory, Path initImage) throws IOException{
+        isChanged = new SimpleBooleanProperty(false);
+
+        this.directory = directory;
+        root = Files.newDirectoryStream(this.directory, "*.{jpg,jpeg,png}");
+        System.out.println(Path.of(this.directory.toString()));
         wallpapers = new ArrayList<Path>();
-        // wallpapers = new TreeSet<Path>((e1, e2) -> pathNameCompare(a, b));
-        // wallpapers = new TreeMap<Integer, Path>();
         root.forEach(p -> wallpapers.add(p));
-        // root.forEach(p -> wallpapers.put(takeWallpaperSerialNumber(p), p));
         wallpapers.sort((a, b) -> WallpaperComparator.pathNameCompare(a.getFileName(), b.getFileName())); // 讓圖片照順序排佈
         if (initImage != null){
             setInitImage(initImage);
@@ -50,22 +44,21 @@ public class WallpaperImage {
     }
     /** 
      * @param directory : the testing directory or the image folder of this project
-     * @param certain : is true if  {@code directory} is in testing mode
      * @throws IOException
      */
-    public WallpaperImage(String directory, boolean certain) throws IOException{
-        this(directory, certain, null);
+    public WallpaperImage(Path directory) throws IOException{
+        this(directory, null);
     }
     
+    /** 建立預設圖片庫的 WallpaperImage */
     public WallpaperImage() throws IOException{
-        this(FileSystems.getDefault().getPath("").toAbsolutePath().toString(), MainApp.isTesting);
+        this(SourceRedirector.defaultImagePath);
     }
 
-    /* 此四為了繼承之用 */
-    public void add() throws EOFException{}
-    public void add(int serialNumber) throws EOFException{}
-    public void delete() throws EOFException{}
-    public void delete(int serialNumber) throws EOFException{}
+    public void add(){}
+    public void add(int certainNumber){}
+    public void delete(){}
+    public void delete(int certainNumber){}
 
     public boolean setInitImage(Path p){
         return (initIndex = wallpapers.indexOf(p)) != -1;
@@ -85,7 +78,15 @@ public class WallpaperImage {
     }
     
     public Path getNextWallpaperPath(){
-        return wallpapers.get(++current);
+        var tmp = wallpapers.get((++current < wallpapers.size()) ? current : (current = 0));
+        isChanged.set(true);
+        return tmp;
+    }
+
+    public Path getPreviousWallpaperPath(){
+        var tmp = wallpapers.get((--current >= 0) ? current : (current = wallpapers.size() - 1));
+        isChanged.set(true);
+        return tmp;
     }
 
     public Image getCurrentWallpaper(){
@@ -99,16 +100,20 @@ public class WallpaperImage {
 
     public Image getNextWallpaper(){
         try {
-            return (++current < wallpapers.size()) ? new Image(wallpapers.get(current).toUri().toURL().toString()) : new Image(wallpapers.get((current = 0)).toUri().toURL().toString());
+            var tmp = new Image(wallpapers.get((++current < wallpapers.size()) ? current : (current = 0)).toUri().toURL().toString());
+            isChanged.set(true);
+            return tmp;
         } catch (MalformedURLException e) {
             System.out.println(e.toString());
         }
         return null;
     }
     
-    public Image getLastWallpaper(){
+    public Image getPreviousWallpaper(){
         try {
-            return (--current >= 0) ? new Image(wallpapers.get(current).toUri().toURL().toString()) : new Image(wallpapers.get((current = wallpapers.size() - 1)).toUri().toURL().toString());
+            var tmp = new Image(wallpapers.get((--current >= 0) ? current : (current = wallpapers.size() - 1)).toUri().toURL().toString());
+            isChanged.set(true);
+            return tmp;
         } catch (MalformedURLException e) {
             System.out.println(e.toString());
         }
@@ -116,9 +121,14 @@ public class WallpaperImage {
     }
 
     public static WallpaperImage copy(WallpaperImage wp) throws IOException{
-        var newWp = new WallpaperImage(wp.directory.toString(), MainApp.isTesting);
+        var newWp = new WallpaperImage(wp.directory);
         newWp.current = wp.current;
         return newWp;
+    }
+
+    @Override
+    public int getSize() {
+        return wallpapers.size();
     }
 }
 

@@ -113,7 +113,7 @@ public class CrawlerWallhaven extends CrawlerBase {
 
     private String fetchFullLink(String url){
         try {
-            new TimeWait(1000);
+            new TimeWait(4000);
             Document doc = Jsoup.connect(url)
                 .userAgent(CrawlerBase.UserAgent)
                 .timeout(10000)
@@ -129,7 +129,7 @@ public class CrawlerWallhaven extends CrawlerBase {
         } catch (Exception e){
             System.out.println(e.toString());
             System.out.println("Try re-request...");
-            new TimeWait(3000);
+            new TimeWait(2000);
             return fetchFullLink(url);
         }
     }
@@ -147,6 +147,9 @@ public class CrawlerWallhaven extends CrawlerBase {
                 .timeout(10000)
                 .get();
             if (WallpaperComparator.hasSubstring(doc.title(), "null")){
+                return false;
+            }
+            else if (WallpaperComparator.hasSubstring(doc.select("h1").text(), "0 Wallpapers found")){
                 return false;
             }
             System.out.println("Wallhaven : " + doc.title()); // 印出標頭, 確保目標正確

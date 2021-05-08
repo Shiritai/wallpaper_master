@@ -45,5 +45,53 @@ public class WallpaperComparator {
     public static boolean hasSubstring(String str, String subStr){
         var numberMatcher = Pattern.compile(String.format("(%s)+", subStr));
         return numberMatcher.matcher(str).find();
+    }
+    
+    public static boolean matchNameWithoutFormat(String a, String b){
+        return a.substring(0, a.indexOf('.')).equals(b.substring(0, b.indexOf('.')));
+    }
+
+    public static boolean matchNameWithoutFormat(Path a_, Path b_){
+        var a = a_.getFileName().toString();
+        var b = b_.getFileName().toString();
+        return a.substring(0, a.indexOf('.')).equals(b.substring(0, b.indexOf('.')));
+    }
+    
+    public static String capitalize(String str){
+        var ret = new StringBuilder();
+        var strArr = str.toCharArray();
+        // boolean flag = true;
+        for (int i = 0; i < str.length(); ++i){
+            if (i == 0){
+                ret.append(Character.toUpperCase(strArr[i]));
+            }
+            else if (strArr[i - 1] == ' '){
+                ret.append(Character.toUpperCase(strArr[i]));
+            }
+            else {
+                ret.append(Character.toLowerCase(strArr[i]));
+            }
+        }
+        return ret.toString();
     } 
+
+    /** For serial number generation */
+    private static int seed = 1;
+    public static int serialNumberGenerator(){
+        return seed++;
+    }
+    public static void resetSerialNumber(){ seed = 1; }
+    public static void resetSerialNumber(int start){ seed = start; }
+
+    /** get serialNumber from a wallpaperXXX.img */
+    public static int getSerialNumberFromAWallpaper(Path p){
+        var nameMatcher = Pattern.compile("wallpaper\\d+");
+        var numberMatcher = Pattern.compile("\\d+");
+        Matcher m1 = nameMatcher.matcher(p.toString());
+        if (m1.find()){
+            System.out.println(Integer.parseInt(numberMatcher.matcher(m1.group()).group()));
+            return Integer.parseInt(numberMatcher.matcher(m1.group()).group());
+        }
+        throw new IllegalArgumentException("Fail to take wallpaper's serial Number");
+    }
 }

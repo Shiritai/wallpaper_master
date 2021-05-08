@@ -2,20 +2,18 @@ package eroiko.ani.model.NewCrawler;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-import eroiko.ani.controller.MainController;
 import eroiko.ani.util.Dumper;
 import eroiko.ani.util.SourceRedirector;
 import eroiko.ani.util.myQuartet;
 import eroiko.ani.util.myTriple;
-// import eroiko.ani.util.ProgressProperty;
-import eroiko.ani.util.WallpaperClass.WallpaperImageWithFilter;
-import javafx.application.Platform;
+import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 /** 管理多線程搜尋 / 過濾 / 下載操作 */
@@ -25,7 +23,6 @@ public class CrawlerManager {
     /* Integer 的存在是為了確保多線程不會出錯 */
     private ArrayList<myQuartet<Integer, Integer, String, String>> wpLinks; // serial number, crawler type, preview link, full link
     // private int previousPage;
-    private int previousSizeForPreview;
     private int pages;
     private String [] keywords;
     // public int prevCnt = 0; // 紀錄 Preview 編號
@@ -33,14 +30,15 @@ public class CrawlerManager {
     public final String prevSavePath;
     public final String fullSavePath;
     /* Progress peeking */
-    public static DoubleProperty progress = new SimpleDoubleProperty(0.); // 對外更新數據
+    public static volatile DoubleProperty progress = new SimpleDoubleProperty(0.); // 對外更新數據
     private final int tasks; // 對內設定
-    private int currentTask; // 對內更新
+    private volatile int currentTask; // 對內更新
     private final int tasksForALoop;
 
     private static final int mulTimes = 4;
     
     public CrawlerManager(String folderPath, String [] keywords, int pages){
+        progress.set(0.);
         fullSavePath = folderPath + "\\" + String.join(" ", keywords);
         prevSavePath = fullSavePath + "\\previews";
         this.keywords = keywords;
@@ -70,7 +68,6 @@ public class CrawlerManager {
         }
         wpLinks = new ArrayList<>();
         this.pages = pages;
-        previousSizeForPreview = 0;
         currentTask = 0;
         tasksForALoop = CrawlerManager.tasksForEachLoop(this);
         tasks = this.Z_getProcessElementsNumber();
@@ -93,7 +90,7 @@ public class CrawlerManager {
 
     /**
      *  1 : CrawlerZeroChan
-     *  2: CrawlerWallhaven
+     *  2 : CrawlerWallhaven
      */
     private CrawlerBase WalkThroughCrawlers(int serialNumber){
         try {
@@ -143,13 +140,10 @@ public class CrawlerManager {
         return res;
     }
 
-    /** @param times {@code two pages} a time, 傳入批次頁面的次數數, 單一 Crawler 每次 2 頁, 欲支援滾動下載 */
     public void A_getLinks(){
-        currentTask = 0; // init progress
         var service = Executors.newCachedThreadPool();
         /** 批次請求不同網站 */
         int numOfCrawler = crawlers.size();
-        // previousPage = currentPage;
         var container = new ArrayList<ArrayList<myTriple<Integer, String, String>>>(tasksForALoop * 30); // 爬蟲數量的暫存容器
         for (int i = 1; i <= pages; ++i){ // 廣義上的 Pages, 對不支持多線程者就是字面上的數值, 對支持多線程者而言是 mulTimes 倍
             // /* 為了避免並行碰撞, 一次性進行擴容 */
@@ -166,8 +160,6 @@ public class CrawlerManager {
                     for (int mul = 0; mul < mulTimes; ++mul){
                         int m = mul;
                         calls.add(() -> {
-                            ++currentTask;
-                            progress.set((currentTask * 1.) / tasks);
                             System.out.printf("Refresh progress : %f\n", progress.get());
                             container.add(cw.fetchImageLinks(thisPage * mulTimes + m - 3, service));
                             return true;
@@ -177,8 +169,6 @@ public class CrawlerManager {
                 /* 不支援多線程 */
                 else {
                     calls.add(() -> {
-                        ++currentTask;
-                        progress.set((currentTask * 1.) / tasks);
                         System.out.printf("Refresh progress : %f\n", progress.get());
                         container.add(cw.fetchImageLinks(thisPage, service));
                         return true;
@@ -202,8 +192,6 @@ public class CrawlerManager {
                     int tmpSize = tmp.size();
                     for (int y = 0; y < tmpSize; ++y){
                         wpLinks.add(new myQuartet<Integer, Integer, String, String>(wpLinks.size() + 1, tmp.get(y)));
-                        ++currentTask;
-                        progress.set((currentTask * 1.) / tasks);
                     }
                 }
                 container.clear();
@@ -220,22 +208,18 @@ public class CrawlerManager {
         }
     }
     
-    /** 下載累積的預覽圖 */
+    /** 下載預覽圖 */
     public void B_download(){
-        currentTask = 0; // init progress
-        progress.set((currentTask * 1.) / tasks);
         var service = Executors.newCachedThreadPool();
         /* 蒐集 callable */
         var calls = new ArrayList<Callable<Boolean>>();
-        for (int i = previousSizeForPreview; i < wpLinks.size(); ++i){
+        for (int i = 0; i < wpLinks.size(); ++i){
             int thisIndex = i;
             var tmp = wpLinks.get(thisIndex);
             if (tmp.third == null || tmp.fourth == null){ // 避免 Exception
                 continue;
             }
             calls.add(() -> {
-                ++currentTask;
-                progress.set((currentTask * 1.) / tasks);
                 (new Dumper()).downloadPicture(this, tmp.first, tmp.third, false);
                 return true;
             });
@@ -254,25 +238,8 @@ public class CrawlerManager {
             }
         }
         service.shutdown();
-        MainController.hasFull = false;
     }
 
-    public void C_openWallpaperFilterViewer(){
-        System.out.println("Opening preview window...");
-        Platform.runLater(() -> {
-            try {
-                SourceRedirector.wallpaperImageWithFilter = new WallpaperImageWithFilter(this.prevSavePath, false);
-                MainController.preview = new WallpaperImageWithFilter(this.prevSavePath, false);
-                MainController.hasChangedPreview.set(true);
-            } catch (Exception e){
-                System.out.println(e.toString());
-                e.printStackTrace();
-                if (!SourceRedirector.quit){
-                    System.err.println(e.toString());
-                }
-            }
-        });
-    }
     /** 下載所有完全圖 */
     public void D_lastDownloadStage(){
         currentTask = 0; // init progress
@@ -317,19 +284,19 @@ public class CrawlerManager {
         while (!service.isShutdown()); // 等待關閉
         System.out.println("Finish download stage (D)");
     }
-    public void E_openFullWallpaperFilterViewer(){
-        System.out.println("Change to view full!");
+
+    public void E_pushWallpaper(){
         progress.set(1.);
-        Platform.runLater(() -> {
-            try {
-                MainController.hasFull = true;
-                SourceRedirector.wallpaperImageWithFilter = new WallpaperImageWithFilter(this.fullSavePath, false);
-            } catch (Exception e){
-                e.printStackTrace();
-                if (!SourceRedirector.quit){
-                    System.err.println(e.toString());
-                }
+        System.out.println("Change to view full!");
+        System.out.println(Path.of(this.fullSavePath));
+        try {
+            Wallpaper.addNewWallpaper(new Wallpaper(Path.of(this.fullSavePath)));
+        } catch (Exception e){
+            e.printStackTrace();
+            System.out.println(e.toString());
+            if (!SourceRedirector.quit){
+                System.err.println(e.toString());
             }
-        });
+        }
     }
 }

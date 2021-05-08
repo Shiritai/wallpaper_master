@@ -1,6 +1,7 @@
 package eroiko.ani.model.Crawler;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.concurrent.Executors;
 
 import eroiko.ani.controller.MainController;
@@ -34,7 +35,7 @@ public class OldCrawlerManager implements Runnable {
                 if (!quit){
                     System.err.println("Opening Preview Viewing Window... " + crawler.getPreviewsFolderPath().replace('/', '\\'));
                 }
-                wp = new WallpaperImage(crawler.getPreviewsFolderPath().replace('/', '\\'), false);
+                wp = new WallpaperImage(Path.of(crawler.getPreviewsFolderPath().replace('/', '\\')));
             }
             else {
                 var service2 = Executors.newCachedThreadPool();
@@ -49,7 +50,7 @@ public class OldCrawlerManager implements Runnable {
                 if (!quit){
                     System.err.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
                 }
-                wp = new WallpaperImage(crawler.getFolderPath().replace('/', '\\'), false);
+                wp = new WallpaperImage(Path.of(crawler.getFolderPath().replace('/', '\\')));
             }
             MainController.preview = wp;
             MainController.hasChangedPreview.set(true);
@@ -59,10 +60,6 @@ public class OldCrawlerManager implements Runnable {
             if (!quit){
                 System.err.println(e.toString());
             }
-            // Alert alert = new Alert(AlertType.INFORMATION);
-            // alert.titleProperty().set("Message");
-            // alert.headerTextProperty().set("Wrong keywords, please check and search again.");
-            // alert.showAndWait();
         }
     }
 }

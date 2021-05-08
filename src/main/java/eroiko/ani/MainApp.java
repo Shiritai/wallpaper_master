@@ -6,6 +6,7 @@ import java.io.*;
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
 import eroiko.ani.controller.MainController;
+import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -45,7 +46,7 @@ public class MainApp extends Application{
             initTrayIcon();
         }
 
-        /* 小圖示與主視窗的顯示, 僅針對主視窗的行為定義 */
+        /* 小圖示與主視窗的顯示反向同步, 爾後僅針對主視窗的行為定義 */
         mainStage.setOnHiding(e -> {
             if (SystemTray.isSupported() && !trayIcon.isShowing()){
                 initTrayIcon();
@@ -78,6 +79,8 @@ public class MainApp extends Application{
         mainStage.show();
 
         mainStage.setOnCloseRequest((e) -> {
+            Wallpaper.executeResultAndCleanPreview(); // 執行所有 Wallpaper 檔案操作!
+            new Alert(Alert.AlertType.INFORMATION, "Executing your wallpapers, please wait a minute :)").showAndWait();
             mainStage.close();
             Platform.exit();
             System.exit(0);
@@ -97,8 +100,9 @@ public class MainApp extends Application{
         menuItems = new MenuItem [2];
         menuItems[0] = new MenuItem("Preference");
         menuItems[0].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
-        menuItems[1] = new MenuItem("Process");
-        menuItems[1].setOnAction(e -> new Alert(Alert.AlertType.INFORMATION, "Clicked on Process Menu!").showAndWait());
+        menuItems[1] = new MenuItem("Open Wallpaper Master");
+        menuItems[1].setOnAction(e -> mainStage.show());
+        // menuItems[1].setOnAction(e -> new Alert(Alert.AlertType.INFORMATION, "Clicked on Process Menu!").showAndWait());
     }
     
     private void initTrayIcon(){

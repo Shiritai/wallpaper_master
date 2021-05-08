@@ -10,7 +10,6 @@ public class CrawlerThread {
             cw = new CrawlerManager(folderPath, keywords, pages);
             cw.A_getLinks();
             cw.B_download();
-            cw.C_openWallpaperFilterViewer();
             cw.D_lastDownloadStage();
         });
         tmp.setDaemon(true);
