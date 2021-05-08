@@ -3,12 +3,17 @@ package eroiko.ani;
 import java.awt.SystemTray;
 import java.io.*;
 
+import javax.imageio.ImageIO;
+
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
 import eroiko.ani.controller.MainController;
+import eroiko.ani.util.Dumper;
+import eroiko.ani.util.SourceRedirector;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.control.Alert;
@@ -97,7 +102,20 @@ public class MainApp extends Application{
         childMenu[1].setOnAction(e -> System.out.println("clicked opt2"));
         menu.getItems().addAll(childMenu[0], childMenu[1]);
         
-        menuItems = new MenuItem [2];
+        menuItems = new MenuItem [3];
+        menuItems[0] = new MenuItem("Take clipboard image to wallpaper folder");
+        menuItems[0].setOnAction(e -> {
+            var cb = Clipboard.getSystemClipboard().getImage();
+            try {
+                var tmpFile = new File(SourceRedirector.defaultDataPath.toString() + "\\wallpaper\\");
+                if (!tmpFile.exists()){
+                    tmpFile.mkdir();
+                }
+                ImageIO.write(SwingFXUtils.fromFXImage(cb, null), "png", tmpFile);
+            } catch (IOException e1) {
+                System.out.println(e1.toString());
+            }
+        });
         menuItems[0] = new MenuItem("Preference");
         menuItems[0].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
         menuItems[1] = new MenuItem("Open Wallpaper Master");

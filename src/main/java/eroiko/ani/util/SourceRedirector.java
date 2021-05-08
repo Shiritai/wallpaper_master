@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 
 import eroiko.ani.util.WallpaperClass.WallpaperProto;
+import eroiko.ani.util.myDS.myQuartet;
 import eroiko.ani.util.WallpaperClass.WallpaperImageWithFilter;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

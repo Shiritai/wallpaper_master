@@ -11,9 +11,9 @@ import java.util.concurrent.Future;
 
 import eroiko.ani.util.Dumper;
 import eroiko.ani.util.SourceRedirector;
-import eroiko.ani.util.myQuartet;
-import eroiko.ani.util.myTriple;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
+import eroiko.ani.util.myDS.myQuartet;
+import eroiko.ani.util.myDS.myTriple;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 /** 管理多線程搜尋 / 過濾 / 下載操作 */

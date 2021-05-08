@@ -12,6 +12,8 @@ import eroiko.ani.util.*;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import eroiko.ani.util.NeoWallpaper.WallpaperComparator;
 import eroiko.ani.util.WallpaperClass.*;
+import eroiko.ani.util.myDS.TimeWait;
+import eroiko.ani.util.myDS.myPair;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -557,7 +559,7 @@ public class MainController implements Initializable {
         searchQueue.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         CrawlerManager.progress.addListener((a, b, c) -> {
             mainPbar.progressProperty().bind(CrawlerManager.progress);
-            percentageMark.textProperty().bind(myDoubleToStringProperty.toStringProperty(CrawlerManager.progress));
+            percentageMark.textProperty().bind(DoubleToStringProperty.toStringProperty(CrawlerManager.progress));
         });
         nowProcessingText.setEditable(false);
         

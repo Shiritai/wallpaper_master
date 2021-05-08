@@ -11,8 +11,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import eroiko.ani.util.SourceRedirector;
-import eroiko.ani.util.myPair;
-import eroiko.ani.util.myTriple;
+import eroiko.ani.util.myDS.myPair;
+import eroiko.ani.util.myDS.myTriple;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.image.Image;

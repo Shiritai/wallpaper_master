@@ -1,4 +1,4 @@
-package eroiko.ani.util;
+package eroiko.ani.util.myDS;
 
 public class myTriple<E, K, V>{
     public E first;

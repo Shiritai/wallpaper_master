@@ -1,4 +1,4 @@
-package eroiko.ani.util;
+package eroiko.ani.util.myDS;
 /* 輸入輸出輔助資結, 僅支援寫入位元, 並以字串形式讀出 */
 public class ArrayByteToString {
     private byte [] data;

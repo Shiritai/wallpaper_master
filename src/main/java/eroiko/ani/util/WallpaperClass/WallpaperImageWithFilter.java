@@ -8,8 +8,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import eroiko.ani.util.SourceRedirector;
-import eroiko.ani.util.myPair;
 import eroiko.ani.util.NeoWallpaper.WallpaperComparator;
+import eroiko.ani.util.myDS.myPair;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.image.Image;

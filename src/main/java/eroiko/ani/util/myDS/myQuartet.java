@@ -1,4 +1,4 @@
-package eroiko.ani.util;
+package eroiko.ani.util.myDS;
 
 public class myQuartet<T, E, K, V> {
     public T first;

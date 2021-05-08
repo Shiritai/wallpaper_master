@@ -4,7 +4,7 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-public class myDoubleToStringProperty {
+public class DoubleToStringProperty {
     private DoubleProperty doubleNumber;
     public StringProperty getDoubleToStringProperty(){
         return new SimpleStringProperty(Double.toString(doubleNumber.get() * 100).substring(0, 5));
