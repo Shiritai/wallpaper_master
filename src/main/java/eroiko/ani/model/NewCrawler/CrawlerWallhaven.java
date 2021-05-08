@@ -12,7 +12,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import eroiko.ani.controller.MainController;
-import eroiko.ani.util.NeoWallpaper.WallpaperComparator;
+import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
 import eroiko.ani.util.myDS.TimeWait;
 import eroiko.ani.util.myDS.myTriple;
 
@@ -146,10 +146,10 @@ public class CrawlerWallhaven extends CrawlerBase {
                 .userAgent(CrawlerBase.UserAgent)
                 .timeout(10000)
                 .get();
-            if (WallpaperComparator.hasSubstring(doc.title(), "null")){
+            if (WallpaperUtil.hasSubstring(doc.title(), "null")){
                 return false;
             }
-            else if (WallpaperComparator.hasSubstring(doc.select("h1").text(), "0 Wallpapers found")){
+            else if (WallpaperUtil.hasSubstring(doc.select("h1").text(), "0 Wallpapers found")){
                 return false;
             }
             System.out.println("Wallhaven : " + doc.title()); // 印出標頭, 確保目標正確

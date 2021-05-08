@@ -1,12 +1,13 @@
 package eroiko.ani.util.NeoWallpaper;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import eroiko.ani.util.Dumper;
 
-public class WallpaperComparator {
+public class WallpaperUtil {
     /* 比較同類型, 以編號區分的檔案, 使用正則表達式, 適用於 ArrayList, Set */
     public static int pathNameCompare(Path a, Path b){
         var numberMatcher = Pattern.compile("\\d+");
@@ -77,14 +78,15 @@ public class WallpaperComparator {
 
     /** For serial number generation */
     private static int seed = 1;
-    public static int serialNumberGenerator(){
-        return seed++;
+    public static String getSerialNumber(){
+        return Integer.toString(seed++);
     }
+    /** return 1 */
     public static void resetSerialNumber(){ seed = 1; }
     public static void resetSerialNumber(int start){ seed = start; }
 
     /** get serialNumber from a wallpaperXXX.img */
-    public static int getSerialNumberFromAWallpaper(Path p){
+    public static int getSerialNumberFromAWallpaper(Path p) throws IllegalArgumentException {
         var nameMatcher = Pattern.compile("wallpaper\\d+");
         var numberMatcher = Pattern.compile("\\d+");
         Matcher m1 = nameMatcher.matcher(p.toString());
@@ -93,5 +95,14 @@ public class WallpaperComparator {
             return Integer.parseInt(numberMatcher.matcher(m1.group()).group());
         }
         throw new IllegalArgumentException("Fail to take wallpaper's serial Number");
+    }
+    public static String getFileType(File file){
+        var tmp = file.getName();
+        return tmp.substring(tmp.lastIndexOf('.'), tmp.length());
+    }
+
+    public static String getFileType(Path file){
+        var tmp = file.getFileName().toString();
+        return tmp.substring(tmp.lastIndexOf('.'), tmp.length());
     }
 }

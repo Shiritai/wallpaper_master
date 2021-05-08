@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import eroiko.ani.util.SourceRedirector;
 import eroiko.ani.util.myDS.myPair;
 import eroiko.ani.util.myDS.myTriple;
 import javafx.beans.property.BooleanProperty;
@@ -32,7 +31,7 @@ public class Wallpaper {
     public static void deleteNewWallpaper(int serialNumber){ wallpapersToFile.remove(serialNumber); }
     
     /* 處理檔案增刪操作用資結 */
-    private static myPair<TreeSet<Path>, TreeSet<Path>> resultList = new myPair<>(new TreeSet<>(), new TreeSet<>()); // 慎選資結的重要 OwO
+    private static myPair<TreeSet<Path>, TreeSet<Path>> resultList = new myPair<>(new TreeSet<>(), new TreeSet<>()); // 選好的資結的重要性 OwO
     private static ArrayList<Path> previewPathRec = new ArrayList<>();
     /** Append choices to resultList, i.e. myPair<toAdd, toDelete> */
     public static void appendToResultList(int serialNumber){
@@ -50,29 +49,17 @@ public class Wallpaper {
     /* 執行 resultList 指定的複製, 刪除 */
     public static void executeResultAndCleanPreview(){
         /* execute resultList */
-        String target = (SourceRedirector.userSelectedPath == null) ? 
-            SourceRedirector.defaultDataPath.toAbsolutePath().toString() + "\\wallpaper\\" :
-            SourceRedirector.userSelectedPath.toAbsolutePath().toString();
+        var target = WallpaperPath.getWallpaperPath().toAbsolutePath().toString();
         var targetDir = new File(target);
         if (!targetDir.exists()){
             targetDir.mkdirs();
-            System.out.println("mkdir /wallpaper");
-            WallpaperComparator.resetSerialNumber(); // 準備序列號種子
+            WallpaperUtil.resetSerialNumber(); // 準備序列號種子
         }
-        else {
-            try { // 讀取當前最大編號並 + 1, 準備序列號種子
-                for (var t : Files.newDirectoryStream(targetDir.toPath())){
-                     // 晚點更新 todoooo
-                }
-                WallpaperComparator.resetSerialNumber();
-            } catch (IOException e) {
-                System.out.println(e.toString());
-            }
-        }
+        new Wallpaperize(WallpaperPath.getWallpaperPath(), true);
         resultList.key.forEach(p -> {
             try {
                 Files.copy(p, 
-                    Path.of(target + "wallpaper" + Integer.toString(WallpaperComparator.serialNumberGenerator())), 
+                    Path.of(target + "\\" + "wallpaper" + WallpaperUtil.getSerialNumber() + WallpaperUtil.getFileType(p)), 
                     StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 System.out.println("File not exist, so we can't copy it.");
@@ -139,7 +126,7 @@ public class Wallpaper {
 
         var fullArr = new ArrayList<Path>();
         Files.newDirectoryStream(this.path, "*.{jpg,jpeg,png,gif}").forEach(p -> fullArr.add(p));
-        fullArr.sort(WallpaperComparator::pathNameCompare); // OwO
+        fullArr.sort(WallpaperUtil::pathNameCompare); // OwO
 
         if (!tmpTarget.exists()){ // 確認理想極端狀況 (只有 full)
             fullArr.forEach(p -> wallpapers.add(new myTriple<>(0, null, p)));
@@ -149,11 +136,11 @@ public class Wallpaper {
             prevPath = tmpTarget.toPath();
             var prevArr = new ArrayList<Path>();
             Files.newDirectoryStream(this.prevPath, "*.{jpg,jpeg,png,gif}").forEach(p -> prevArr.add(p));
-            prevArr.sort(WallpaperComparator::pathNameCompare); // OwO
+            prevArr.sort(WallpaperUtil::pathNameCompare); // OwO
     
             int tmpSize = (fullArr.size() > prevArr.size()) ? fullArr.size() : prevArr.size();
             for (int i = 0, f = 0, p = 0; i < tmpSize; ++i){
-                if (WallpaperComparator.matchNameWithoutFormat(prevArr.get(p), fullArr.get(f))){ // 基本上希望都是這情況
+                if (WallpaperUtil.matchNameWithoutFormat(prevArr.get(p), fullArr.get(f))){ // 基本上希望都是這情況
                     wallpapers.add(new myTriple<>(0, prevArr.get(p++), fullArr.get(f++)));
                 }
                 else {
@@ -191,7 +178,7 @@ public class Wallpaper {
      * @throws IOException
      */
     public Wallpaper() throws IOException{
-        this(SourceRedirector.defaultImagePath, null);
+        this(WallpaperPath.defaultImagePath, null);
     }
 
     public void resetBooleanBind(){

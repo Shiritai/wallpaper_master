@@ -9,8 +9,7 @@ import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.PrimaryControllers.*;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
 import eroiko.ani.util.*;
-import eroiko.ani.util.NeoWallpaper.Wallpaper;
-import eroiko.ani.util.NeoWallpaper.WallpaperComparator;
+import eroiko.ani.util.NeoWallpaper.*;
 import eroiko.ani.util.WallpaperClass.*;
 import eroiko.ani.util.myDS.TimeWait;
 import eroiko.ani.util.myDS.myPair;
@@ -84,8 +83,8 @@ public class MainController implements Initializable {
 
     /* Media */
     @FXML private MediaView mediaBox;
-    static MediaPlayer staticMediaPR;
-    static MediaOperator staticMediaOp;
+    static MediaPlayer staticCompleteMusic;
+    static MediaPlayer staticProcessingMusic;
     @FXML private Rectangle lastMusicButton;
     @FXML private Rectangle playMusicButton;
     @FXML private Rectangle nextMusicButton;
@@ -150,6 +149,9 @@ public class MainController implements Initializable {
     void StartWalkingQueue(){
         ObservableList<myPair<String, String>> data = searchQueue.getItems();
         int size = data.size();
+        mediaBox.setMediaPlayer(staticProcessingMusic);
+        staticProcessingMusic.setCycleCount(data.size() * 4);
+        staticProcessingMusic.play();
         crawlerThread = new Service<Void>(){
             @Override
             protected Task<Void> createTask(){
@@ -167,7 +169,7 @@ public class MainController implements Initializable {
                                 default -> -1;
                             };
                             updateMessage("Ready...");
-                            var cw = new CrawlerManager(SourceRedirector.defaultDataPath.toAbsolutePath().toString(), WallpaperComparator.capitalize(data.get(i).key).split(" "), mode);
+                            var cw = new CrawlerManager(SourceRedirector.defaultDataPath.toAbsolutePath().toString(), WallpaperUtil.capitalize(data.get(i).key).split(" "), mode);
                             updateMessage("Fetch image information");
                             cw.A_getLinks();
                             updateMessage("Download preview wallpapers");
@@ -191,7 +193,8 @@ public class MainController implements Initializable {
             if (c.equals("Ready...") && it.hasNext()){
                 nowProcessingText.setText("Now Processing : " + it.next().key);
             }
-            else if ((c.equals("Preparing view window...") || c.equals("Preparing view window...")) && it.hasNext()){
+            else if ((c.equals("Preparing view window...") || c.equals("Preparing view window..."))
+                && it.hasNext() && PreferenceController.showWallpapersAfterCrawling.get()){
                 new TimeWait(2000);
                 try {
                     OpenWallpaper(false);
@@ -206,6 +209,9 @@ public class MainController implements Initializable {
             @Override
             public void handle(WorkerStateEvent e){
                 System.out.println("Done, closing crawlerThread.");
+                staticProcessingMusic.stop();
+                mediaBox.setMediaPlayer(staticCompleteMusic);
+                staticCompleteMusic.play();
                 progressBarText.textProperty().unbind();
                 searchQueue.getItems().clear();
                 nowProcessingText.clear();
@@ -248,7 +254,7 @@ public class MainController implements Initializable {
         var files = event.getDragboard().getFiles();
         var file = files.get(0).toPath();
         try {
-            if (WallpaperComparator.isImage(file)){
+            if (WallpaperUtil.isImage(file)){
                 theWallpaper = new Wallpaper(file.getParent(), file);
                 // preview = new WallpaperImage(file.getParent().toAbsolutePath().toString(), false, file);
                 hasChangedPreview.set(true);
@@ -289,7 +295,7 @@ public class MainController implements Initializable {
         var files = event.getDragboard().getFiles();
         var file = files.get(0).toPath();
         try {
-            if (WallpaperComparator.isImage(file)){ // image
+            if (WallpaperUtil.isImage(file)){ // image
                 OpenWallpaper(new Wallpaper(file.getParent(), file), true);
                 // OpenWallpaperViewWindow(new WallpaperImage(file.getParent().toAbsolutePath().toString(), false, file));
             }
@@ -355,7 +361,24 @@ public class MainController implements Initializable {
 
     @FXML
     void OpenMusicController(ActionEvent event) {
-        tableOfBrowser.getSelectionModel().select(3); // 3 is the index of the tab
+        OpenMusicWindow();
+    }
+    
+    public void OpenMusicWindow(){
+        // tableOfBrowser.getSelectionModel().select(3); // 3 is the index of the tab
+        try {
+            var stage = new Stage();
+            stage.setTitle("Music with syamiko");
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/MusicWindow.fxml"))));
+            stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+            stage.setResizable(false);
+            stage.show();
+        } catch (Exception e){
+            System.out.println(e.toString());
+            if (!quit){
+                System.err.println(e.toString());
+            }
+        }
     }
 
     /** Deprecated */
@@ -446,7 +469,7 @@ public class MainController implements Initializable {
             wp = Wallpaper.getWallpaper(serialNumber);
         }
         var fixedWp = wp;
-        boolean isPreview = wp.getCurrentFullPath().getParent().equals(SourceRedirector.defaultImagePath);
+        boolean isPreview = wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultImagePath);
         final int fixedSerialNumber = serialNumber;
         var stage = new Stage();
         System.out.println("Open Neo Wallpaper Viewer...");
@@ -549,10 +572,10 @@ public class MainController implements Initializable {
         
         downloadAmountChoice.getItems().addAll(modes[0], modes[1], modes[2]);
         downloadAmountChoice.setValue(modes[1]);
-        pathLabel.setText(" " + SourceRedirector.defaultDataPath.toString()) ;
+        pathLabel.setText(" " + WallpaperPath.defaultDataPath.toAbsolutePath().toString()) ;
         // mainPbar = new ProgressBar();
         hasChangedPreview.addListener((a, b, c) -> {
-            pathLabel.setText(" " + preview.getCurrentWallpaperPath().getParent().toString());
+            pathLabel.setText(" " + preview.getCurrentWallpaperPath().getParent().toAbsolutePath().toString());
             hasChangedPreview.set(false);
             imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
         });
@@ -609,9 +632,6 @@ public class MainController implements Initializable {
             if (e.getClickCount() == 2){
                 OpenFileExplorer();
             }
-        });
-        playMusicButton.setOnMouseClicked(e -> {
-             // add something...
         });
         pathLabel.setOnMouseClicked(e -> {
             if (e.getButton().equals(MouseButton.SECONDARY)){
@@ -708,7 +728,7 @@ public class MainController implements Initializable {
         String keyword = searchBar.getText();
         searchBar.clear();
         for (var i : searchQueue.getItems()){
-            if (i.key.equals(WallpaperComparator.capitalize(keyword))){
+            if (i.key.equals(WallpaperUtil.capitalize(keyword))){
                 new Alert(Alert.AlertType.INFORMATION, "We've already have that :)").showAndWait();
                 return;
             }
@@ -719,7 +739,7 @@ public class MainController implements Initializable {
                 return new Task<Boolean>(){
                     @Override 
                     protected Boolean call(){
-                        return CrawlerManager.checkValidation(WallpaperComparator.capitalize(keyword));
+                        return CrawlerManager.checkValidation(WallpaperUtil.capitalize(keyword));
                     }
                 };
             }
@@ -729,7 +749,7 @@ public class MainController implements Initializable {
             public void handle(WorkerStateEvent e){
                 if (check.getValue()){
                     var tmpData = new myPair<String, String>(
-                        WallpaperComparator.capitalize(keyword), downloadAmountChoice.getValue()
+                        WallpaperUtil.capitalize(keyword), downloadAmountChoice.getValue()
                     );
                     System.out.println("Add " + tmpData.key + " : " + tmpData.value + " to Search Queue");
                     searchQueue.getItems().add(tmpData);
@@ -755,13 +775,7 @@ public class MainController implements Initializable {
     }
     
     private void initMediaSettings() {
-        try {
-            staticMediaOp = new MediaOperator();
-            staticMediaPR = new MediaPlayer(staticMediaOp.getCurrentMedia());
-            mediaBox.setMediaPlayer(staticMediaPR);
-            // staticMediaPR.play();
-        } catch (IOException e) {
-            System.out.println(e.toString());
-        }
+        staticProcessingMusic = new MediaPlayer(MediaOperator.playBox.getDefaultProcessingMedia());
+        staticCompleteMusic = new MediaPlayer(MediaOperator.playBox.getDefaultCompleteMedia());
     }
 }

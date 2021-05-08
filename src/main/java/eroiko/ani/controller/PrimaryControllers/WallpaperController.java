@@ -5,8 +5,8 @@ import java.nio.file.Path;
 import java.util.ResourceBundle;
 import java.lang.Math;
 
-import eroiko.ani.util.SourceRedirector;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
+import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
@@ -59,7 +59,7 @@ public class WallpaperController implements Initializable{
     };
     private String [] deleteHints = new String [] {
         "I'll never forget the promise we've made...", "I'll swear you forever :(",
-        "Bye bye, my fellow", "I love you then, even now. So may I kill you?",
+        "Bye bye, my fellow", "I love you then, and even now. So may I kill you?",
         "How dare you!", "fxxk..."
     };
 
@@ -78,7 +78,7 @@ public class WallpaperController implements Initializable{
             }
         });
         lastSize = wp.getSize();
-        viewMode = wp.getCurrentFullPath().getParent().equals(SourceRedirector.defaultImagePath);
+        viewMode = wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultImagePath);
         refresh();
         setMouseBehavior();
     }

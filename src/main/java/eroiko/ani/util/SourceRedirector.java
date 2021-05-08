@@ -12,6 +12,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
 public class SourceRedirector {
+    /* 權宜用的類別 */
     public static final Path defaultDataPath = FileSystems.getDefault().getPath("data").toAbsolutePath();
     public static Path userSelectedPath = null;
     public static final Path defaultImagePath = FileSystems.getDefault().getPath("data/default").toAbsolutePath();
@@ -60,9 +61,7 @@ public class SourceRedirector {
     
 
     /* Properties 設定 */
-    public static boolean preViewOrNot = true;
     public static boolean showWallpapersAfterCrawling = false;
-    public static boolean useOldCrawlerForFullSpeedMode = false;
     public static int pagesToDownload = 4;
     public static boolean quit;
     public static BooleanProperty openPreviewFilter = new SimpleBooleanProperty(false);

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.media.MediaView?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eroiko.ani.controller.PrimaryControllers.MusicController">
+   <children>
+      <ImageView fitHeight="400.0" fitWidth="640.0" opacity="0.96" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/wallpaper150.jpg" />
+         </image>
+      </ImageView>
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="420.0" StackPane.alignment="BOTTOM_LEFT">
+         <children>
+            <MediaView fx:id="mediaBox" fitHeight="10.0" fitWidth="10.0" layoutX="18.0" layoutY="24.0" />
+            <AnchorPane layoutX="10.0" layoutY="34.0" prefHeight="35.0" prefWidth="400.0" style="-fx-border-fill: transparent;">
+               <children>
+                  <Group layoutX="191.0" layoutY="8.0">
+                     <children>
+                        <Slider layoutX="57.0" layoutY="6.0" />
+                        <Text fill="#dddddd" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volume" wrappingWidth="60.13671875">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </Group>
+                  <Group layoutX="14.0">
+                     <children>
+                        <AnchorPane prefHeight="35.0" prefWidth="47.0">
+                           <children>
+                              <Rectangle fx:id="lastMusicButton" arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
+                              <ImageView fitHeight="35.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/playback.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="47.0" layoutY="1.0" prefHeight="35.0" prefWidth="47.0">
+                           <children>
+                              <Rectangle fx:id="playMusicButton" arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" layoutY="-1.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
+                              <ImageView fitHeight="36.0" fitWidth="47.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/play.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane layoutX="93.0" prefHeight="35.0" prefWidth="47.0">
+                           <children>
+                              <Rectangle fx:id="nextMusicButton" arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
+                              <ImageView fitHeight="35.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/playnext.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
+                     </children>
+                  </Group>
+                  <Slider layoutX="-137.0" layoutY="15.0" prefHeight="14.0" prefWidth="370.0" translateX="150.0" translateY="-45.0" />
+               </children>
+            </AnchorPane>
+            <Group layoutX="18.0" layoutY="110.0">
+               <children>
+                  <Button layoutX="234.0" mnemonicParsing="false" onAction="#OpenMusicExplorerForProcessing" style="-fx-background-color: #afafaf;" text="Open Resource File">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <CheckBox fx:id="customizeProcessingMusic" mnemonicParsing="false" prefHeight="25.0" prefWidth="234.0" text="Customize Processing music" textFill="#f2f2f2">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </CheckBox>
+               </children>
+            </Group>
+            <Group layoutX="18.0" layoutY="171.0">
+               <children>
+                  <Button layoutX="234.0" layoutY="-2.0" mnemonicParsing="false" onAction="#OpenMusicExplorerForComplete" style="-fx-background-color: #afafaf;" text="Open Resource File">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <CheckBox fx:id="customizeCompleteMusic" mnemonicParsing="false" prefHeight="25.0" prefWidth="234.0" text="Customize Complete music" textFill="#f8f8f8">
+                     <font>
+                        <Font size="16.0" />
+                     </font>
+                  </CheckBox>
+               </children>
+            </Group>
+         </children>
+      </AnchorPane>
+      <Label fx:id="musicName" contentDisplay="CENTER" text="Misic Name" textAlignment="CENTER" textFill="#ffb302" translateX="60.0" translateY="60.0" StackPane.alignment="TOP_LEFT">
+         <font>
+            <Font name="Bookman Old Style" size="24.0" />
+         </font>
+      </Label>
+   </children>
+</StackPane>

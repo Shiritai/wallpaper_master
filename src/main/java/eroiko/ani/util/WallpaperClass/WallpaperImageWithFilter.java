@@ -7,8 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import eroiko.ani.util.SourceRedirector;
-import eroiko.ani.util.NeoWallpaper.WallpaperComparator;
+import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
+import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import eroiko.ani.util.myDS.myPair;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -37,13 +37,13 @@ public class WallpaperImageWithFilter implements WallpaperProto{
         System.out.println(Path.of(this.directory.toString()));
         wallpapers = new ArrayList<>();
         root.forEach(p -> wallpapers.add(new myPair<>(0, p)));
-        wallpapers.sort((a, b) -> WallpaperComparator.pathNameCompare(a.value.getFileName(), b.value.getFileName())); // 讓圖片照順序排佈
+        wallpapers.sort((a, b) -> WallpaperUtil.pathNameCompare(a.value.getFileName(), b.value.getFileName())); // 讓圖片照順序排佈
         size = wallpapers.size();
         length = wallpapers.size();
     }
     
     public WallpaperImageWithFilter() throws IOException{
-        this(SourceRedirector.defaultImagePath);
+        this(WallpaperPath.defaultImagePath);
     }
 
     private int rightShift(){

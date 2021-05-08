@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.util.concurrent.Executors;
 
 import eroiko.ani.controller.MainController;
-import eroiko.ani.util.SourceRedirector;
+import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import eroiko.ani.util.WallpaperClass.WallpaperImage;
 
 public class OldCrawlerManager implements Runnable {
@@ -24,34 +24,25 @@ public class OldCrawlerManager implements Runnable {
     
     public synchronized void run(){
         try {
-            CrawlerZeroChan crawler = new CrawlerZeroChan(SourceRedirector.defaultDataPath.toString(), keywords.split(" "), 2, 1);
+            CrawlerZeroChan crawler = new CrawlerZeroChan(WallpaperPath.defaultDataPath.toString(), keywords.split(" "), 2, 1);
             var service = Executors.newCachedThreadPool();
             var previewResult = crawler.readMultiplePagesAndDownloadPreviews(pages, service);
     
             service.shutdown();
             WallpaperImage wp = null;
-            if (SourceRedirector.preViewOrNot){
-                System.out.println("Opening Preview Viewing Window... " + crawler.getPreviewsFolderPath().replace('/', '\\'));
-                if (!quit){
-                    System.err.println("Opening Preview Viewing Window... " + crawler.getPreviewsFolderPath().replace('/', '\\'));
-                }
-                wp = new WallpaperImage(Path.of(crawler.getPreviewsFolderPath().replace('/', '\\')));
+            var service2 = Executors.newCachedThreadPool();
+            crawler.downloadSelectedImagesUsingPAIRs(previewResult, service2);
+            service2.shutdown();
+            while (!service2.isShutdown()); // 等待線程關閉
+            System.out.println("Download complete!");
+            if (!quit){
+                System.err.println("Download complete!");
             }
-            else {
-                var service2 = Executors.newCachedThreadPool();
-                crawler.downloadSelectedImagesUsingPAIRs(previewResult, service2);
-                service2.shutdown();
-                while (!service2.isShutdown()); // 等待線程關閉
-                System.out.println("Download complete!");
-                if (!quit){
-                    System.err.println("Download complete!");
-                }
-                System.out.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
-                if (!quit){
-                    System.err.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
-                }
-                wp = new WallpaperImage(Path.of(crawler.getFolderPath().replace('/', '\\')));
+            System.out.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
+            if (!quit){
+                System.err.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
             }
+            wp = new WallpaperImage(Path.of(crawler.getFolderPath().replace('/', '\\')));
             MainController.preview = wp;
             MainController.hasChangedPreview.set(true);
             MainController.staticImagePreview.setImage(MainController.preview.getCurrentWallpaper());

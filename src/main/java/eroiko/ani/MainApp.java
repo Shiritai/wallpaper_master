@@ -2,21 +2,20 @@ package eroiko.ani;
 
 import java.awt.SystemTray;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
-import javax.imageio.ImageIO;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
 import eroiko.ani.controller.MainController;
-import eroiko.ani.util.Dumper;
-import eroiko.ani.util.SourceRedirector;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
+import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
@@ -85,7 +84,6 @@ public class MainApp extends Application{
 
         mainStage.setOnCloseRequest((e) -> {
             Wallpaper.executeResultAndCleanPreview(); // 執行所有 Wallpaper 檔案操作!
-            new Alert(Alert.AlertType.INFORMATION, "Executing your wallpapers, please wait a minute :)").showAndWait();
             mainStage.close();
             Platform.exit();
             System.exit(0);
@@ -102,25 +100,30 @@ public class MainApp extends Application{
         childMenu[1].setOnAction(e -> System.out.println("clicked opt2"));
         menu.getItems().addAll(childMenu[0], childMenu[1]);
         
-        menuItems = new MenuItem [3];
-        menuItems[0] = new MenuItem("Take clipboard image to wallpaper folder");
-        menuItems[0].setOnAction(e -> {
-            var cb = Clipboard.getSystemClipboard().getImage();
+        menuItems = new MenuItem [4];
+        menuItems[0] = new MenuItem("Open Wallpaper Master");
+        menuItems[0].setOnAction(e -> mainStage.show());
+        menuItems[1] = new MenuItem("Take clipboard images to wallpaper folder");
+        menuItems[1].setOnAction(e -> {
+            var cb = Clipboard.getSystemClipboard().getFiles();
             try {
-                var tmpFile = new File(SourceRedirector.defaultDataPath.toString() + "\\wallpaper\\");
+                var tmpFile = new File(WallpaperPath.defaultDataPath.toString() + "\\wallpaper\\"); // 未來必須改用 Preference Path
                 if (!tmpFile.exists()){
                     tmpFile.mkdir();
                 }
-                ImageIO.write(SwingFXUtils.fromFXImage(cb, null), "png", tmpFile);
+                for (var f : cb){
+                    Files.copy(new FileInputStream(f), Path.of(tmpFile + "\\" + f.getName()), StandardCopyOption.REPLACE_EXISTING);
+                    System.out.println(f.getName());
+                    System.out.println(Path.of(tmpFile + "\\" + f.getName()));
+                }
             } catch (IOException e1) {
                 System.out.println(e1.toString());
             }
         });
-        menuItems[0] = new MenuItem("Preference");
-        menuItems[0].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
-        menuItems[1] = new MenuItem("Open Wallpaper Master");
-        menuItems[1].setOnAction(e -> mainStage.show());
-        // menuItems[1].setOnAction(e -> new Alert(Alert.AlertType.INFORMATION, "Clicked on Process Menu!").showAndWait());
+        menuItems[2] = new MenuItem("Preference");
+        menuItems[2].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
+        menuItems[3] = new MenuItem("Music with syamiko");
+        menuItems[3].setOnAction(e -> (new MainController()).OpenMusicWindow());
     }
     
     private void initTrayIcon(){

@@ -11,7 +11,6 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollBar?>
-<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -24,12 +23,10 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.TilePane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.media.MediaView?>
-<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -252,6 +249,7 @@
                                                                                        </image>
                                                                                     </ImageView>
                                                                                  </center></BorderPane>
+                                                                              <MediaView fx:id="mediaBox" fitHeight="10.0" fitWidth="10.0" />
                                                                            </children>
                                                                         </AnchorPane>
                                                                     </items>
@@ -339,40 +337,6 @@
                                                 </AnchorPane>
                                              </content>
                                           </Tab>
-                                          <Tab text="Music Browser">
-                                             <content>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                                   <children>
-                                                      <MediaView fx:id="mediaBox" fitHeight="200.0" fitWidth="200.0" layoutX="191.0" layoutY="106.0" />
-                                                      <HBox layoutX="171.0" layoutY="375.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="37.0" prefWidth="581.0" style="-fx-border-width: 0.5; -fx-border-color: #4f4f4f;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="375.0">
-                                                         <children>
-                                                            <AnchorPane prefHeight="35.0" prefWidth="587.0" style="-fx-border-fill: transparent;">
-                                                               <children>
-                                                                  <Group layoutX="191.0" layoutY="8.0">
-                                                                     <children>
-                                                                        <Slider layoutX="57.0" layoutY="6.0" />
-                                                                        <Text layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volume" wrappingWidth="49.13671875">
-                                                                           <font>
-                                                                              <Font size="14.0" />
-                                                                           </font>
-                                                                        </Text>
-                                                                     </children>
-                                                                  </Group>
-                                                                  <Group>
-                                                                     <children>
-                                                                        <Rectangle fx:id="lastMusicButton" arcHeight="5.0" arcWidth="5.0" fill="#eeeeee" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
-                                                                     </children>
-                                                                  </Group>
-                                                                  <Rectangle fx:id="playMusicButton" arcHeight="5.0" arcWidth="5.0" fill="#eeeeee" height="35.0" layoutX="47.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
-                                                                  <Rectangle fx:id="nextMusicButton" arcHeight="5.0" arcWidth="5.0" fill="#eeeeee" height="35.0" layoutX="94.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
-                                                               </children>
-                                                            </AnchorPane>
-                                                         </children>
-                                                      </HBox>
-                                                   </children>
-                                                </AnchorPane>
-                                             </content>
-                                          </Tab>
                                       </tabs>
                                     </TabPane>
                                  </children>
@@ -385,22 +349,6 @@
                                              <children>
                                                 <TabPane prefHeight="194.0" prefWidth="624.0" style="-fx-box-border: transparent;" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                   <tabs>
-                                                    <Tab text="Status">
-                                                      <content>
-                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                                               <children>
-                                                                  <StackedAreaChart prefHeight="161.0" prefWidth="579.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                                                    <xAxis>
-                                                                      <NumberAxis side="BOTTOM" />
-                                                                    </xAxis>
-                                                                    <yAxis>
-                                                                      <NumberAxis side="LEFT" />
-                                                                    </yAxis>
-                                                                  </StackedAreaChart>
-                                                               </children>
-                                                            </AnchorPane>
-                                                      </content>
-                                                    </Tab>
                                                     <Tab text="Terminal">
                                                       <content>
                                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
@@ -453,6 +401,22 @@
                                                                         </AnchorPane>
                                                                     </items>
                                                                   </SplitPane>
+                                                               </children>
+                                                            </AnchorPane>
+                                                      </content>
+                                                    </Tab>
+                                                    <Tab text="Status">
+                                                      <content>
+                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                                               <children>
+                                                                  <StackedAreaChart prefHeight="161.0" prefWidth="579.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                    <xAxis>
+                                                                      <NumberAxis side="BOTTOM" />
+                                                                    </xAxis>
+                                                                    <yAxis>
+                                                                      <NumberAxis side="LEFT" />
+                                                                    </yAxis>
+                                                                  </StackedAreaChart>
                                                                </children>
                                                             </AnchorPane>
                                                       </content>

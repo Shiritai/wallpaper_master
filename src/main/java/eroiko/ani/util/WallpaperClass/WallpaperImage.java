@@ -7,8 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
-import eroiko.ani.util.SourceRedirector;
-import eroiko.ani.util.NeoWallpaper.WallpaperComparator;
+import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
+import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.image.Image;
@@ -37,7 +37,7 @@ public class WallpaperImage implements WallpaperProto{
         System.out.println(Path.of(this.directory.toString()));
         wallpapers = new ArrayList<Path>();
         root.forEach(p -> wallpapers.add(p));
-        wallpapers.sort((a, b) -> WallpaperComparator.pathNameCompare(a.getFileName(), b.getFileName())); // 讓圖片照順序排佈
+        wallpapers.sort((a, b) -> WallpaperUtil.pathNameCompare(a.getFileName(), b.getFileName())); // 讓圖片照順序排佈
         if (initImage != null){
             setInitImage(initImage);
             current = initIndex;
@@ -53,7 +53,7 @@ public class WallpaperImage implements WallpaperProto{
     
     /** 建立預設圖片庫的 WallpaperImage */
     public WallpaperImage() throws IOException{
-        this(SourceRedirector.defaultImagePath);
+        this(WallpaperPath.defaultImagePath);
     }
 
     public void add(){}

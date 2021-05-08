@@ -1,114 +1,101 @@
 package eroiko.ani.util;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 
-import eroiko.ani.MainApp;
-import eroiko.ani.util.NeoWallpaper.WallpaperComparator;
-import javafx.scene.image.Image;
+import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
+import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.scene.media.Media;
 
 
-/** 實作類似 Iterator 的資料結構, 所有 get functions (除了 Current) 都會移動 Index */
+/** 第一個為 Complete music, 第二個為 processing music */
 public class MediaOperator {
-    private Path directory;
+    public static MediaOperator playBox = new MediaOperator();
+
     private DirectoryStream<Path> root;
     private ArrayList<Path> medias;
-    private int initIndex = -1;
     private int current;
-    /** 
-     * @param directory : the testing directory or the media folder of this project
-     * @param certain : is true if  {@code directory} is in testing mode
-     * @param initMedia : set this first media you'd like to see with it's path
-     * @throws IOException
-     */
-    public MediaOperator(String directory, boolean certain, Path initMedia) throws IOException{
-        this.directory = Path.of(directory);
-        if (certain){
-            root = Files.newDirectoryStream(SourceRedirector.defaultMediaPath, "*.{mp3,wav,flac}");
-        }
-        else {
-            root = Files.newDirectoryStream(Path.of(this.directory.toString()), "*.{mp3,wav,flac}");
-            System.out.println(Path.of(this.directory.toString()));
+
+    public MediaOperator(){
+        try {
+            root = Files.newDirectoryStream(WallpaperPath.defaultMusicPath, "*.{mp3,wav,flac}");
+        } catch (IOException e) {
+            System.out.println(e.toString());
         }
         medias = new ArrayList<Path>();
         root.forEach(p -> medias.add(p));
-        medias.sort((a, b) -> WallpaperComparator.pathNameCompare(a.getFileName(), b.getFileName())); // 直接沿用有何不可 OwO
-        if (initMedia != null){
-            setInitMedia(initMedia);
-            current = initIndex;
-        }
+        medias.sort((a, b) -> WallpaperUtil.pathNameCompare(a.getFileName(), b.getFileName())); // 直接沿用有何不可 OwO
+        current = 2; // 從 0, 1 (default) 的下一個開始
     }
-    /** 
-     * @param directory : the testing directory or the media folder of this project
-     * @param certain : is true if  {@code directory} is in testing mode
-     * @throws IOException
-     */
-    public MediaOperator(String directory, boolean certain) throws IOException{
-        this(directory, certain, null);
+
+    public void addNewMusic(Path path, boolean isComplete) throws IOException{
+        var monoFirst = medias.get(isComplete ? 0 : 1);
+        medias.add( // 把首位複製到最後
+            Path.of(monoFirst.getParent().toString() + shiftSerialNumber(monoFirst, medias.size() + 1))
+        );
+        var newMusic = Path.of(WallpaperPath.defaultMusicPath.toString() + "\\01_" + path.getFileName());
+        Files.copy( // 複製目標
+            path, newMusic,
+            StandardCopyOption.REPLACE_EXISTING
+        );
+        medias.set(isComplete ? 0 : 1, newMusic);
+    }
+
+    public void addNewCompleteToDefault(Path path) throws IOException{
+        addNewMusic(path, true);
     }
     
-    public MediaOperator() throws IOException{
-        this(FileSystems.getDefault().getPath("").toAbsolutePath().toString(), MainApp.isTesting);
+    public void addNewProcessingToDefault(Path path) throws IOException{
+        addNewMusic(path, false);
     }
 
-    public boolean setInitMedia(Path p){
-        return (initIndex = medias.indexOf(p)) != -1;
-    }
-
-    public Media getInitMedia(){
-        try {
-            return new Media(medias.get(initIndex).toUri().toURL().toString());
-        } catch (Exception e) { // 包含 initIndex == -1 的例外
-            System.out.println(e.toString());
-            return null;
-        }
+    private String shiftSerialNumber(Path path, int afterNumber) {
+        String p = path.getFileName().toString();
+        return p.charAt(0) + Integer.toString(afterNumber) + p.substring(p.indexOf('_'));
     }
 
     public Path getCurrentMediaPath(){
         return medias.get(current);
     }
     
-    public Path getNextMediaPath(){
-        return medias.get(++current);
-    }
-
-    public Media getCurrentMedia(){
-        try {
-            return new Media(medias.get(current).toUri().toURL().toString());
-        } catch (MalformedURLException e) {
-            System.out.println(e.toString());
+    public Media getMedia(int serialNumber){
+        if (serialNumber >= medias.size() || serialNumber < 0){
+            throw new IllegalArgumentException("Music index out of range!");
         }
-        return null;
-    }
-
-    public Media getNextMedia(){
         try {
-            return (++current < medias.size()) ? new Media(medias.get(current).toUri().toURL().toString()) : new Media(medias.get((current = 0)).toUri().toURL().toString());
-        } catch (MalformedURLException e) {
+            return new Media(medias.get(serialNumber).toUri().toURL().toString());
+        } catch (Exception e) { // 包含 initIndex == -1 的例外
             System.out.println(e.toString());
-        }
-        return null;
+            return null;
+        }    
     }
     
-    public Image getLastMedia(){
-        try {
-            return (--current >= 0) ? new Image(medias.get(current).toUri().toURL().toString()) : new Image(medias.get((current = medias.size() - 1)).toUri().toURL().toString());
-        } catch (MalformedURLException e) {
-            System.out.println(e.toString());
-        }
-        return null;
+    public Media getDefaultCompleteMedia(){
+        return getMedia(0);
     }
 
-    public static MediaOperator copy(MediaOperator wp) throws IOException{
-        var newWp = new MediaOperator(wp.directory.toString(), MainApp.isTesting);
-        newWp.current = wp.current;
-        return newWp;
+    public Media getDefaultProcessingMedia(){
+        return getMedia(1);
+    }
+    
+
+    public Media getCurrentMedia(){
+        return getMedia(current);
+    }
+    
+    public Media getNextMedia(){
+        return getMedia((++current < medias.size()) ? current : (current = 0));
+    }
+    
+    public Media getPreviousMedia(){
+        return getMedia((--current == -1) ? medias.size() - 1 : current);
+    }
+    
+    public Media getRandomMedia(){
+        return getMedia((int) (Math.random() * medias.size()));
     }
 }
-
