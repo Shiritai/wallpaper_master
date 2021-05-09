@@ -27,7 +27,7 @@ import javafx.stage.*;
 public class MainApp extends Application{
         
     public static boolean isTesting = true;
-    public static final String version = "version 0.0.1";
+    public static final String version = "version 0.0.2";
     
     public static Stage mainStage;
     public static Scene mainScene;
@@ -95,13 +95,13 @@ public class MainApp extends Application{
 
     private void setMinimizedMenu() {
         /* Set minimized menu identities */
-        menu = new Menu("Options");
-        childMenu = new MenuItem[2];
-        childMenu[0] = new MenuItem("opt1");
-        childMenu[0].setOnAction(e -> System.out.println("clicked opt1"));
-        childMenu[1] = new MenuItem("opt2");
-        childMenu[1].setOnAction(e -> System.out.println("clicked opt2"));
-        menu.getItems().addAll(childMenu[0], childMenu[1]);
+        // menu = new Menu("Options");
+        // childMenu = new MenuItem[2];
+        // childMenu[0] = new MenuItem("opt1");
+        // childMenu[0].setOnAction(e -> System.out.println("clicked opt1"));
+        // childMenu[1] = new MenuItem("opt2");
+        // childMenu[1].setOnAction(e -> System.out.println("clicked opt2"));
+        // menu.getItems().addAll(childMenu[0], childMenu[1]);
         
         menuItems = new MenuItem [5];
         menuItems[0] = new MenuItem("Open Wallpaper Master");
@@ -123,14 +123,14 @@ public class MainApp extends Application{
                 System.out.println(e1.toString());
             }
         });
-        menuItems[2] = new MenuItem("Music with Syamiko");
-        menuItems[2].setOnAction(e -> (new MainController()).OpenMusicWindow());
-        // menuItems[2].setOnAction(e -> (new MainController()).OpenSyamikoWindow());
+        menuItems[2] = new MenuItem("Preference");
+        menuItems[2].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
         menuItems[3] = new MenuItem("Play/Pause music");
         menuItems[3].setOnAction(e -> MusicBox.musicBox.playOrPause());
         // menuItems[3].setOnAction(e -> MusicWithSyamiko.musicBox.playOrPause());
-        menuItems[4] = new MenuItem("Preference");
-        menuItems[4].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
+        menuItems[4] = new MenuItem("Music with Syamiko");
+        menuItems[4].setOnAction(e -> (new MainController()).OpenMusicWindow());
+        // menuItems[4].setOnAction(e -> (new MainController()).OpenSyamikoWindow());
     }
     
     private void initTrayIcon(){
@@ -139,9 +139,9 @@ public class MainApp extends Application{
         for (var m : menuItems){
             trayIcon.addMenuItem(m);
         }
-        trayIcon.insertSeparator(0);
-        trayIcon.insertMenuItem(menu, 0);
-        trayIcon.insertSeparator(7);
+        trayIcon.insertSeparator(2);
+        // trayIcon.insertMenuItem(menu, 0);
+        trayIcon.insertSeparator(6);
         trayIcon.addExitItem(true);
     }
 }

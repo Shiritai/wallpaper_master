@@ -140,7 +140,7 @@
       <version>15.0.1</version>
     </dependency>
 
-  </dependencies>
+    </dependencies>
 
   <build>
     <pluginManagement>

@@ -1,5 +1,6 @@
 package eroiko.ani.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -29,15 +30,22 @@ public class MediaOperator {
         medias = new ArrayList<Path>();
         root.forEach(p -> medias.add(p));
         medias.sort((a, b) -> WallpaperUtil.pathNameCompare(a.getFileName(), b.getFileName())); // 直接沿用有何不可 OwO
-        current = 2; // 從 0, 1 (default) 的下一個開始
+        current = 0; // 從 0, 1 (default) 的下一個開始
     }
 
     public void addNewMusic(Path path, boolean isComplete) throws IOException{
-        var monoFirst = medias.get(isComplete ? 0 : 1);
+        var motoFirst = medias.get(isComplete ? 0 : 1);
+        motoFirst.toFile().renameTo(new File(motoFirst.getParent().toString() + shiftSerialNumber(motoFirst, medias.size() + 1)));
+        System.out.print("Default Music has renamed to : ");
+        System.out.println(motoFirst);
         medias.add( // 把首位複製到最後
-            Path.of(monoFirst.getParent().toString() + shiftSerialNumber(monoFirst, medias.size() + 1))
+            motoFirst
         );
-        var newMusic = Path.of(WallpaperPath.defaultMusicPath.toString() + "\\01_" + path.getFileName());
+        var newMusic = Path.of(
+            WallpaperPath.defaultMusicPath.toString()
+             + String.format("\\0%d_", isComplete ? 1 : 2)
+             + path.getFileName()
+        );
         Files.copy( // 複製目標
             path, newMusic,
             StandardCopyOption.REPLACE_EXISTING

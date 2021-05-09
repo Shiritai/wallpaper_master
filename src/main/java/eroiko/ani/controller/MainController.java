@@ -2,6 +2,9 @@ package eroiko.ani.controller;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ResourceBundle;
 
 import eroiko.ani.MainApp;
@@ -24,16 +27,23 @@ import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.*;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 public class MainController implements Initializable {
     /* Support variables */
@@ -58,7 +68,10 @@ public class MainController implements Initializable {
 
     @FXML private ImageView imagePreview;
     
-    @FXML private TreeView<String> treeFileExplorer;
+    /* File explorer */
+    @FXML private TreeView<Path> treeFileExplorer;
+    @FXML private TilePane viewImageTileTable;
+    @FXML private ScrollPane scrollableTile;
     @FXML private Label pathLabel;
     @FXML private BorderPane openWindowsFileExplorer = new BorderPane();
     @FXML private TabPane tableOfBrowser;
@@ -620,9 +633,9 @@ public class MainController implements Initializable {
         initializeKeyBoardShortcuts();
         initializeMouseEvents();
         initSearchQueue();
-        initMediaSettings();
+        initTreeView();
     }
-
+    
     public void initializeMouseEvents(){
         imagePreview.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2){
@@ -636,11 +649,9 @@ public class MainController implements Initializable {
         imagePreview.setOnScroll((ScrollEvent e) -> {
             var dist = e.getDeltaY();
             if (dist > 0){
-                // imagePreview.setImage(preview.getNextWallpaper());
                 imagePreview.setImage(theWallpaper.getPreviousPreviewImage());
             }
             else if (dist < 0){
-                // imagePreview.setImage(preview.getPreviousWallpaper());
                 imagePreview.setImage(theWallpaper.getNextPreviewImage());
             }
             e.consume();
@@ -669,8 +680,15 @@ public class MainController implements Initializable {
                 
             }
         });
+        treeFileExplorer.setOnMouseClicked(e -> {
+            try {
+                treeViewSelected();
+            } catch (IOException e1) {
+                System.out.println(e1);
+            }
+        });
     }
-
+    
     public void initializeKeyBoardShortcuts(){
         Terminal_in.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> {
             if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
@@ -805,7 +823,86 @@ public class MainController implements Initializable {
         }
     }
     
-    private void initMediaSettings() {
+    /* 採後序 */
+    private void initTreeView() {
+        var rootPath = FileSystems.getDefault().getPath("data");
+        var root = new TreeItem<>(rootPath, WallpaperUtil.fetchIconUsePath(rootPath));
+        try {
+            postOrderTraverse(root);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // treeFileExplorer.setCellFactory(new Callback<TreeView<Path>, TreeCell<Path>>() {
+        //     public TreeCell<Path> call(TreeView<Path> tv) {
+        //         return new TreeCell<Path>() {
+        //             @Override
+        //             protected void updateItem(Path item, boolean empty) {
+        //                 super.updateItem(item, empty);
+        //                 setText((empty || item == null) ? "" : item.getFileName().toString());
+        //             }
+        //         };
+        //     }
+        // });
+        postOrderTraverseKillRedundantName(root); // 哀...
+        root.setExpanded(true);
+        treeFileExplorer.setRoot(root);
+    }
 
+    private TreeItem<Path> postOrderTraverse(TreeItem<Path> cur) throws IOException{
+        if (Files.isDirectory(cur.getValue())){
+            for (var p : Files.newDirectoryStream(cur.getValue())){
+                // cur.getChildren().add(postOrderTraverse(new TreeItem<>(p))); // 非洲啊...
+                cur.getChildren().add(postOrderTraverse(new TreeItem<>(p, WallpaperUtil.fetchIconUsePath(p)))); // 非洲啊...
+            }
+        }
+        return cur;
+    }
+    
+    private void postOrderTraverseKillRedundantName(TreeItem<Path> cur){
+        // if (Files.isDirectory(cur.getValue())){
+        //     for (var p : cur.getChildren()){
+        //         postOrderTraverseKillRedundantName(p);
+        //         p.setValue(p.getValue().getFileName());
+        //     }
+        // }
+    }
+    
+    private void treeViewSelected() throws IOException{
+        var path = treeFileExplorer.getSelectionModel().getSelectedItem().getValue().toAbsolutePath();
+        System.out.println(path);
+        viewImageTileTable.getChildren().clear();
+        if (Files.isDirectory(path.toRealPath().toAbsolutePath())){
+            System.out.println("Meow");
+            // for (var p : path.toRealPath().getFileSystem().getRootDirectories()){
+            for (var p : Files.newDirectoryStream(path)){
+                var iconView = WallpaperUtil.fetchIconUsePath(p);
+                iconView.setFitHeight(58);
+                iconView.setFitWidth(58);
+
+                var name = new Text(p.getFileName().toString());
+                name.setStyle("-fx-font: 11 system;");
+
+                var vbox = new VBox(iconView, name);
+                vbox.setAlignment(Pos.CENTER);
+
+                viewImageTileTable.getChildren().add(vbox);
+                viewImageTileTable.setPadding(new Insets(5., 5., 5., 8.));
+                viewImageTileTable.setVgap(8.);
+                viewImageTileTable.setHgap(8.);
+        
+                var container = new VBox();
+                container.setAlignment(Pos.CENTER);
+                container.getChildren().addAll(viewImageTileTable);
+                scrollableTile.setContent(container);
+            } 
+        }
+        else {
+            var iv = new ImageView(new Image(path.toFile().toURI().toString()));
+            scrollableTile.setContent(iv);
+        }
+
+        scrollableTile.setPannable(true);
+        scrollableTile.setFitToHeight(true);
+        scrollableTile.setVbarPolicy(ScrollBarPolicy.ALWAYS);
     }
 }

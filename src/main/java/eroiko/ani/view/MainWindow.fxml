@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Group?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.StackedAreaChart?>
 <?import javafx.scene.control.Button?>
@@ -11,6 +11,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.ScrollBar?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
@@ -255,20 +256,28 @@
                                                             </AnchorPane>
                                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                                <children>
-                                                                  <SplitPane dividerPositions="0.26800670016750416" layoutX="-111.0" layoutY="31.0" prefHeight="341.0" prefWidth="622.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                  <SplitPane dividerPositions="0.28422876949740034" layoutX="-111.0" layoutY="31.0" prefHeight="341.0" prefWidth="622.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                     <items>
-                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="372.0" prefWidth="163.0">
                                                                            <children>
-                                                                              <Group>
-                                                                                 <children>
-                                                                                    <TreeView fx:id="treeFileExplorer" prefHeight="372.0" prefWidth="152.0" />
-                                                                                 </children>
-                                                                              </Group>
+                                                                              <TreeView fx:id="treeFileExplorer" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="372.0" prefWidth="162.0" />
                                                                            </children>
                                                                         </AnchorPane>
-                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="372.0" prefWidth="405.0">
                                                                            <children>
-                                                                              <TilePane fx:id="viewImageTIleTable" layoutX="46.0" layoutY="138.0" prefHeight="372.0" prefWidth="419.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                                                              <ScrollPane fx:id="scrollableTile" layoutX="-5.0" prefHeight="372.0" prefWidth="419.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-5.0" AnchorPane.rightAnchor="-4.0" AnchorPane.topAnchor="0.0">
+                                                                                <content>
+                                                                                  <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="370.0" prefWidth="416.0">
+                                                                                       <children>
+                                                                                          <TilePane fx:id="viewImageTileTable" minHeight="370.0" minWidth="416.0" prefHeight="370.0" prefWidth="416.0" tileAlignment="TOP_LEFT" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                                                             <padding>
+                                                                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                                                                             </padding>
+                                                                                          </TilePane>
+                                                                                       </children>
+                                                                                    </AnchorPane>
+                                                                                </content>
+                                                                              </ScrollPane>
                                                                            </children>
                                                                         </AnchorPane>
                                                                     </items>
@@ -340,7 +349,7 @@
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                  <children>
-                                    <SplitPane dividerPositions="0.8680851063829788" orientation="VERTICAL" prefHeight="237.0" prefWidth="601.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <SplitPane dividerPositions="0.8680851063829788" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="224.0" prefWidth="581.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                       <items>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="194.0" prefWidth="624.0">
                                              <children>

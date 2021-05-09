@@ -102,7 +102,7 @@
             </Group>
          </children>
       </AnchorPane>
-      <Label fx:id="musicName" contentDisplay="CENTER" text="Misic Name" textAlignment="CENTER" textFill="#ffb302" translateX="60.0" translateY="40.0" StackPane.alignment="TOP_LEFT">
+      <Label fx:id="musicName" contentDisplay="CENTER" text="Misic Name" textAlignment="CENTER" textFill="#ffb302" translateX="50.0" translateY="40.0" StackPane.alignment="TOP_LEFT">
          <font>
             <Font name="Bookman Old Style" size="20.0" />
          </font>

@@ -69,7 +69,7 @@ public class MusicController implements Initializable{
         // progressBar.setOnMouseDragged(e -> MusicBox.musicBox.player.seek(Duration.seconds(progressBar.getValue())));
         
         volumeBar.setValue(2.5);
-        volumeBar.valueProperty().addListener(e -> MusicBox.musicBox.player.setVolume(volumeBar.getValue() / 100));
+        volumeBar.valueProperty().addListener(e -> MusicBox.musicBox.player.setVolume(volumeBar.getValue() / 1000));
         
         playMusicButton.setOnMouseClicked(e -> {
             MusicBox.musicBox.playOrPause();

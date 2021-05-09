@@ -5,7 +5,11 @@ import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.swing.filechooser.FileSystemView;
+
 import eroiko.ani.util.Dumper;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.ImageView;
 
 public class WallpaperUtil {
     /* 比較同類型, 以編號區分的檔案, 使用正則表達式, 適用於 ArrayList, Set */
@@ -105,4 +109,20 @@ public class WallpaperUtil {
         var tmp = file.getFileName().toString();
         return tmp.substring(tmp.lastIndexOf('.'), tmp.length());
     }
+
+    /** 取得系統小圖示, 這野太方便... */
+    public static ImageView fetchIconUsePath(Path path){ // 真方便
+        var tmp = FileSystemView.getFileSystemView().getSystemIcon(path.toFile());
+        var tmpBufferImage = new java.awt.image.BufferedImage(
+            tmp.getIconWidth(),
+            tmp.getIconHeight(),
+            java.awt.image.BufferedImage.TYPE_INT_ARGB
+        );
+        tmp.paintIcon(null, tmpBufferImage.getGraphics(), 0, 0);
+        return new ImageView(SwingFXUtils.toFXImage(tmpBufferImage, null));
+    }
+
+    // public DirectoryStream<Path> tmpP(Path path){
+    //     return path.getFileSystem().getRootDirectories();
+    // }
 }
