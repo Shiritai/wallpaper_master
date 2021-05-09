@@ -31,8 +31,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -82,9 +80,6 @@ public class MainController implements Initializable {
     @FXML private Text percentageMark;
 
     /* Media */
-    @FXML private MediaView mediaBox;
-    static MediaPlayer staticCompleteMusic;
-    static MediaPlayer staticProcessingMusic;
     @FXML private Rectangle lastMusicButton;
     @FXML private Rectangle playMusicButton;
     @FXML private Rectangle nextMusicButton;
@@ -132,9 +127,7 @@ public class MainController implements Initializable {
     void StartWalkingQueue(){
         ObservableList<myPair<String, String>> data = searchQueue.getItems();
         int size = data.size();
-        mediaBox.setMediaPlayer(staticProcessingMusic);
-        staticProcessingMusic.setCycleCount(data.size() * 4);
-        staticProcessingMusic.play();
+        MusicBox.musicBox.playProcessing();
         crawlerThread = new Service<Void>(){
             @Override
             protected Task<Void> createTask(){
@@ -192,9 +185,7 @@ public class MainController implements Initializable {
             @Override
             public void handle(WorkerStateEvent e){
                 System.out.println("Done, closing crawlerThread.");
-                staticProcessingMusic.stop();
-                mediaBox.setMediaPlayer(staticCompleteMusic);
-                staticCompleteMusic.play();
+                MusicBox.musicBox.playComplete();
                 progressBarText.textProperty().unbind();
                 searchQueue.getItems().clear();
                 nowProcessingText.clear();
@@ -260,14 +251,11 @@ public class MainController implements Initializable {
         try {
             if (WallpaperUtil.isImage(file)){
                 theWallpaper = new Wallpaper(file.getParent(), file);
-                // preview = new WallpaperImage(file.getParent().toAbsolutePath().toString(), false, file);
                 hasChangedPreview.set(true);
-                // imagePreview.setImage(preview.getCurrentWallpaper());    
                 imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
             }
             else {
                 theWallpaper = new Wallpaper(file);
-                // preview = new WallpaperImage(file.toAbsolutePath().toString(), false);
                 hasChangedPreview.set(true);
                 imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
             }
@@ -370,18 +358,27 @@ public class MainController implements Initializable {
     
     public void OpenMusicWindow(){
         // tableOfBrowser.getSelectionModel().select(3); // 3 is the index of the tab
-        try {
-            var stage = new Stage();
-            stage.setTitle("Music with Syamiko");
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/MusicWindow.fxml"))));
-            stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
-            stage.setResizable(false);
-            stage.show();
-        } catch (Exception e){
-            System.out.println(e.toString());
-            if (!quit){
-                System.err.println(e.toString());
+        if (!MusicController.isActivating.get()){
+            try {
+                var stage = new Stage();
+                stage.setTitle("Music with Syamiko");
+                stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/MusicWindow.fxml"))));
+                stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+                stage.setResizable(false);
+                stage.setOnCloseRequest(e -> {
+                    MusicController.isActivating.set(false);
+                });
+                stage.show();
+            } catch (Exception e){
+                e.printStackTrace();
+                System.out.println(e.toString());
+                if (!quit){
+                    System.err.println(e.toString());
+                }
             }
+        }
+        else {
+            new Alert(Alert.AlertType.INFORMATION, "You've already open Music with Syamiko :)").showAndWait();
         }
     }
 
@@ -492,7 +489,7 @@ public class MainController implements Initializable {
                 }
             }
             if (!isPreview){
-                if (e.getCode().equals(KeyCode.PLUS) || e.getCode().equals(KeyCode.UP)){
+                if (e.getCode().equals(KeyCode.EQUALS) || e.getCode().equals(KeyCode.UP)){
                     if (!fixedWp.isEmpty()){
                         fixedWp.add();
                     }
@@ -545,7 +542,6 @@ public class MainController implements Initializable {
     public void OpenFileExplorer(){
         try {
             Runtime.getRuntime().exec("explorer /select," + theWallpaper.getCurrentFullPath());
-            // Runtime.getRuntime().exec("explorer /select," + preview.getCurrentWallpaperPath());
         } catch (IOException ex) {
             System.out.println(ex.toString());
             if (!quit){
@@ -779,7 +775,6 @@ public class MainController implements Initializable {
     }
     
     private void initMediaSettings() {
-        staticProcessingMusic = new MediaPlayer(MediaOperator.playBox.getDefaultProcessingMedia());
-        staticCompleteMusic = new MediaPlayer(MediaOperator.playBox.getDefaultCompleteMedia());
+
     }
 }

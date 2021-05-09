@@ -73,6 +73,10 @@ public class MediaOperator {
             return null;
         }    
     }
+
+    public String getCurrentMediaName(){
+        return getCurrentMediaPath().getFileName().toString();
+    }
     
     public Media getDefaultCompleteMedia(){
         return getMedia(0);
@@ -81,7 +85,6 @@ public class MediaOperator {
     public Media getDefaultProcessingMedia(){
         return getMedia(1);
     }
-    
 
     public Media getCurrentMedia(){
         return getMedia(current);
@@ -92,7 +95,7 @@ public class MediaOperator {
     }
     
     public Media getPreviousMedia(){
-        return getMedia((--current == -1) ? medias.size() - 1 : current);
+        return getMedia((current == 0) ? (current = medias.size() - 1) : --current);
     }
     
     public Media getRandomMedia(){

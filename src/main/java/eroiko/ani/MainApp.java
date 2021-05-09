@@ -10,6 +10,7 @@ import java.nio.file.StandardCopyOption;
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
 import eroiko.ani.controller.MainController;
+import eroiko.ani.util.MusicBox;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.application.Application;
@@ -101,14 +102,14 @@ public class MainApp extends Application{
         childMenu[1].setOnAction(e -> System.out.println("clicked opt2"));
         menu.getItems().addAll(childMenu[0], childMenu[1]);
         
-        menuItems = new MenuItem [4];
+        menuItems = new MenuItem [5];
         menuItems[0] = new MenuItem("Open Wallpaper Master");
         menuItems[0].setOnAction(e -> mainStage.show());
         menuItems[1] = new MenuItem("Take clipboard images to wallpaper folder");
         menuItems[1].setOnAction(e -> {
             var cb = Clipboard.getSystemClipboard().getFiles();
             try {
-                var tmpFile = new File(WallpaperPath.defaultDataPath.toString() + "\\wallpaper\\"); // 未來必須改用 Preference Path
+                var tmpFile = new File(WallpaperPath.defaultWallpaperPath.toString()); // 未來必須改用 Preference Path
                 if (!tmpFile.exists()){
                     tmpFile.mkdir();
                 }
@@ -121,21 +122,23 @@ public class MainApp extends Application{
                 System.out.println(e1.toString());
             }
         });
-        menuItems[2] = new MenuItem("Preference");
-        menuItems[2].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
-        menuItems[3] = new MenuItem("Music with syamiko");
-        menuItems[3].setOnAction(e -> (new MainController()).OpenMusicWindow());
+        menuItems[2] = new MenuItem("Music with Syamiko");
+        menuItems[2].setOnAction(e -> (new MainController()).OpenMusicWindow());
+        menuItems[3] = new MenuItem("Play/Pause music");
+        menuItems[3].setOnAction(e -> MusicBox.musicBox.playOrPause());
+        menuItems[4] = new MenuItem("Preference");
+        menuItems[4].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
     }
     
     private void initTrayIcon(){
         trayIcon = new FXTrayIcon(mainStage, getClass().getResource("img/wallpaper79.png"));
-        trayIcon.setTrayIconTooltip("Wallpaper Master\nversion 0.0.1");
+        trayIcon.setTrayIconTooltip("Wallpaper Master\n" + version);
         for (var m : menuItems){
             trayIcon.addMenuItem(m);
         }
         trayIcon.insertSeparator(0);
         trayIcon.insertMenuItem(menu, 0);
-        trayIcon.insertSeparator(5);
+        trayIcon.insertSeparator(7);
         trayIcon.addExitItem(true);
     }
 }

@@ -11,13 +11,25 @@ import javafx.collections.ObservableList;
 
 public class Wallpaperize {
     
-    public ObservableList<String> wallpaperize = FXCollections.observableArrayList();
+    public ObservableList<String> wallpaperize = FXCollections.observableArrayList(); // 未來 list 實作可能會用到
+    private Path path;
     
-    /** make wallpapers to "wallpaperXX" format */
+    /** 將當前資料夾準備好, 未來可以用此物件對此資料夾進行無數次 Wallpaperize */
     public Wallpaperize(Path path, boolean toUseDefault) throws IllegalArgumentException {
+        this.path = path;
         if (!path.toFile().isDirectory()){
             throw new IllegalArgumentException("Not a directory");
         }
+        if (toUseDefault){
+            WallpaperPath.updateUserWallpaperPath(path);
+        }
+    }
+    
+    /** 
+     *  將當前資料夾 Wallpaperize, 並取得當前最高 {@code Serial number + 1} 方便再次使用 WallpaperUtil.gerSerialNumber
+     * @param toUseDefault : 是否將此資料夾設為預設 Wallpaper 資料夾
+     */
+    public int execute(){
         /* make wallpapers to "wallpaperXX" format */
         DirectoryStream<Path> root = null;
         WallpaperUtil.resetSerialNumber();
@@ -31,10 +43,9 @@ public class Wallpaperize {
                 ));
                 wallpaperize.add(r.getFileName().toString());
             }
-            if (toUseDefault){
-                WallpaperPath.updateUserWallpaperPath(path);
-            }
+            return Integer.parseInt(WallpaperUtil.getSerialNumber());
         }
+        return 0;
     }
     
 }

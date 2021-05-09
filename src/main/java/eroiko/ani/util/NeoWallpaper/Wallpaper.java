@@ -57,8 +57,12 @@ public class Wallpaper {
             targetDir.mkdirs();
             WallpaperUtil.resetSerialNumber(); // 準備序列號種子
         }
-        new Wallpaperize(WallpaperPath.getWallpaperPath(), true);
+        else {
+            var wpi = new Wallpaperize(WallpaperPath.getWallpaperPath(), true);
+            WallpaperUtil.resetSerialNumber(wpi.execute()); // 準備序列號種子
+        }
         resultList.key.forEach(p -> {
+            System.out.println(p.toAbsolutePath().toString());
             try {
                 Files.copy(p, 
                     Path.of(target + "\\" + "wallpaper" + WallpaperUtil.getSerialNumber() + WallpaperUtil.getFileType(p)), 

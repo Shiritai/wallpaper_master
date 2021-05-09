@@ -14,7 +14,6 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="350.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="eroiko.ani.controller.PrimaryControllers.MusicController">
    <children>
       <ImageView fitHeight="400.0" fitWidth="640.0" opacity="0.96" pickOnBounds="true" preserveRatio="true">
@@ -29,7 +28,7 @@
                <children>
                   <Group layoutX="191.0" layoutY="8.0">
                      <children>
-                        <Slider layoutX="57.0" layoutY="6.0" />
+                        <Slider fx:id="volumeBar" layoutX="57.0" layoutY="6.0" value="50.0" />
                         <Text fill="#dddddd" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volume" wrappingWidth="60.13671875">
                            <font>
                               <Font name="System Bold" size="14.0" />
@@ -41,8 +40,8 @@
                      <children>
                         <AnchorPane prefHeight="35.0" prefWidth="47.0">
                            <children>
-                              <Rectangle fx:id="lastMusicButton" arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
-                              <ImageView fitHeight="35.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
+                              <ImageView fx:id="lastMusicButton" fitHeight="35.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../img/playback.png" />
                                  </image>
@@ -51,8 +50,8 @@
                         </AnchorPane>
                         <AnchorPane layoutX="47.0" layoutY="1.0" prefHeight="35.0" prefWidth="47.0">
                            <children>
-                              <Rectangle fx:id="playMusicButton" arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" layoutY="-1.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
-                              <ImageView fitHeight="36.0" fitWidth="47.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" layoutY="-1.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
+                              <ImageView fx:id="playMusicButton" fitHeight="36.0" fitWidth="47.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../img/play.png" />
                                  </image>
@@ -61,8 +60,8 @@
                         </AnchorPane>
                         <AnchorPane layoutX="93.0" prefHeight="35.0" prefWidth="47.0">
                            <children>
-                              <Rectangle fx:id="nextMusicButton" arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
-                              <ImageView fitHeight="35.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
+                              <ImageView fx:id="nextMusicButton" fitHeight="35.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../img/playnext.png" />
                                  </image>
@@ -71,7 +70,7 @@
                         </AnchorPane>
                      </children>
                   </Group>
-                  <Slider layoutX="-137.0" layoutY="15.0" prefHeight="14.0" prefWidth="370.0" translateX="150.0" translateY="-45.0" />
+                  <Slider fx:id="progressBar" disable="true" layoutX="-137.0" layoutY="15.0" prefHeight="14.0" prefWidth="370.0" translateX="150.0" translateY="-45.0" />
                </children>
             </AnchorPane>
             <Group layoutX="18.0" layoutY="110.0">
@@ -104,9 +103,9 @@
             </Group>
          </children>
       </AnchorPane>
-      <Label fx:id="musicName" contentDisplay="CENTER" text="Misic Name" textAlignment="CENTER" textFill="#ffb302" translateX="60.0" translateY="60.0" StackPane.alignment="TOP_LEFT">
+      <Label fx:id="musicName" contentDisplay="CENTER" text="Misic Name" textAlignment="CENTER" textFill="#ffb302" translateX="60.0" translateY="40.0" StackPane.alignment="TOP_LEFT">
          <font>
-            <Font name="Bookman Old Style" size="24.0" />
+            <Font name="Bookman Old Style" size="20.0" />
          </font>
       </Label>
    </children>
