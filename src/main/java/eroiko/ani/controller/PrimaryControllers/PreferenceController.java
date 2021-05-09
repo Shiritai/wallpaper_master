@@ -38,7 +38,7 @@ public class PreferenceController implements Initializable {
             var tmp = new DirectoryChooser();
             try {
                 WallpaperPath.updateUserWallpaperPath(tmp.showDialog(null).toPath());
-                savingDir.setText(WallpaperPath.getWallpaperPath().toAbsolutePath().toString());
+                savingDir.setText(WallpaperPath.getWallpaperPath().toString());
             } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
         }
     }
@@ -68,11 +68,11 @@ public class PreferenceController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb){
         savingDir.editableProperty().set(false);
-        savingDir.setText(WallpaperPath.defaultDataPath.toAbsolutePath().toString());
+        savingDir.setText(WallpaperPath.defaultDataPath.toString());
         savingDir.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (customizeBox.selectedProperty().get() && e.getCode().equals(KeyCode.ENTER)){
                 WallpaperPath.updateUserWallpaperPath(Path.of(savingDir.getText()));
-                savingDir.setText(WallpaperPath.getWallpaperPath().toAbsolutePath().toString());
+                savingDir.setText(WallpaperPath.getWallpaperPath().toString());
             }
         });
     
@@ -83,7 +83,7 @@ public class PreferenceController implements Initializable {
             else {
                 savingDir.editableProperty().set(false);
                 WallpaperPath.resetToDefaultWallpaperPath();
-                savingDir.setText(WallpaperPath.getWallpaperPath().toAbsolutePath().toString());
+                savingDir.setText(WallpaperPath.getWallpaperPath().toString());
             }
         });
         showWallpapers.setSelected(showWallpapersAfterCrawling.get());

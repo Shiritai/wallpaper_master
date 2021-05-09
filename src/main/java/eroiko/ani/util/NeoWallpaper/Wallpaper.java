@@ -25,7 +25,9 @@ public class Wallpaper {
     public static Wallpaper getWallpaper(int serialNumber){ return wallpapersToFile.get(serialNumber); }
     public static int addNewWallpaper(Wallpaper wp){
         wallpapersToFile.put(++lastWallpaperNumber, wp);
-        previewPathRec.add(wp.getCurrentPreviewPath().getParent()); // 最後要刪掉所有 Preview
+        if (!wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultImagePath)){
+            previewPathRec.add(wp.getCurrentPreviewPath().getParent()); // 最後要刪掉所有 Preview
+        }
         return lastWallpaperNumber;
     }
     public static void deleteNewWallpaper(int serialNumber){ wallpapersToFile.remove(serialNumber); }
@@ -49,7 +51,7 @@ public class Wallpaper {
     /* 執行 resultList 指定的複製, 刪除 */
     public static void executeResultAndCleanPreview(){
         /* execute resultList */
-        var target = WallpaperPath.getWallpaperPath().toAbsolutePath().toString();
+        var target = WallpaperPath.getWallpaperPath().toString();
         var targetDir = new File(target);
         if (!targetDir.exists()){
             targetDir.mkdirs();

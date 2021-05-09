@@ -152,7 +152,7 @@ public class MainController implements Initializable {
                                 default -> -1;
                             };
                             updateMessage("Ready...");
-                            var cw = new CrawlerManager(SourceRedirector.defaultDataPath.toAbsolutePath().toString(), WallpaperUtil.capitalize(data.get(i).key).split(" "), mode);
+                            var cw = new CrawlerManager(WallpaperPath.defaultDataPath.toString(), WallpaperUtil.capitalize(data.get(i).key).split(" "), mode);
                             updateMessage("Fetch image information");
                             cw.A_getLinks();
                             updateMessage("Download preview wallpapers");
@@ -576,7 +576,7 @@ public class MainController implements Initializable {
         
         downloadAmountChoice.getItems().addAll(modes[0], modes[1], modes[2]);
         downloadAmountChoice.setValue(modes[1]);
-        pathLabel.setText(" " + WallpaperPath.defaultDataPath.toAbsolutePath().toString()) ;
+        pathLabel.setText(" " + WallpaperPath.defaultDataPath.toString()) ;
         // mainPbar = new ProgressBar();
         hasChangedPreview.addListener((a, b, c) -> {
             pathLabel.setText(" " + theWallpaper.getCurrentFullPath().getParent().toAbsolutePath().toString());
