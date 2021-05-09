@@ -67,7 +67,7 @@ public class MusicBox {
             var total = mop.getCurrentMedia().getDuration();
             MusicController.progressMax.set(total.toSeconds());
         });
-        player.setVolume(0.03);
+        player.setVolume(0.025);
         player.play();
     }
 

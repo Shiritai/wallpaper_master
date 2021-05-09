@@ -354,6 +354,37 @@ public class MainController implements Initializable {
     @FXML
     void OpenMusicController(ActionEvent event) {
         OpenMusicWindow();
+        // OpenSyamikoWindow();
+    }
+    
+    // @FXML
+    // void TestSyamiko(ActionEvent event) {
+    //     OpenSyamikoWindow();
+    // }
+    
+    public void OpenSyamikoWindow(){
+        if (!MusicWithSyamiko.isActivating.get()){
+            try {
+                var stage = new Stage();
+                stage.setTitle("Music with Syamiko");
+                stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/MusicWithSyamikoWindow.fxml"))));
+                stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+                stage.setResizable(false);
+                stage.setOnCloseRequest(e -> {
+                    MusicWithSyamiko.isActivating.set(false);
+                });
+                stage.show();
+            } catch (Exception e){
+                e.printStackTrace();
+                System.out.println(e.toString());
+                if (!quit){
+                    System.err.println(e.toString());
+                }
+            }
+        }
+        else {
+            new Alert(Alert.AlertType.INFORMATION, "You've already open Music with Syamiko :)").showAndWait();
+        }
     }
     
     public void OpenMusicWindow(){

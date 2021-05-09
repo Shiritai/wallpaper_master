@@ -10,6 +10,7 @@ import java.nio.file.StandardCopyOption;
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
 import eroiko.ani.controller.MainController;
+import eroiko.ani.controller.PrimaryControllers.MusicWithSyamiko;
 import eroiko.ani.util.MusicBox;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
@@ -124,8 +125,10 @@ public class MainApp extends Application{
         });
         menuItems[2] = new MenuItem("Music with Syamiko");
         menuItems[2].setOnAction(e -> (new MainController()).OpenMusicWindow());
+        // menuItems[2].setOnAction(e -> (new MainController()).OpenSyamikoWindow());
         menuItems[3] = new MenuItem("Play/Pause music");
         menuItems[3].setOnAction(e -> MusicBox.musicBox.playOrPause());
+        // menuItems[3].setOnAction(e -> MusicWithSyamiko.musicBox.playOrPause());
         menuItems[4] = new MenuItem("Preference");
         menuItems[4].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
     }

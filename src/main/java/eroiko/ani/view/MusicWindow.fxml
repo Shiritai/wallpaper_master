@@ -70,7 +70,6 @@
                         </AnchorPane>
                      </children>
                   </Group>
-                  <Slider fx:id="progressBar" disable="true" layoutX="-137.0" layoutY="15.0" prefHeight="14.0" prefWidth="370.0" translateX="150.0" translateY="-45.0" />
                </children>
             </AnchorPane>
             <Group layoutX="18.0" layoutY="110.0">

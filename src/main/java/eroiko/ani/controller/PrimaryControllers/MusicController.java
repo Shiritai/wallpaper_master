@@ -19,7 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import javafx.util.Duration;
+// import javafx.util.Duration;
 
 public class MusicController implements Initializable{
     
@@ -34,7 +34,7 @@ public class MusicController implements Initializable{
     @FXML private CheckBox customizeCompleteMusic;
     @FXML private Label musicName;
     @FXML private Slider volumeBar;
-    @FXML private Slider progressBar;
+    // @FXML private Slider progressBar;
     
     @FXML
     void OpenMusicExplorerForComplete(ActionEvent event) {
@@ -61,14 +61,14 @@ public class MusicController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         musicName.setText(carryReturnString(MusicBox.musicBox.getCurrentMusicName(), 27));
-        progress.addListener(e -> progressBar.setValue(progress.getValue()));
-        progressMax.addListener(e -> progressBar.setMax(progressMax.getValue()));
+        // progress.addListener(e -> progressBar.setValue(progress.getValue()));
+        // progressMax.addListener(e -> progressBar.setMax(progressMax.getValue()));
         
-        MusicBox.musicBox.player.currentTimeProperty().addListener((a, b, c) -> progressBar.setValue(c.toSeconds()));
+        // MusicBox.musicBox.player.currentTimeProperty().addListener((a, b, c) -> progressBar.setValue(c.toSeconds()));
         
-        progressBar.setOnMouseDragged(e -> MusicBox.musicBox.player.seek(Duration.seconds(progressBar.getValue())));
+        // progressBar.setOnMouseDragged(e -> MusicBox.musicBox.player.seek(Duration.seconds(progressBar.getValue())));
         
-        volumeBar.setValue(3);
+        volumeBar.setValue(2.5);
         volumeBar.valueProperty().addListener(e -> MusicBox.musicBox.player.setVolume(volumeBar.getValue() / 100));
         
         playMusicButton.setOnMouseClicked(e -> {
