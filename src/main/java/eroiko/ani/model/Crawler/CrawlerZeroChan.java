@@ -13,7 +13,7 @@ import org.jsoup.select.Elements;
 import eroiko.ani.controller.MainController;
 import eroiko.ani.util.myDS.myPair;
 
-
+/** Deprecated */
 public class CrawlerZeroChan extends Crawler{
     
     /* 測試下載 number 數量的圖需要訪問多少頁面 */

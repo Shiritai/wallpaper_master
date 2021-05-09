@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 import eroiko.ani.controller.MainController;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import eroiko.ani.util.WallpaperClass.WallpaperImage;
-
+/** Deprecated */
 public class OldCrawlerManager implements Runnable {
     private boolean quit;
     private String keywords;
@@ -43,9 +43,9 @@ public class OldCrawlerManager implements Runnable {
                 System.err.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
             }
             wp = new WallpaperImage(Path.of(crawler.getFolderPath().replace('/', '\\')));
-            MainController.preview = wp;
+            // MainController.preview = wp;
             MainController.hasChangedPreview.set(true);
-            MainController.staticImagePreview.setImage(MainController.preview.getCurrentWallpaper());
+            // MainController.staticImagePreview.setImage(MainController.preview.getCurrentWallpaper());
         } catch (IOException e){
             System.out.println(e.toString());
             if (!quit){
