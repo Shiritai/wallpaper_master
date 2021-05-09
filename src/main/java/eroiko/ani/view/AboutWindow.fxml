@@ -28,5 +28,10 @@
             <Font name="rainyhearts" size="25.0" />
          </font>
       </Text>
+      <Text fx:id="aboutTextVersion" fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" translateX="-60.0" translateY="30.0" StackPane.alignment="TOP_RIGHT">
+         <font>
+            <Font name="rainyhearts" size="26.0" />
+         </font>
+      </Text>
    </children>
 </StackPane>

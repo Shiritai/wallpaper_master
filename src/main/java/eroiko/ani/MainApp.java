@@ -25,6 +25,7 @@ import javafx.stage.*;
 public class MainApp extends Application{
         
     public static boolean isTesting = true;
+    public static final String version = "version 0.0.1";
     
     public static Stage mainStage;
     public static Scene mainScene;
