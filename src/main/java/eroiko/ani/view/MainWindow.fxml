@@ -37,28 +37,27 @@
           <Menu mnemonicParsing="false" text="File">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#OpenPreferenceWindow" style="-fx-text-fill: black;" text="Properties" />
-                  <MenuItem mnemonicParsing="false" onAction="#MenuFileOpenFileExplorer" text="Open File Explorer" />
                   <MenuItem mnemonicParsing="false" onAction="#hitMinimize" text="Minimize" />
                   <MenuItem mnemonicParsing="false" onAction="#hitExit" text="Exit" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
+                  <MenuItem mnemonicParsing="false" onAction="#MenuFileOpenFileExplorer" text="Open File Explorer" />
+                  <MenuItem mnemonicParsing="false" onAction="#OpenMusicController" text="Open Music Controller" />
               <MenuItem mnemonicParsing="false" onAction="#SwitchBackToImgPath" text="Switch wallpaper view back to default path" />
                   <MenuItem mnemonicParsing="false" onAction="#ResetWindow" text="Reset Window" />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Mode">
                <items>
-                  <MenuItem mnemonicParsing="false" text="Wallpaper" />
-                  <MenuItem mnemonicParsing="false" onAction="#OpenMusicController" text="Open Music Controller" />
-                  <MenuItem disable="true" mnemonicParsing="false" text="Advance ((not support now, password needed)" />
+                  <MenuItem disable="true" mnemonicParsing="false" text="Music" />
+                  <MenuItem disable="true" mnemonicParsing="false" text="Advance (password needed)" />
                </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
-                  <MenuItem mnemonicParsing="false" onAction="#OpenTestingWindow" text="Testing Window" />
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" onAction="#OpenAboutWindow" text="About" />
             </items>
           </Menu>
         </menus>
@@ -134,7 +133,7 @@
                                                                               </AnchorPane>
                                                                         </content>
                                                                       </Tab>
-                                                                      <Tab text="List">
+                                                                      <Tab disable="true" text="List">
                                                                         <content>
                                                                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                                                  <children>
@@ -148,7 +147,7 @@
                                                                               </AnchorPane>
                                                                         </content>
                                                                       </Tab>
-                                                                        <Tab text="Properties">
+                                                                        <Tab disable="true" text="Properties">
                                                                            <content>
                                                                               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                                                                  <children>

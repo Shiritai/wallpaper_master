@@ -134,7 +134,7 @@ public class CrawlerZeroChan extends CrawlerBase{
                 new TimeWait(2000 * (timeDelate + 1));
                 timeDelate--;
             }
-            new TimeWait(500); // 限制性等待
+            new TimeWait(1000); // 限制性等待
             var doc = Jsoup.connect(url)
                 .userAgent(CrawlerBase.UserAgent)
                 .timeout(10000)
@@ -150,6 +150,7 @@ public class CrawlerZeroChan extends CrawlerBase{
             System.out.println(e.toString());
             System.out.println("Try re-request...");
             timeDelate += 2;
+            new TimeWait(4000); // 限制性等待
             return fetchFullLink(url);
         }
     }

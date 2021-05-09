@@ -39,7 +39,7 @@ import javafx.stage.Stage;
 
 public class MainController implements Initializable {
     /* Support variables */
-    public static WallpaperImage preview;
+    // public static WallpaperImage preview;
     public static ImageView staticImagePreview;
     public static BooleanProperty hasChangedPreview = new SimpleBooleanProperty(false);
     public static Label staticPathLabel;
@@ -224,6 +224,27 @@ public class MainController implements Initializable {
             }
         }
     }
+    
+    @FXML
+    void OpenAboutWindow(ActionEvent event) {
+        OpenAboutWindow();
+    }
+    
+    public void OpenAboutWindow(){
+        try {
+            var stage = new Stage();
+            stage.setTitle("About");
+            stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/AboutWindow.fxml"))));
+            stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+            stage.setResizable(false);
+            stage.show();
+        } catch (Exception e){
+            System.out.println(e.toString());
+            if (!quit){
+                System.err.println(e.toString());
+            }
+        }
+    }
 
     @FXML
     void PreviewDragOver(DragEvent event) { // 當檔案拖曳到 preview (stack pane) 時, 顯示可以放上來
@@ -351,7 +372,7 @@ public class MainController implements Initializable {
         // tableOfBrowser.getSelectionModel().select(3); // 3 is the index of the tab
         try {
             var stage = new Stage();
-            stage.setTitle("Music with syamiko");
+            stage.setTitle("Music with Syamiko");
             stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/MusicWindow.fxml"))));
             stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
             stage.setResizable(false);
@@ -536,7 +557,7 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb){
         try {
-            preview = new WallpaperImage();
+            // preview = new WallpaperImage();
             theWallpaper = new Wallpaper();
         } catch (IOException e) {
             System.out.println(e.toString());
@@ -558,7 +579,7 @@ public class MainController implements Initializable {
         pathLabel.setText(" " + WallpaperPath.defaultDataPath.toAbsolutePath().toString()) ;
         // mainPbar = new ProgressBar();
         hasChangedPreview.addListener((a, b, c) -> {
-            pathLabel.setText(" " + preview.getCurrentWallpaperPath().getParent().toAbsolutePath().toString());
+            pathLabel.setText(" " + theWallpaper.getCurrentFullPath().getParent().toAbsolutePath().toString());
             hasChangedPreview.set(false);
             imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
         });
