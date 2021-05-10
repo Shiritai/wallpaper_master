@@ -855,7 +855,7 @@ public class MainController implements Initializable {
         return cur;
     }
     
-    private void postOrderTraverseKillRedundantName(TreeItem<Path> cur){
+    private void postOrderTraverseKillRedundantName(TreeItem<Path> cur){ // 暫時會影響小圖示顯示問題...保留之後修改
         // if (Files.isDirectory(cur.getValue())){
         //     for (var p : cur.getChildren()){
         //         postOrderTraverseKillRedundantName(p);
