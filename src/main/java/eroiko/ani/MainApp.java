@@ -10,7 +10,6 @@ import java.nio.file.StandardCopyOption;
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
 import eroiko.ani.controller.MainController;
-import eroiko.ani.controller.PrimaryControllers.MusicWithSyamiko;
 import eroiko.ani.util.MusicBox;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;

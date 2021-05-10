@@ -6,7 +6,7 @@ import java.nio.file.Path;
 public class WallpaperPath {
     public static final Path defaultDataPath = FileSystems.getDefault().getPath("data").toAbsolutePath();
     public static final Path defaultWallpaperPath = FileSystems.getDefault().getPath("data/wallpaper").toAbsolutePath();
-    public static final Path defaultImagePath = FileSystems.getDefault().getPath("data/default").toAbsolutePath();
+    public static final Path defaultImagePath = FileSystems.getDefault().getPath("src/main/java/eroiko/ani/img/default").toAbsolutePath();
     public static final Path defaultMusicPath = FileSystems.getDefault().getPath("src/main/java/eroiko/ani/music").toAbsolutePath();
     private static Path userWallpaperPath = null;
     private static boolean useConfigWallpaperPath = false;
@@ -29,6 +29,4 @@ public class WallpaperPath {
         }
         return null;
     }
-    
-    
 }

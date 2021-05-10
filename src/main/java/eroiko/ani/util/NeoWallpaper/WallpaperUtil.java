@@ -12,9 +12,9 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
 
 public class WallpaperUtil {
+    public static Pattern numberMatcher = Pattern.compile("\\d+");
     /* 比較同類型, 以編號區分的檔案, 使用正則表達式, 適用於 ArrayList, Set */
     public static int pathNameCompare(Path a, Path b){
-        var numberMatcher = Pattern.compile("\\d+");
         Matcher m1 = numberMatcher.matcher(a.toString());
         Matcher m2 = numberMatcher.matcher(b.toString());
         if (m1.find() && m2.find()){
@@ -24,7 +24,6 @@ public class WallpaperUtil {
     }
 
     public static int pathNameCompare(String a, String b){
-        var numberMatcher = Pattern.compile("\\d+");
         Matcher m1 = numberMatcher.matcher(a);
         Matcher m2 = numberMatcher.matcher(b);
         if (m1.find() && m2.find()){
@@ -33,15 +32,14 @@ public class WallpaperUtil {
         return a.compareTo(b);
     }
 
-    /* 取得各桌布的 Serial Number 直接建成 Map 比較有效率... */
-    public static Integer takeWallpaperSerialNumber(Path p){
-        var numberMatcher = Pattern.compile("\\d+");
-        Matcher m1 = numberMatcher.matcher(p.toString());
-        if (m1.find()){
-            return Integer.parseInt(m1.group(0));
-        }
-        throw new IllegalArgumentException("Fail to take wallpaper's serial Number");
-    }
+    // /* 取得各桌布的 Serial Number 直接建成 Map 比較有效率... */
+    // public static Integer takeWallpaperSerialNumber(Path p){
+    //     Matcher m1 = numberMatcher.matcher(p.toString());
+    //     if (m1.find()){
+    //         return Integer.parseInt(m1.group(0));
+    //     }
+    //     throw new IllegalArgumentException("Fail to take wallpaper's serial Number");
+    // }
 
     public static boolean isImage(Path pathOfFile){
         return Dumper.imagePattern.matcher(pathOfFile.getFileName().toString()).find();
@@ -85,6 +83,11 @@ public class WallpaperUtil {
     public static String getSerialNumber(){
         return Integer.toString(seed++);
     }
+    /** jump over this number */
+    public static void passSerialNumber(){ ++seed; }
+    public static int peekSerialNumber(){
+        return seed;
+    }
     /** return 1 */
     public static void resetSerialNumber(){ seed = 1; }
     public static void resetSerialNumber(int start){ seed = start; }
@@ -92,13 +95,14 @@ public class WallpaperUtil {
     /** get serialNumber from a wallpaperXXX.img */
     public static int getSerialNumberFromAWallpaper(Path p) throws IllegalArgumentException {
         var nameMatcher = Pattern.compile("wallpaper\\d+");
-        var numberMatcher = Pattern.compile("\\d+");
         Matcher m1 = nameMatcher.matcher(p.toString());
         if (m1.find()){
-            System.out.println(Integer.parseInt(numberMatcher.matcher(m1.group()).group()));
-            return Integer.parseInt(numberMatcher.matcher(m1.group()).group());
+            var m2 = numberMatcher.matcher(m1.group());
+            if (m2.find()){
+                return Integer.parseInt(m2.group());
+            }
         }
-        throw new IllegalArgumentException("Fail to take wallpaper's serial Number");
+        throw new IllegalArgumentException("Fail to take wallpaper's serial Number, path : " + p.getFileName().toString());
     }
     public static String getFileType(File file){
         var tmp = file.getName();

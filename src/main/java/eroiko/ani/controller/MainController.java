@@ -37,13 +37,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 
 public class MainController implements Initializable {
     /* Support variables */
@@ -597,7 +595,6 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb){
         try {
-            // preview = new WallpaperImage();
             theWallpaper = new Wallpaper();
         } catch (IOException e) {
             System.out.println(e.toString());

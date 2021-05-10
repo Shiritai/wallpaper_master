@@ -25,7 +25,13 @@ public class Wallpaper {
     public static Wallpaper getWallpaper(int serialNumber){ return wallpapersToFile.get(serialNumber); }
     public static int addNewWallpaper(Wallpaper wp){
         wallpapersToFile.put(++lastWallpaperNumber, wp);
-        if (!wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultImagePath)){
+        if (!wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultImagePath) && 
+            !wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultDataPath) &&
+            !wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultMusicPath) && 
+            !wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultWallpaperPath) && 
+            !wp.getCurrentFullPath().getParent().equals(WallpaperPath.getWallpaperPath()) &&
+            wp.hasPreview()
+        ){
             previewPathRec.add(wp.getCurrentPreviewPath().getParent()); // 最後要刪掉所有 Preview
         }
         return lastWallpaperNumber;
@@ -55,14 +61,20 @@ public class Wallpaper {
         var targetDir = new File(target);
         if (!targetDir.exists()){
             targetDir.mkdirs();
-            WallpaperUtil.resetSerialNumber(); // 準備序列號種子
         }
-        else {
-            var wpi = new Wallpaperize(WallpaperPath.getWallpaperPath(), true);
-            WallpaperUtil.resetSerialNumber(wpi.execute()); // 準備序列號種子
+        WallpaperUtil.resetSerialNumber(); // 準備序列號種子, 填補空號的方式新增
+        var numbers = new TreeSet<Integer>();
+        try {
+            for (var p : Files.newDirectoryStream(WallpaperPath.getWallpaperPath())){
+                numbers.add(WallpaperUtil.getSerialNumberFromAWallpaper(p));
+            }
+        } catch (IllegalArgumentException | IOException e1) {
+            e1.printStackTrace();
         }
         resultList.key.forEach(p -> {
-            System.out.println(p.toAbsolutePath().toString());
+            while (numbers.contains(WallpaperUtil.peekSerialNumber())){
+                WallpaperUtil.passSerialNumber();
+            }
             try {
                 Files.copy(p, 
                     Path.of(target + "\\" + "wallpaper" + WallpaperUtil.getSerialNumber() + WallpaperUtil.getFileType(p)), 
@@ -231,6 +243,10 @@ public class Wallpaper {
             return getCurrentFullPath();
         }
         return wallpapers.get(current).second;
+    }
+
+    public boolean hasPreview(){
+        return !onlyFullFlag;
     }
 
     public Path getCurrentFullPath(){
