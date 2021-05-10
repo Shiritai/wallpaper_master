@@ -24,8 +24,7 @@ public class MusicBox {
     private final int PREVIOUS = 6;
 
     /** 
-     * 自帶 fade in, out = 5, 3, 可使用 set 設定之, 
-     * Processing Music 會持續撥放音樂到被 interrupt
+     * Processing Music 會持續撥放音樂到被 interrupt;
      * Complete Music 只會撥放一次
      */
     public MusicBox(){
@@ -118,6 +117,7 @@ public class MusicBox {
         return mop.getCurrentMedia().getDuration();
     }
 
+    /** 幫助字串換行的函式 */
     public String carryReturnString(String str, int length){
         String res = "";
         var tmp = str.toCharArray();

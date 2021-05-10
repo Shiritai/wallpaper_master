@@ -85,6 +85,7 @@ public class WallpaperUtil {
     }
     /** jump over this number */
     public static void passSerialNumber(){ ++seed; }
+    /** Peek current serial number without changing it */
     public static int peekSerialNumber(){
         return seed;
     }

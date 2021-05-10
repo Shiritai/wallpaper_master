@@ -3,7 +3,7 @@ package eroiko.ani.util.myDS;
 import java.util.Timer;
 import java.util.TimerTask;
 
-class TimeWater extends TimerTask{
+class TimeWaiter extends TimerTask{
     @Override
     public void run(){}
 }
@@ -11,7 +11,7 @@ class TimeWater extends TimerTask{
 public class TimeWait {
     public TimeWait(int miniSecond){
         var timer = new Timer();
-        timer.schedule(new TimeWater(), miniSecond);
+        timer.schedule(new TimeWaiter(), miniSecond);
         try {
             Thread.sleep(1000);
         }
