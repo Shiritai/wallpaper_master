@@ -54,7 +54,7 @@ public class Wallpaper {
         }
         System.out.println("Pushed result into resultList");
     }
-    /* 執行 resultList 指定的複製, 刪除 */
+    /** 執行 resultList 指定的複製, 刪除 */
     public static void executeResultAndCleanPreview(){
         /* execute resultList */
         var target = WallpaperPath.getWallpaperPath().toString();

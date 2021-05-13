@@ -56,7 +56,8 @@ public class MusicBox {
             case RANDOM -> new MediaPlayer(mop.getRandomMedia());
             case NEXT -> new MediaPlayer(mop.getNextMedia());
             case PREVIOUS -> new MediaPlayer(mop.getPreviousMedia());
-            default -> new MediaPlayer(mop.getCurrentMedia());
+            default -> throw new IllegalArgumentException("Error type of image!");
+            // default -> new MediaPlayer(mop.getCurrentMedia());
         };
         if (type == PROCESSING){
             player.setCycleCount(MediaPlayer.INDEFINITE);

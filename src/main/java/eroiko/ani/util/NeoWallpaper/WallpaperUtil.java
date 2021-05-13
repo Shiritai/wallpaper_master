@@ -89,7 +89,7 @@ public class WallpaperUtil {
     public static int peekSerialNumber(){
         return seed;
     }
-    /** return 1 */
+    
     public static void resetSerialNumber(){ seed = 1; }
     public static void resetSerialNumber(int start){ seed = start; }
 

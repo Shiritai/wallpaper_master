@@ -891,7 +891,7 @@ public class MainController implements Initializable {
                 container.setAlignment(Pos.CENTER);
                 container.getChildren().addAll(viewImageTileTable);
                 scrollableTile.setContent(container);
-            } 
+            }
         }
         else {
             var iv = new ImageView(new Image(path.toFile().toURI().toString()));

@@ -78,13 +78,15 @@ public class MainApp extends Application{
             }
         });
         /* mainStage 基礎設定 */
+        // mainStage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
         mainStage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
         mainStage.setTitle("Wallpaper Master");
         mainStage.setScene(mainScene);
         mainStage.setResizable(false);
         mainStage.show();
 
-        mainStage.setOnCloseRequest((e) -> {
+        mainStage.setOnCloseRequest(e -> {
+
             Wallpaper.executeResultAndCleanPreview(); // 執行所有 Wallpaper 檔案操作!
             mainStage.close();
             Platform.exit();
