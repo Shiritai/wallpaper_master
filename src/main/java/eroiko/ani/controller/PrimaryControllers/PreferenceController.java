@@ -24,6 +24,8 @@ public class PreferenceController implements Initializable {
 
     public static boolean quit;
     public static BooleanProperty showWallpapersAfterCrawling = new SimpleBooleanProperty(true);
+    public static boolean keepMusic = false;
+    public static boolean randomMusic = false;
     
     
     @FXML private CheckBox showWallpapers;
@@ -32,6 +34,9 @@ public class PreferenceController implements Initializable {
 
     @FXML private CheckBox customizeProcessingMusic;
     @FXML private CheckBox customizeCompleteMusic;
+
+    @FXML private CheckBox keepPlayingMusic;
+    @FXML private CheckBox randomPlayMusic;
 
     @FXML
     void OpenFileChooser(ActionEvent event) {
@@ -92,6 +97,16 @@ public class PreferenceController implements Initializable {
         showWallpapers.selectedProperty().addListener((ov, old_val, new_val) -> {
             SourceRedirector.showWallpapersAfterCrawling = new_val;
             PreferenceController.showWallpapersAfterCrawling.set(new_val);
+        });
+
+        keepPlayingMusic.setSelected(keepMusic);
+        keepPlayingMusic.selectedProperty().addListener(e -> {
+            keepMusic = keepPlayingMusic.isSelected();
+        });
+
+        randomPlayMusic.setSelected(randomMusic);
+        randomPlayMusic.selectedProperty().addListener(e -> {
+            randomMusic = randomPlayMusic.isSelected();
         });
     }
 }

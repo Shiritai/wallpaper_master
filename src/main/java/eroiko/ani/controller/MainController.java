@@ -5,6 +5,7 @@ import java.net.URL;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import eroiko.ani.MainApp;
@@ -68,7 +69,7 @@ public class MainController implements Initializable {
     @FXML private ImageView imagePreview;
     
     /* File explorer */
-    @FXML private TreeView<Path> treeFileExplorer;
+    @FXML private TreeView<myPair<String, Path>> treeFileExplorer;
     @FXML private TilePane viewImageTileTable;
     @FXML private ScrollPane scrollableTile;
     @FXML private Label pathLabel;
@@ -218,7 +219,7 @@ public class MainController implements Initializable {
             var stage = new Stage();
             stage.setTitle("Properties");
             stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/PreferenceWindow.fxml"))));
-            stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+            stage.getIcons().add(MainApp.icon);
             stage.show();
         } catch (Exception e){
             System.out.println(e.toString());
@@ -238,7 +239,7 @@ public class MainController implements Initializable {
             var stage = new Stage();
             stage.setTitle("About");
             stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/AboutWindow.fxml"))));
-            stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+            stage.getIcons().add(MainApp.icon);
             stage.setResizable(false);
             stage.show();
         } catch (Exception e){
@@ -365,40 +366,11 @@ public class MainController implements Initializable {
 
     @FXML
     void OpenMusicController(ActionEvent event) {
-        OpenMusicWindow();
-        // OpenSyamikoWindow();
+        // OpenMusicWindow();
+        MusicWithSyamiko.openMusicWithSyamiko();;
     }
     
-    // @FXML
-    // void TestSyamiko(ActionEvent event) {
-    //     OpenSyamikoWindow();
-    // }
-    
-    public void OpenSyamikoWindow(){
-        if (!MusicWithSyamiko.isActivating.get()){
-            try {
-                var stage = new Stage();
-                stage.setTitle("Music with Syamiko");
-                stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/MusicWithSyamikoWindow.fxml"))));
-                stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
-                stage.setResizable(false);
-                stage.setOnCloseRequest(e -> {
-                    MusicWithSyamiko.isActivating.set(false);
-                });
-                stage.show();
-            } catch (Exception e){
-                e.printStackTrace();
-                System.out.println(e.toString());
-                if (!quit){
-                    System.err.println(e.toString());
-                }
-            }
-        }
-        else {
-            new Alert(Alert.AlertType.INFORMATION, "You've already open Music with Syamiko :)").showAndWait();
-        }
-    }
-    
+    /** Deprecated */
     public void OpenMusicWindow(){
         // tableOfBrowser.getSelectionModel().select(3); // 3 is the index of the tab
         if (!MusicController.isActivating.get()){
@@ -406,7 +378,7 @@ public class MainController implements Initializable {
                 var stage = new Stage();
                 stage.setTitle("Music with Syamiko");
                 stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/MusicWindow.fxml"))));
-                stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+                stage.getIcons().add(MainApp.icon);
                 stage.setResizable(false);
                 stage.setOnCloseRequest(e -> {
                     MusicController.isActivating.set(false);
@@ -460,7 +432,7 @@ public class MainController implements Initializable {
                     e.consume();
                 });
                 stage.setScene(wallpaperScene);
-                stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+                stage.getIcons().add(MainApp.icon);
                 stage.setOnCloseRequest(e -> {
                     SourceRedirector.popToQueue(serialNumber);
                     SourceRedirector.deleteWallpaper(serialNumber);
@@ -548,7 +520,7 @@ public class MainController implements Initializable {
             e.consume();
         });
         stage.setScene(wallpaperScene);
-        stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+        stage.getIcons().add(MainApp.icon);
         if (deleteAfterClose){
             stage.setOnCloseRequest(e -> {
                 SourceRedirector.deleteWallpaper(fixedSerialNumber);
@@ -638,6 +610,7 @@ public class MainController implements Initializable {
         // mainPbar = new ProgressBar();
         hasChangedPreview.addListener((a, b, c) -> {
             pathLabel.setText(" " + theWallpaper.getCurrentFullPath().getParent().toAbsolutePath().toString());
+            initTreeView();
             hasChangedPreview.set(false);
             imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
         });
@@ -695,7 +668,10 @@ public class MainController implements Initializable {
         });
         pathLabel.setOnMouseClicked(e -> {
             if (e.getButton().equals(MouseButton.SECONDARY)){
-                
+                var content = new ClipboardContent();
+                content.putString(pathLabel.getText().stripLeading());
+                Clipboard.getSystemClipboard().setContent(content);
+                new Alert(Alert.AlertType.INFORMATION, "Path has copied :)").showAndWait();
             }
         });
         treeFileExplorer.setOnMouseClicked(e -> {
@@ -843,8 +819,9 @@ public class MainController implements Initializable {
     
     /* 採後序 */
     private void initTreeView() {
-        var rootPath = FileSystems.getDefault().getPath("data");
-        var root = new TreeItem<>(rootPath, WallpaperUtil.fetchIconUsePath(rootPath));
+        // var rootPath = FileSystems.getDefault().getPath("data");
+        var rootPath = Path.of(pathLabel.getText().stripLeading());
+        var root = new TreeItem<>(new myPair<>(rootPath.getFileName().toString(), rootPath), WallpaperUtil.fetchIconUsePath(rootPath));
         try {
             postOrderTraverse(root);
         } catch (IOException e) {
@@ -861,58 +838,70 @@ public class MainController implements Initializable {
         //         };
         //     }
         // });
-        postOrderTraverseKillRedundantName(root); // 哀...
+        // postOrderTraverseKillRedundantName(root); // 哀...
         root.setExpanded(true);
         treeFileExplorer.setRoot(root);
     }
 
-    private TreeItem<Path> postOrderTraverse(TreeItem<Path> cur) throws IOException{
-        if (Files.isDirectory(cur.getValue())){
-            for (var p : Files.newDirectoryStream(cur.getValue())){
+    private TreeItem<myPair<String, Path>> postOrderTraverse(TreeItem<myPair<String, Path>> cur) throws IOException{
+        if (Files.isDirectory(cur.getValue().value)){
+            for (var p : Files.newDirectoryStream(cur.getValue().value)){
                 // cur.getChildren().add(postOrderTraverse(new TreeItem<>(p))); // 非洲啊...
-                cur.getChildren().add(postOrderTraverse(new TreeItem<>(p, WallpaperUtil.fetchIconUsePath(p)))); // 非洲啊...
+                cur.getChildren().add(postOrderTraverse(new TreeItem<>(new myPair<>(p.getFileName().toString(), p), WallpaperUtil.fetchIconUsePath(p)))); // 非洲啊...
             }
         }
         return cur;
     }
+
+    // private TreeItem<Path> postOrderTraverse(TreeItem<Path> cur) throws IOException{
+    //     if (Files.isDirectory(cur.getValue())){
+    //         for (var p : Files.newDirectoryStream(cur.getValue())){
+    //             // cur.getChildren().add(postOrderTraverse(new TreeItem<>(p))); // 非洲啊...
+    //             cur.getChildren().add(postOrderTraverse(new TreeItem<>(p, WallpaperUtil.fetchIconUsePath(p)))); // 非洲啊...
+    //         }
+    //     }
+    //     return cur;
+    // }
     
-    private void postOrderTraverseKillRedundantName(TreeItem<Path> cur){ // 暫時會影響小圖示顯示問題...保留之後修改
+    // private void postOrderTraverseKillRedundantName(TreeItem<Path> cur){ // 暫時會影響小圖示顯示問題...保留之後修改
         // if (Files.isDirectory(cur.getValue())){
         //     for (var p : cur.getChildren()){
         //         postOrderTraverseKillRedundantName(p);
         //         p.setValue(p.getValue().getFileName());
         //     }
         // }
-    }
+    // }
     
     private void treeViewSelected() throws IOException{
-        var path = treeFileExplorer.getSelectionModel().getSelectedItem().getValue().toAbsolutePath();
+        var path = treeFileExplorer.getSelectionModel().getSelectedItem().getValue().value.toAbsolutePath();
         System.out.println(path);
-        viewImageTileTable.getChildren().clear();
         if (Files.isDirectory(path.toRealPath().toAbsolutePath())){
-            System.out.println("Meow");
-            // for (var p : path.toRealPath().getFileSystem().getRootDirectories()){
-            for (var p : Files.newDirectoryStream(path)){
+            viewImageTileTable.getChildren().clear();
+            viewImageTileTable.setPadding(new Insets(5., 5., 5., 8.));
+            viewImageTileTable.setVgap(8.);
+            viewImageTileTable.setHgap(8.);
+            var paths = new ArrayList<Path>();
+            Files.newDirectoryStream(path).forEach(e -> paths.add(e));
+            paths.sort((a, b) -> WallpaperUtil.pathNameCompare(a, b));
+            var list = new ArrayList<VBox>(paths.size());
+            paths.forEach(p -> {
                 var iconView = WallpaperUtil.fetchIconUsePath(p);
                 iconView.setFitHeight(58);
                 iconView.setFitWidth(58);
-
+                
                 var name = new Text(p.getFileName().toString());
                 name.setStyle("-fx-font: 11 system;");
-
+                
                 var vbox = new VBox(iconView, name);
                 vbox.setAlignment(Pos.CENTER);
-
-                viewImageTileTable.getChildren().add(vbox);
-                viewImageTileTable.setPadding(new Insets(5., 5., 5., 8.));
-                viewImageTileTable.setVgap(8.);
-                viewImageTileTable.setHgap(8.);
-        
-                var container = new VBox();
-                container.setAlignment(Pos.CENTER);
-                container.getChildren().addAll(viewImageTileTable);
-                scrollableTile.setContent(container);
-            }
+                list.add(vbox);
+            });
+            // var container = new VBox();
+            // container.setAlignment(Pos.CENTER);
+            // container.getChildren().addAll(viewImageTileTable);
+            // scrollableTile.setContent(container);
+            viewImageTileTable.getChildren().addAll(list);
+            scrollableTile.setContent(viewImageTileTable);
         }
         else {
             var iv = new ImageView(new Image(path.toFile().toURI().toString()));
@@ -923,4 +912,39 @@ public class MainController implements Initializable {
         scrollableTile.setFitToHeight(true);
         scrollableTile.setVbarPolicy(ScrollBarPolicy.ALWAYS);
     }
+    // private void treeViewSelected() throws IOException{
+        // var path = treeFileExplorer.getSelectionModel().getSelectedItem().getValue().toAbsolutePath();
+        // System.out.println(path);
+        // viewImageTileTable.getChildren().clear();
+        // if (Files.isDirectory(path.toRealPath().toAbsolutePath())){
+        //     // for (var p : path.toRealPath().getFileSystem().getRootDirectories()){
+        //     viewImageTileTable.setPadding(new Insets(5., 5., 5., 8.));
+        //     viewImageTileTable.setVgap(8.);
+        //     viewImageTileTable.setHgap(8.);
+        //     for (var p : Files.newDirectoryStream(path)){
+        //         var iconView = WallpaperUtil.fetchIconUsePath(p);
+        //         iconView.setFitHeight(58);
+        //         iconView.setFitWidth(58);
+
+        //         var name = new Text(p.getFileName().toString());
+        //         name.setStyle("-fx-font: 11 system;");
+
+        //         var vbox = new VBox(iconView, name);
+        //         vbox.setAlignment(Pos.CENTER);
+        //         viewImageTileTable.getChildren().add(vbox);
+        //     }
+        //     var container = new VBox();
+        //     container.setAlignment(Pos.CENTER);
+        //     container.getChildren().addAll(viewImageTileTable);
+        //     scrollableTile.setContent(container);
+        // }
+        // else {
+        //     var iv = new ImageView(new Image(path.toFile().toURI().toString()));
+        //     scrollableTile.setContent(iv);
+        // }
+
+        // scrollableTile.setPannable(true);
+        // scrollableTile.setFitToHeight(true);
+        // scrollableTile.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+    // }
 }

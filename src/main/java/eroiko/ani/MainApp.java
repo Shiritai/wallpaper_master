@@ -2,6 +2,7 @@ package eroiko.ani;
 
 import java.awt.SystemTray;
 import java.io.*;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -10,7 +11,7 @@ import java.nio.file.StandardCopyOption;
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
 import eroiko.ani.controller.MainController;
-import eroiko.ani.util.MusicBox;
+import eroiko.ani.controller.PrimaryControllers.MusicWithSyamiko;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.application.Application;
@@ -26,7 +27,8 @@ import javafx.stage.*;
 public class MainApp extends Application{
         
     public static boolean isTesting = true;
-    public static final String version = "version 0.0.1";
+    public static final String version = "version 0.0.2";
+    public static Image icon;
     
     public static Stage mainStage;
     public static Scene mainScene;
@@ -42,7 +44,7 @@ public class MainApp extends Application{
     @Override
     public void start (Stage mainStage) throws IOException{
         MainApp.mainStage = mainStage;
-        Parent root = FXMLLoader.load(getClass().getResource("view/MainWindow.fxml"));
+        Parent root = FXMLLoader.load(FileSystems.getDefault().getPath("src/main/java/eroiko/ani/view/MainWindow.fxml").toUri().toURL());
         mainScene = new Scene(root);
 
         // setListeners();
@@ -79,7 +81,8 @@ public class MainApp extends Application{
         });
         /* mainStage 基礎設定 */
         // mainStage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
-        mainStage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
+        icon = new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString());
+        mainStage.getIcons().add(icon);
         mainStage.setTitle("Wallpaper Master");
         mainStage.setScene(mainScene);
         mainStage.setResizable(false);
@@ -107,8 +110,8 @@ public class MainApp extends Application{
         menuItems = new MenuItem [5];
         menuItems[0] = new MenuItem("Open Wallpaper Master");
         menuItems[0].setOnAction(e -> mainStage.show());
-        menuItems[1] = new MenuItem("Take clipboard images to wallpaper folder");
-        menuItems[1].setOnAction(e -> {
+        menuItems[2] = new MenuItem("Take clipboard images to wallpaper folder");
+        menuItems[2].setOnAction(e -> {
             var cb = Clipboard.getSystemClipboard().getFiles();
             try {
                 var tmpFile = new File(WallpaperPath.defaultWallpaperPath.toString()); // 未來必須改用 Preference Path
@@ -124,14 +127,14 @@ public class MainApp extends Application{
                 System.out.println(e1.toString());
             }
         });
-        menuItems[2] = new MenuItem("Preference");
-        menuItems[2].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
-        menuItems[3] = new MenuItem("Play/Pause music");
-        menuItems[3].setOnAction(e -> MusicBox.musicBox.playOrPause());
-        // menuItems[3].setOnAction(e -> MusicWithSyamiko.musicBox.playOrPause());
-        menuItems[4] = new MenuItem("Music with Syamiko");
-        menuItems[4].setOnAction(e -> (new MainController()).OpenMusicWindow());
-        // menuItems[4].setOnAction(e -> (new MainController()).OpenSyamikoWindow());
+        menuItems[3] = new MenuItem("Preference");
+        menuItems[3].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
+        menuItems[4] = new MenuItem("Play/Pause music");
+        menuItems[4].setOnAction(e -> MusicWithSyamiko.playOrPause());
+        // menuItems[3].setOnAction(e -> MusicBox.musicBox.playOrPause());
+        menuItems[1] = new MenuItem("Open Music with Syamiko");
+        menuItems[1].setOnAction(e -> MusicWithSyamiko.openMusicWithSyamiko());
+        // menuItems[4].setOnAction(e -> (new MainController()).OpenMusicWindow());
     }
     
     private void initTrayIcon(){

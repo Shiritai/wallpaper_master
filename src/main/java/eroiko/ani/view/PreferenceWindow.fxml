@@ -71,6 +71,21 @@
                   </CheckBox>
                </children>
             </Group>
+            <Label layoutX="14.0" layoutY="409.0" text="Music Setting">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <CheckBox fx:id="keepPlayingMusic" layoutX="41.0" layoutY="448.0" mnemonicParsing="false" text="Keep playing music one by one">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </CheckBox>
+            <CheckBox fx:id="randomPlayMusic" layoutX="41.0" layoutY="487.0" mnemonicParsing="false" text="Play music randomly">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </CheckBox>
          </children>
       </AnchorPane>
       <ScrollBar layoutX="886.0" orientation="VERTICAL" prefHeight="478.0" prefWidth="14.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="886.0" AnchorPane.topAnchor="0.0" />

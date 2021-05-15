@@ -1,9 +1,7 @@
 package eroiko.ani.util;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -11,11 +9,14 @@ import java.util.ArrayList;
 
 import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.media.Media;
 
 
 /** 第一個為 Complete music, 第二個為 processing music */
 public class MediaOperator {
+    /** 單一一個音樂撥放器 */
     public static MediaOperator playBox = new MediaOperator();
 
     private DirectoryStream<Path> root;
@@ -36,11 +37,12 @@ public class MediaOperator {
 
     public void addNewMusic(Path path, boolean isComplete) throws IOException{
         var motoFirst = medias.get(isComplete ? 0 : 1);
-        motoFirst.toFile().renameTo(new File(motoFirst.getParent().toString() + shiftSerialNumber(motoFirst, medias.size() + 1)));
-        System.out.print("Default Music has renamed to : ");
-        System.out.println(motoFirst);
+        var newFilePath = Path.of(motoFirst.getParent().toString() + "\\" + shiftSerialNumber(motoFirst, medias.size() + 1));
+        motoFirst.toFile().renameTo(newFilePath.toFile());
+        System.out.print("Default Music has been renamed to : ");
+        System.out.println(newFilePath);
         medias.add( // 把首位複製到最後
-            motoFirst
+            newFilePath
         );
         var newMusic = Path.of(
             WallpaperPath.defaultMusicPath.toString()
@@ -64,7 +66,7 @@ public class MediaOperator {
 
     private String shiftSerialNumber(Path path, int afterNumber) {
         String p = path.getFileName().toString();
-        return p.charAt(0) + Integer.toString(afterNumber) + p.substring(p.indexOf('_'));
+        return Integer.toString(afterNumber) + p.substring(p.indexOf('_'));
     }
 
     public Path getCurrentMediaPath(){
@@ -76,7 +78,8 @@ public class MediaOperator {
             throw new IllegalArgumentException("Music index out of range!");
         }
         try {
-            return new Media(medias.get(serialNumber).toUri().toURL().toString());
+            var tmp = new Media(medias.get(serialNumber).toUri().toURL().toString());
+            return tmp;
         } catch (Exception e) { // 包含 initIndex == -1 的例外
             System.out.println(e.toString());
             return null;
@@ -85,6 +88,10 @@ public class MediaOperator {
 
     public String getCurrentMediaName(){
         return getCurrentMediaPath().getFileName().toString();
+    }
+
+    public StringProperty getCurrentMediaNameProperty(){
+        return new SimpleStringProperty(getCurrentMediaPath().getFileName().toString());
     }
     
     public Media getDefaultCompleteMedia(){
@@ -108,6 +115,7 @@ public class MediaOperator {
     }
     
     public Media getRandomMedia(){
-        return getMedia((int) (Math.random() * medias.size()));
+        current = (int) (Math.random() * medias.size());
+        return getMedia(current);
     }
 }

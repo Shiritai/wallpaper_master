@@ -8,6 +8,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.media.MediaView?>
 <?import javafx.scene.shape.Rectangle?>
@@ -21,12 +22,28 @@
             <Image url="@../img/wallpaper150.jpg" />
          </image>
       </ImageView>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="420.0" translateY="-20.0" StackPane.alignment="BOTTOM_LEFT">
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="420.0" StackPane.alignment="BOTTOM_LEFT">
          <children>
             <MediaView fx:id="mediaBox" fitHeight="10.0" fitWidth="10.0" layoutX="18.0" layoutY="24.0" />
+            <Slider fx:id="progressBar" layoutX="16.0" prefHeight="14.0" prefWidth="408.0" value="50.0" />
+            <Group layoutX="349.0" layoutY="-8.0">
+               <children>
+                  <Text fx:id="currentTime" fill="#ffb302" layoutX="-10.0" layoutY="0.9230766296386719" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                     <font>
+                        <Font name="Fira Code Regular" size="12.0" />
+                     </font>
+                  </Text>
+                  <Text fill="WHITE" layoutX="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/" />
+                  <Text fx:id="durationTime" fill="#f2f2f2" layoutX="43.0" layoutY="0.9230766296386719" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                     <font>
+                        <Font name="Fira Code Regular" size="12.0" />
+                     </font>
+                  </Text>
+               </children>
+            </Group>
             <AnchorPane layoutX="10.0" layoutY="34.0" prefHeight="35.0" prefWidth="400.0" style="-fx-border-fill: transparent;">
                <children>
-                  <Group layoutX="191.0" layoutY="8.0">
+                  <Group layoutX="217.0" layoutY="4.0">
                      <children>
                         <Slider fx:id="volumeBar" layoutX="57.0" layoutY="6.0" value="50.0" />
                         <Text fill="#dddddd" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volume" wrappingWidth="60.13671875">
@@ -36,7 +53,7 @@
                         </Text>
                      </children>
                   </Group>
-                  <Group layoutX="14.0">
+                  <HBox layoutX="10.0" prefHeight="38.0" prefWidth="197.0">
                      <children>
                         <AnchorPane prefHeight="35.0" prefWidth="47.0">
                            <children>
@@ -48,17 +65,13 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                        <AnchorPane layoutX="47.0" layoutY="1.0" prefHeight="35.0" prefWidth="47.0">
+                        <AnchorPane prefHeight="35.0" prefWidth="47.0">
                            <children>
-                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" layoutY="-1.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
-                              <ImageView fx:id="playMusicButton" fitHeight="36.0" fitWidth="47.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../img/play.png" />
-                                 </image>
-                              </ImageView>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
+                              <ImageView fx:id="playMusicButton" fitHeight="36.0" fitWidth="47.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true" />
                            </children>
                         </AnchorPane>
-                        <AnchorPane layoutX="93.0" prefHeight="35.0" prefWidth="47.0">
+                        <AnchorPane prefHeight="35.0" prefWidth="47.0">
                            <children>
                               <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
                               <ImageView fx:id="nextMusicButton" fitHeight="35.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
@@ -68,8 +81,18 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
+                        <AnchorPane prefHeight="35.0" prefWidth="47.0">
+                           <children>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
+                              <ImageView fx:id="shuffleButton" fitHeight="30.0" fitWidth="32.0" layoutX="9.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/shuffle.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
                      </children>
-                  </Group>
+                  </HBox>
                </children>
             </AnchorPane>
             <Group layoutX="18.0" layoutY="110.0">
@@ -102,9 +125,9 @@
             </Group>
          </children>
       </AnchorPane>
-      <Label fx:id="musicName" contentDisplay="CENTER" text="Misic Name" textAlignment="CENTER" textFill="#ffb302" translateX="60.0" translateY="40.0" StackPane.alignment="TOP_LEFT">
+      <Label fx:id="musicName" contentDisplay="CENTER" text="Music Name" textAlignment="CENTER" textFill="#ffb302" translateX="30.0" translateY="30.0" StackPane.alignment="TOP_LEFT">
          <font>
-            <Font name="Bookman Old Style" size="20.0" />
+            <Font name="rainyhearts" size="26.0" />
          </font>
       </Label>
    </children>
