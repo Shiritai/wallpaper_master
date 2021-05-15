@@ -41,6 +41,7 @@ import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 public class MainController implements Initializable {
@@ -592,8 +593,28 @@ public class MainController implements Initializable {
         }
     }
 
+    @FXML
+    void WallpaperizeAFolder(ActionEvent event) {
+        WallpaperizeFolder(false);
+    }
+    
+    @FXML
+    void WallpaperizeAFolderAsDefault(ActionEvent event) {
+        WallpaperizeFolder(true);
+    }
+    
+    public void WallpaperizeFolder(boolean toDefault){
+        var tmp = new DirectoryChooser();
+        try {
+            var wpi = new Wallpaperize(tmp.showDialog(null).toPath(), toDefault);
+            wpi.execute();
+            wpi = null; // 釋放記憶體
+        } catch (Exception e){} // 表示沒做選擇, InvocationTargetException    
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle rb){
+        new Wallpaperize().execute(); // 每次開啟時初始化 Wallpaper folder
         try {
             theWallpaper = new Wallpaper();
         } catch (IOException e) {

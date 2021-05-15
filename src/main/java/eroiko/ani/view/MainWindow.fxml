@@ -46,13 +46,15 @@
                   <MenuItem mnemonicParsing="false" onAction="#MenuFileOpenFileExplorer" text="Open File Explorer" />
                   <MenuItem mnemonicParsing="false" onAction="#OpenMusicController" text="Open Music Controller" />
               <MenuItem mnemonicParsing="false" onAction="#SwitchBackToImgPath" text="Switch wallpaper view back to default path" />
-                  <MenuItem mnemonicParsing="false" onAction="#ResetWindow" text="Reset Window" />
+                  <MenuItem mnemonicParsing="false" onAction="#WallpaperizeAFolder" text="Wallpaperize a folder" />
+                  <MenuItem mnemonicParsing="false" onAction="#WallpaperizeAFolderAsDefault" text="Wallpaperize a folder as default" />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Mode">
                <items>
                   <MenuItem disable="true" mnemonicParsing="false" text="Music" />
                   <MenuItem disable="true" mnemonicParsing="false" text="Advance (password needed)" />
+                  <MenuItem mnemonicParsing="false" onAction="#ResetWindow" text="Reset Window" />
                </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Help">

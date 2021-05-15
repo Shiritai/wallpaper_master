@@ -25,6 +25,7 @@ public class PreferenceController implements Initializable {
     public static boolean quit;
     public static BooleanProperty showWallpapersAfterCrawling = new SimpleBooleanProperty(true);
     
+    
     @FXML private CheckBox showWallpapers;
     @FXML private CheckBox customizeBox;
     @FXML private TextField savingDir;
@@ -67,8 +68,9 @@ public class PreferenceController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb){
-        savingDir.editableProperty().set(false);
-        savingDir.setText(WallpaperPath.defaultDataPath.toString());
+        customizeBox.selectedProperty().set(WallpaperPath.useConfigOrNot());
+        savingDir.editableProperty().set(WallpaperPath.useConfigOrNot());
+        savingDir.setText(WallpaperPath.getWallpaperPath().toAbsolutePath().toString());
         savingDir.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (customizeBox.selectedProperty().get() && e.getCode().equals(KeyCode.ENTER)){
                 WallpaperPath.updateUserWallpaperPath(Path.of(savingDir.getText()));

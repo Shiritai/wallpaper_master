@@ -57,6 +57,15 @@ public class Wallpaper {
     /** 執行 resultList 指定的複製, 刪除 */
     public static void executeResultAndCleanPreview(){
         /* execute resultList */
+        /* 1. delete wallpapers */
+        resultList.value.forEach(p -> {
+            try {
+                Files.delete(p);
+            } catch (IOException e) {
+                System.out.println("File not exist, so we can't delete it.");
+            }
+        });
+        /* 2. copy wallpapers */
         var target = WallpaperPath.getWallpaperPath().toString();
         var targetDir = new File(target);
         if (!targetDir.exists()){
@@ -69,7 +78,7 @@ public class Wallpaper {
                 numbers.add(WallpaperUtil.getSerialNumberFromAWallpaper(p));
             }
         } catch (IllegalArgumentException | IOException e1) {
-            e1.printStackTrace();
+            System.out.println(e1.toString());
         }
         resultList.key.forEach(p -> {
             while (numbers.contains(WallpaperUtil.peekSerialNumber())){
@@ -81,13 +90,6 @@ public class Wallpaper {
                     StandardCopyOption.REPLACE_EXISTING);
             } catch (IOException e) {
                 System.out.println("File not exist, so we can't copy it.");
-            }
-        });
-        resultList.value.forEach(p -> {
-            try {
-                Files.delete(p);
-            } catch (IOException e) {
-                System.out.println("File not exist, so we can't delete it.");
             }
         });
         resultList.key = new TreeSet<Path>();
@@ -105,7 +107,7 @@ public class Wallpaper {
             } catch (IOException e) {
                 System.out.println(e.toString());
             }
-            try {
+            try { // 刪除 Directory
                 Files.delete(p);
             } catch (IOException e) {
                 System.out.println(e.toString());

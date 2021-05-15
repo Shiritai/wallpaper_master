@@ -16,12 +16,16 @@ public class WallpaperPath {
     }
 
     public static void updateUserWallpaperPath(Path path){
-        userWallpaperPath = path;
-        useConfigWallpaperPath = true; 
-        System.out.println("New default path : " + WallpaperPath.getWallpaperPath());
+        if (!path.equals(WallpaperPath.defaultWallpaperPath)){ // 確保非預設
+            userWallpaperPath = path;
+            useConfigWallpaperPath = true; 
+            System.out.println("New default path : " + WallpaperPath.getWallpaperPath());
+        }
     }
 
     public static void resetToDefaultWallpaperPath(){ useConfigWallpaperPath = false; }
+
+    public static boolean useConfigOrNot(){ return useConfigWallpaperPath; }
 
     public static Path pushUserPath(){
         if (useConfigWallpaperPath){
