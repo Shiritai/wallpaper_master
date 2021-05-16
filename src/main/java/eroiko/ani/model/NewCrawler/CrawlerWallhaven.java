@@ -118,7 +118,6 @@ public class CrawlerWallhaven extends CrawlerBase {
                 .userAgent(CrawlerBase.UserAgent)
                 .timeout(10000)
                 .get();
-            System.out.printf(">> ");
             System.out.println(doc.title()); // just for sure!
             if (!MainController.quit){
                 System.err.println(doc.title()); // just for sure!

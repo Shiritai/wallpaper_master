@@ -140,7 +140,7 @@ public class MainController implements Initializable {
     void StartWalkingQueue(){
         ObservableList<myPair<String, String>> data = searchQueue.getItems();
         int size = data.size();
-        MusicBox.musicBox.playProcessing();
+        MusicWithSyamiko.playProcessing();
         crawlerThread = new Service<Void>(){
             @Override
             protected Task<Void> createTask(){
@@ -198,7 +198,7 @@ public class MainController implements Initializable {
             @Override
             public void handle(WorkerStateEvent e){
                 System.out.println("Done, closing crawlerThread.");
-                MusicBox.musicBox.playComplete();
+                MusicWithSyamiko.playProcessing();
                 progressBarText.textProperty().unbind();
                 searchQueue.getItems().clear();
                 nowProcessingText.clear();

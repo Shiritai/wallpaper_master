@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import eroiko.ani.MainApp;
 import eroiko.ani.util.MediaOperator;
+import eroiko.ani.util.myDS.TimeWait;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
@@ -30,6 +31,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
@@ -42,13 +44,13 @@ import javafx.util.StringConverter;
 
 public class MusicWithSyamiko implements Initializable {
     /* Player part */
-    private static final int PROCESSING = 0;
-    private static final int COMPLETE = 1;
-    private static final int CERTAIN = 2;
-    private static final int CURRENT = 3;
-    private static final int RANDOM = 4;
-    private static final int NEXT = 5;
-    private static final int PREVIOUS = 6;
+    public static final int PROCESSING = 0;
+    public static final int COMPLETE = 1;
+    public static final int CERTAIN = 2;
+    public static final int CURRENT = 3;
+    public static final int RANDOM = 4;
+    public static final int NEXT = 5;
+    public static final int PREVIOUS = 6;
     public static MediaOperator box = MediaOperator.playBox;
     public static MediaPlayer player = new MediaPlayer(box.getCurrentMedia());
     /* Support visualization properties */
@@ -76,39 +78,7 @@ public class MusicWithSyamiko implements Initializable {
     }
 
     private static void play(int type, Path path){
-        if (MediaPlayer.Status.PLAYING.equals(player.getStatus())){
-            player.stop();
-        }
-        player = switch (type) {
-            case PROCESSING -> new MediaPlayer(box.getDefaultProcessingMedia());
-            case COMPLETE -> new MediaPlayer(box.getDefaultCompleteMedia());
-            case CURRENT -> new MediaPlayer(box.getCurrentMedia());
-            case CERTAIN -> new MediaPlayer(new Media(path.toAbsolutePath().toString()));
-            case RANDOM -> new MediaPlayer(box.getRandomMedia());
-            case NEXT -> new MediaPlayer(box.getNextMedia());
-            case PREVIOUS -> new MediaPlayer(box.getPreviousMedia());
-            default -> throw new IllegalArgumentException("Error type of image!");
-        };
-        if (type == PROCESSING){
-            player.setCycleCount(MediaPlayer.INDEFINITE);
-        }
-        player.setOnReady(() -> {
-            maxProgress.set(player.getTotalDuration().toSeconds());
-        });
-        player.currentTimeProperty().addListener((a, b, c) -> progress.setValue(c.toSeconds()));
-        player.volumeProperty().addListener(e -> volume.set(player.getVolume()));
-        player.setVolume(volume.get());
-        if (PreferenceController.keepMusic){
-            player.setOnEndOfMedia(() -> {
-                if (PreferenceController.randomMusic){
-                    play(RANDOM);
-                }
-                else {
-                    play(NEXT);
-                }
-            });
-        }
-        player.play();
+        play(null, type, path);
     }
 
     private static void play(MusicWithSyamiko th, int type, Path path){
@@ -125,12 +95,6 @@ public class MusicWithSyamiko implements Initializable {
             case PREVIOUS -> new MediaPlayer(box.getPreviousMedia());
             default -> throw new IllegalArgumentException("Error type of image!");
         };
-        if (type == PROCESSING){
-            player.setCycleCount(MediaPlayer.INDEFINITE);
-        }
-        player.setOnReady(() -> {
-            maxProgress.set(player.getTotalDuration().toSeconds());
-        });
         player.currentTimeProperty().addListener((a, b, c) -> progress.setValue(c.toSeconds()));
         player.volumeProperty().addListener(e -> volume.set(player.getVolume()));
         player.setVolume(volume.get());
@@ -142,10 +106,24 @@ public class MusicWithSyamiko implements Initializable {
                 else {
                     play(NEXT);
                 }
-                th.refresh();
+                if (th != null){
+                    th.refresh();
+                }
             });
         }
-        nameOfMusic.set(box.getCurrentMediaName());
+        if (type == PROCESSING){
+            player.setCycleCount(MediaPlayer.INDEFINITE);
+            nameOfMusic.set(box.getDefaultProcessingName());
+        }
+        else if (type == COMPLETE){
+            nameOfMusic.set(box.getDefaultCompleteName());
+        }
+        else {
+            nameOfMusic.set(box.getCurrentMediaName());
+            player.setOnReady(() -> {
+                maxProgress.set(player.getTotalDuration().toSeconds());
+            });
+        }
         player.play();
     }
 
@@ -163,10 +141,20 @@ public class MusicWithSyamiko implements Initializable {
         play(type, null);
     }
 
+    public static void playProcessing(){
+        play(PROCESSING);
+    }
+
+    public static void playComplete(){
+        play(COMPLETE);
+    }
+
     /* Open window */
     private static Stage stage;
     private static Image playImage = null;
     private static Image pauseImage = null;
+    private static Image emptyHeartImage = null;
+    private static Image fullHeartImage = null;
     public static void openMusicWithSyamiko(){
         if (!openedWindow){
             try {
@@ -193,11 +181,16 @@ public class MusicWithSyamiko implements Initializable {
     @FXML private ImageView playMusicButton;
     @FXML private ImageView nextMusicButton;
     @FXML private ImageView shuffleButton;
+    @FXML private ImageView randomButton;
     @FXML private CheckBox customizeProcessingMusic;
     @FXML private CheckBox customizeCompleteMusic;
     @FXML private Label musicName;
     @FXML private Text currentTime;
     @FXML private Text durationTime;
+    @FXML private ImageView loop;
+    @FXML private ImageView processingHeart;
+    @FXML private ImageView completeHeart;
+    @FXML private Label promptLabel;
     
     @FXML
     void OpenMusicExplorerForComplete(ActionEvent event) {
@@ -223,16 +216,88 @@ public class MusicWithSyamiko implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        musicName.setOnMouseClicked(e -> musicName.setText(carryReturnStringAndStripType(box.getCurrentMediaName(), 25)));
+        musicName.setOnMouseClicked(e -> musicName.setText(carryReturnStringAndStripTypeAndSerialNumber(box.getCurrentMediaName(), 25)));
         openedWindow = true;
         if (pauseImage == null){
             try {
                 pauseImage = new Image(FileSystems.getDefault().getPath("src/main/java/eroiko/ani/img/pause.png").toUri().toURL().toString());
                 playImage = new Image(FileSystems.getDefault().getPath("src/main/java/eroiko/ani/img/play.png").toUri().toURL().toString());
+                emptyHeartImage = new Image(FileSystems.getDefault().getPath("src/main/java/eroiko/ani/img/heart.png").toUri().toURL().toString());
+                fullHeartImage = new Image(FileSystems.getDefault().getPath("src/main/java/eroiko/ani/img/heart filled.png").toUri().toURL().toString());
             } catch (MalformedURLException e1) {
                 e1.printStackTrace();
             }
         }
+
+        loop.setOpacity((PreferenceController.keepMusic) ? 1 : 0.5);
+        loop.setOnMouseClicked(e -> {
+            if (PreferenceController.keepMusic){
+                PreferenceController.keepMusic = false;
+                loop.setOpacity(0.5);
+            }
+            else {
+                PreferenceController.keepMusic = true;
+                loop.setOpacity(1);
+            }
+        });
+
+        shuffleButton.setOpacity((PreferenceController.randomMusic) ? 1 : 0.5);
+        shuffleButton.setOnMouseClicked(e -> {
+            if (PreferenceController.randomMusic){
+                PreferenceController.randomMusic = false;
+                shuffleButton.setOpacity(0.5);
+            }
+            else {
+                PreferenceController.randomMusic = true;
+                shuffleButton.setOpacity(1);
+            }
+        });
+
+        processingHeart.setOnMouseClicked(e -> {
+            if (!box.isDefaultProcessing()){
+                if (box.isProcessingMusic()){
+                    processingHeart.setImage(emptyHeartImage);
+                    box.restoreDefaultMusic(false);
+                }
+                else {
+                    processingHeart.setImage(fullHeartImage);
+                    box.setMusicToDefault(false);
+                }
+            }
+            else {
+                new Thread(() -> {
+                    var str = "This is the default processing music :)";
+                    promptLabel.setText(str);
+                    new TimeWait(5000);
+                    if (promptLabel.getText().equals(str)){
+                        promptLabel.setText("");
+                    }
+                }).start();
+            }
+        });
+        
+        completeHeart.setOnMouseClicked(e -> {
+            if (!box.isDefaultComplete()){
+                if (box.isCompleteMusic()){
+                    box.restoreDefaultMusic(true);
+                    completeHeart.setImage(emptyHeartImage);
+                }
+                else {
+                    completeHeart.setImage(fullHeartImage);
+                    box.setMusicToDefault(true);
+                }
+            }
+            else {
+                new Thread(() -> {
+                    var str = "This is the default complete music :)";
+                    promptLabel.setText(str);
+                    new TimeWait(5000);
+                    if (promptLabel.getText().equals(str)){
+                        promptLabel.setText("");
+                    }
+                }).start();
+            }
+        });
 
         Bindings.bindBidirectional(currentTime.textProperty(), progress, new StringConverter<Number>(){
             @Override
@@ -277,7 +342,7 @@ public class MusicWithSyamiko implements Initializable {
         };
         playOrPauseImageSwitcher.addListener(chImage);
         
-        musicName.setText(carryReturnStringAndStripType(box.getCurrentMediaName(), 25));
+        musicName.setText(carryReturnStringAndStripTypeAndSerialNumber(box.getCurrentMediaName(), 25));
         Bindings.bindBidirectional(musicName.textProperty(), nameOfMusic, new StringConverter<String>(){
             @Override
             public String fromString(String arg0) {
@@ -285,7 +350,7 @@ public class MusicWithSyamiko implements Initializable {
             }
             @Override
             public String toString(String arg0) {
-                return carryReturnStringAndStripType(arg0, 25);
+                return carryReturnStringAndStripTypeAndSerialNumber(arg0, 25);
             }
         });
 
@@ -314,7 +379,7 @@ public class MusicWithSyamiko implements Initializable {
         playMusicButton.setOnMouseClicked(e -> {
             playOrPause();
             nameOfMusic.set(box.getCurrentMediaName());
-            musicName.setText(carryReturnStringAndStripType(box.getCurrentMediaName(), 25));
+            musicName.setText(carryReturnStringAndStripTypeAndSerialNumber(box.getCurrentMediaName(), 25));
         });
         nextMusicButton.setOnMouseClicked(e -> {
             play(this, NEXT);
@@ -324,7 +389,7 @@ public class MusicWithSyamiko implements Initializable {
             play(this, PREVIOUS);
             refresh();
         });
-        shuffleButton.setOnMouseClicked(e -> {
+        randomButton.setOnMouseClicked(e -> {
             play(this, RANDOM);
             refresh();
         });
@@ -340,26 +405,94 @@ public class MusicWithSyamiko implements Initializable {
             musicName.textProperty().unbind();
             progressBar.valueProperty().unbindBidirectional(progress);
         });
+        setPromptLabel();
+        refresh();
+        playMusicButton.setImage(playImage);
     }
-
+    
     private void refresh(){
         playMusicButton.setImage(pauseImage);
         nameOfMusic.set(box.getCurrentMediaName());
+        processingHeart.setImage((box.isProcessingMusic()) ? fullHeartImage : emptyHeartImage);
+        completeHeart.setImage((box.isCompleteMusic()) ? fullHeartImage : emptyHeartImage);
     }
 
-    public static String carryReturnStringAndStripType(String str, int length){
+    private void setPromptLabel() {
+        playMusicButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
+            promptLabel.setText("play / pause music");
+        });
+        playMusicButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
+            promptLabel.setText("");
+        });
+        nextMusicButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
+            promptLabel.setText("next music");
+        });
+        nextMusicButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
+            promptLabel.setText("");
+        });
+        lastMusicButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
+            promptLabel.setText("previous music");
+        });
+        lastMusicButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
+            promptLabel.setText("");
+        });
+        loop.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
+            promptLabel.setText("loop music");
+        });
+        loop.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
+            promptLabel.setText("");
+        });
+        randomButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
+            promptLabel.setText("random music");
+        });
+        randomButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
+            promptLabel.setText("");
+        });
+        shuffleButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
+            promptLabel.setText("shuffle music");
+        });
+        shuffleButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
+            promptLabel.setText("");
+        });
+        processingHeart.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
+            promptLabel.setText("as processing music");
+        });
+        processingHeart.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
+            promptLabel.setText("");
+        });
+        completeHeart.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
+            promptLabel.setText("as complete music");
+        });
+        completeHeart.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
+            promptLabel.setText("");
+        });
+    }
+    
+    public static String carryReturnStringAndStripTypeAndSerialNumber(String str, int length){
         if (str != null){
+            if (str.startsWith("00_")){
+                str = str.substring(3);
+            }
             String res = "";
             var tmp = str.toCharArray();
-            for (int i = 0; i < tmp.length && tmp[i] != '.'; ++i){
-                if (i % length == length - 1){
-                    res += "\n";
+            int i = 0;
+            int currentSize = 0;
+            if (str.contains("_")){
+                while (tmp[i++] != '_'); // 掠過編號
+            }
+            for (; i < tmp.length && tmp[i] != '.'; ++i){ // 掠過格式
+                currentSize += (Character.isAlphabetic(tmp[i])) ? 1 : 2;
+                if (currentSize >= length){
+                    if (!Character.isAlphabetic(tmp[i]) || Character.isWhitespace(tmp[i])){ // 保持英文單字完整性
+                        res += "\n";
+                        currentSize = 0;
+                    }
                 }
                 res += tmp[i];
             }
             return res;
         }
-        return "<Null>";
+        return "<Ready to play>";
     }
 
 }

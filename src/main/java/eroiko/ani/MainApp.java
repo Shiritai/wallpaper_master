@@ -80,7 +80,6 @@ public class MainApp extends Application{
             }
         });
         /* mainStage 基礎設定 */
-        // mainStage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
         icon = new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString());
         mainStage.getIcons().add(icon);
         mainStage.setTitle("Wallpaper Master");
@@ -98,18 +97,11 @@ public class MainApp extends Application{
     }
 
     private void setMinimizedMenu() {
-        /* Set minimized menu identities */
-        // menu = new Menu("Options");
-        // childMenu = new MenuItem[2];
-        // childMenu[0] = new MenuItem("opt1");
-        // childMenu[0].setOnAction(e -> System.out.println("clicked opt1"));
-        // childMenu[1] = new MenuItem("opt2");
-        // childMenu[1].setOnAction(e -> System.out.println("clicked opt2"));
-        // menu.getItems().addAll(childMenu[0], childMenu[1]);
-        
         menuItems = new MenuItem [5];
         menuItems[0] = new MenuItem("Open Wallpaper Master");
         menuItems[0].setOnAction(e -> mainStage.show());
+        menuItems[1] = new MenuItem("Open Music with Syamiko");
+        menuItems[1].setOnAction(e -> MusicWithSyamiko.openMusicWithSyamiko());
         menuItems[2] = new MenuItem("Take clipboard images to wallpaper folder");
         menuItems[2].setOnAction(e -> {
             var cb = Clipboard.getSystemClipboard().getFiles();
@@ -131,10 +123,6 @@ public class MainApp extends Application{
         menuItems[3].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
         menuItems[4] = new MenuItem("Play/Pause music");
         menuItems[4].setOnAction(e -> MusicWithSyamiko.playOrPause());
-        // menuItems[3].setOnAction(e -> MusicBox.musicBox.playOrPause());
-        menuItems[1] = new MenuItem("Open Music with Syamiko");
-        menuItems[1].setOnAction(e -> MusicWithSyamiko.openMusicWithSyamiko());
-        // menuItems[4].setOnAction(e -> (new MainController()).OpenMusicWindow());
     }
     
     private void initTrayIcon(){

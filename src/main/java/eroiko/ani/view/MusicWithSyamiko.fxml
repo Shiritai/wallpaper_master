@@ -22,38 +22,42 @@
             <Image url="@../img/wallpaper150.jpg" />
          </image>
       </ImageView>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="220.0" prefWidth="420.0" StackPane.alignment="BOTTOM_LEFT">
+      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="234.0" prefWidth="420.0" StackPane.alignment="BOTTOM_LEFT">
          <children>
             <MediaView fx:id="mediaBox" fitHeight="10.0" fitWidth="10.0" layoutX="18.0" layoutY="24.0" />
-            <Slider fx:id="progressBar" layoutX="16.0" prefHeight="14.0" prefWidth="408.0" value="50.0" />
-            <Group layoutX="349.0" layoutY="-8.0">
+            <Group layoutX="16.0" layoutY="-6.94921875">
                <children>
-                  <Text fx:id="currentTime" fill="#ffb302" layoutX="-10.0" layoutY="0.9230766296386719" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
-                     <font>
-                        <Font name="Fira Code Regular" size="12.0" />
-                     </font>
-                  </Text>
-                  <Text fill="WHITE" layoutX="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/" />
-                  <Text fx:id="durationTime" fill="#f2f2f2" layoutX="43.0" layoutY="0.9230766296386719" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
-                     <font>
-                        <Font name="Fira Code Regular" size="12.0" />
-                     </font>
-                  </Text>
+                  <Slider fx:id="progressBar" layoutY="20.94921875" prefHeight="14.0" prefWidth="395.0" value="50.0" />
+                  <Group layoutX="303.0" layoutY="15.0">
+                     <children>
+                        <Text fx:id="currentTime" fill="#ffb302" layoutX="-10.0" layoutY="0.9230766296386719" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                           <font>
+                              <Font name="Fira Code Regular" size="12.0" />
+                           </font>
+                        </Text>
+                        <Text fill="WHITE" layoutX="31.0" strokeType="OUTSIDE" strokeWidth="0.0" text="/" />
+                        <Text fx:id="durationTime" fill="#f2f2f2" layoutX="43.0" layoutY="0.9230766296386719" strokeType="OUTSIDE" strokeWidth="0.0" text="Text">
+                           <font>
+                              <Font name="Fira Code Regular" size="12.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </Group>
                </children>
             </Group>
-            <AnchorPane layoutX="10.0" layoutY="34.0" prefHeight="35.0" prefWidth="400.0" style="-fx-border-fill: transparent;">
+            <AnchorPane layoutX="12.0" layoutY="73.0" prefHeight="35.0" prefWidth="400.0" style="-fx-border-fill: transparent;">
                <children>
-                  <Group layoutX="217.0" layoutY="4.0">
+                  <Group layoutX="12.0" layoutY="-57.0">
                      <children>
-                        <Slider fx:id="volumeBar" layoutX="57.0" layoutY="6.0" value="50.0" />
-                        <Text fill="#dddddd" layoutY="18.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volume" wrappingWidth="60.13671875">
+                        <Slider fx:id="volumeBar" layoutX="57.0" layoutY="25.0" prefHeight="14.0" prefWidth="170.0" value="50.0" />
+                        <Text fill="#dddddd" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Volume" wrappingWidth="60.13671875">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Text>
                      </children>
                   </Group>
-                  <HBox layoutX="10.0" prefHeight="38.0" prefWidth="197.0">
+                  <HBox layoutX="5.0" prefHeight="38.0" prefWidth="156.0">
                      <children>
                         <AnchorPane prefHeight="35.0" prefWidth="47.0">
                            <children>
@@ -81,12 +85,56 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
+                     </children>
+                  </HBox>
+                  <HBox layoutX="166.0" prefHeight="38.0" prefWidth="248.0">
+                     <children>
                         <AnchorPane prefHeight="35.0" prefWidth="47.0">
                            <children>
                               <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
-                              <ImageView fx:id="shuffleButton" fitHeight="30.0" fitWidth="32.0" layoutX="9.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="randomButton" fitHeight="35.0" fitWidth="47.0" opacity="0.95" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/random.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="35.0" prefWidth="47.0">
+                           <children>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
+                              <ImageView fx:id="shuffleButton" fitHeight="30.0" fitWidth="32.0" layoutX="9.0" layoutY="3.0" opacity="0.5" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../img/shuffle.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="35.0" prefWidth="47.0">
+                           <children>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
+                              <ImageView fx:id="loop" fitHeight="35.0" fitWidth="47.0" opacity="0.5" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/loop.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="35.0" prefWidth="47.0">
+                           <children>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
+                              <ImageView fx:id="processingHeart" fitHeight="36.0" fitWidth="47.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/heart.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane prefHeight="35.0" prefWidth="47.0">
+                           <children>
+                              <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
+                              <ImageView fx:id="completeHeart" fitHeight="35.0" fitWidth="47.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../img/heart.png" />
                                  </image>
                               </ImageView>
                            </children>
@@ -95,14 +143,14 @@
                   </HBox>
                </children>
             </AnchorPane>
-            <Group layoutX="18.0" layoutY="110.0">
+            <Group layoutX="18.0" layoutY="133.0">
                <children>
-                  <Button layoutX="234.0" mnemonicParsing="false" onAction="#OpenMusicExplorerForProcessing" style="-fx-background-color: #afafaf;" text="Open Resource File">
+                  <Button layoutX="234.0" layoutY="7.0" mnemonicParsing="false" onAction="#OpenMusicExplorerForProcessing" style="-fx-background-color: #afafaf;" text="Open Resource File">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <CheckBox fx:id="customizeProcessingMusic" mnemonicParsing="false" prefHeight="25.0" prefWidth="234.0" text="Customize Processing music" textFill="#f2f2f2">
+                  <CheckBox fx:id="customizeProcessingMusic" layoutY="9.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="234.0" text="Customize Processing music" textFill="#f2f2f2">
                      <font>
                         <Font size="16.0" />
                      </font>
@@ -111,23 +159,28 @@
             </Group>
             <Group layoutX="18.0" layoutY="171.0">
                <children>
-                  <Button layoutX="234.0" layoutY="-2.0" mnemonicParsing="false" onAction="#OpenMusicExplorerForComplete" style="-fx-background-color: #afafaf;" text="Open Resource File">
+                  <Button layoutX="234.0" layoutY="14.0" mnemonicParsing="false" onAction="#OpenMusicExplorerForComplete" style="-fx-background-color: #afafaf;" text="Open Resource File">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Button>
-                  <CheckBox fx:id="customizeCompleteMusic" mnemonicParsing="false" prefHeight="25.0" prefWidth="234.0" text="Customize Complete music" textFill="#f8f8f8">
+                  <CheckBox fx:id="customizeCompleteMusic" layoutY="16.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="234.0" text="Customize Complete music" textFill="#f8f8f8">
                      <font>
                         <Font size="16.0" />
                      </font>
                   </CheckBox>
                </children>
             </Group>
+            <Label fx:id="promptLabel" alignment="CENTER_RIGHT" layoutX="264.0" layoutY="38.0" prefHeight="20.0" prefWidth="143.0" text="button usage" textAlignment="RIGHT" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
       <Label fx:id="musicName" contentDisplay="CENTER" text="Music Name" textAlignment="CENTER" textFill="#ffb302" translateX="30.0" translateY="30.0" StackPane.alignment="TOP_LEFT">
          <font>
-            <Font name="rainyhearts" size="26.0" />
+            <Font name="Arial Rounded MT Bold" size="24.0" />
          </font>
       </Label>
    </children>

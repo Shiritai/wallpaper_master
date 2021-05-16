@@ -186,7 +186,7 @@
                                                       </AnchorPane>
                                                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                                          <children>
-                                                            <TextField fx:id="nowProcessingText" alignment="CENTER" layoutX="77.0" prefHeight="25.0" prefWidth="303.0" promptText="Now Processing..." AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                                            <TextField fx:id="nowProcessingText" alignment="CENTER" layoutX="77.0" prefHeight="25.0" prefWidth="303.0" promptText="Idle" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <font>
                                                                   <Font name="System Bold" size="12.0" />
                                                                </font>
@@ -441,7 +441,7 @@
                                                          <children>
                                                             <StackPane layoutX="101.0" layoutY="-75.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="24.0" prefWidth="402.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                                <children>
-                                                                  <ProgressBar fx:id="mainPbar" prefHeight="24.0" prefWidth="419.0" progress="0.0" />
+                                                                  <ProgressBar fx:id="mainPbar" prefHeight="24.0" prefWidth="436.0" progress="0.0" />
                                                                   <Text fx:id="percentageMark" strokeType="OUTSIDE" strokeWidth="0.0" text="Percentage " textAlignment="CENTER" wrappingWidth="395.578125">
                                                                      <font>
                                                                         <Font name="Fira Code Regular" size="12.0" />
