@@ -85,10 +85,6 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
-                     </children>
-                  </HBox>
-                  <HBox layoutX="166.0" prefHeight="38.0" prefWidth="248.0">
-                     <children>
                         <AnchorPane prefHeight="35.0" prefWidth="47.0">
                            <children>
                               <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
@@ -99,6 +95,10 @@
                               </ImageView>
                            </children>
                         </AnchorPane>
+                     </children>
+                  </HBox>
+                  <HBox layoutX="209.0" prefHeight="38.0" prefWidth="248.0">
+                     <children>
                         <AnchorPane prefHeight="35.0" prefWidth="47.0">
                            <children>
                               <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
@@ -171,6 +171,16 @@
                   </CheckBox>
                </children>
             </Group>
+            <AnchorPane fx:id="importPane" layoutX="450.0" layoutY="190.0" opacity="0.0" prefHeight="35.0" prefWidth="60.0" rotate="28.6">
+               <children>
+                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#61555d" height="35.0" stroke="#ede4e4a7" strokeType="INSIDE" style="-fx-border-fill: transparent;" width="47.0" />
+                  <ImageView fx:id="importMusic" fitHeight="36.0" fitWidth="47.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../img/tmp.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
             <Label fx:id="promptLabel" alignment="CENTER_RIGHT" layoutX="264.0" layoutY="38.0" prefHeight="20.0" prefWidth="143.0" text="button usage" textAlignment="RIGHT" textFill="WHITE">
                <font>
                   <Font size="14.0" />

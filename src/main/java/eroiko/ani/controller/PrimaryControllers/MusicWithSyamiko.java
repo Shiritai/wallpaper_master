@@ -31,11 +31,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.FileChooser.ExtensionFilter;
@@ -82,9 +86,7 @@ public class MusicWithSyamiko implements Initializable {
     }
 
     private static void play(MusicWithSyamiko th, int type, Path path){
-        if (MediaPlayer.Status.PLAYING.equals(player.getStatus())){
-            player.stop();
-        }
+        player.stop(); // 終止當前音樂
         player = switch (type) {
             case PROCESSING -> new MediaPlayer(box.getDefaultProcessingMedia());
             case COMPLETE -> new MediaPlayer(box.getDefaultCompleteMedia());
@@ -111,6 +113,7 @@ public class MusicWithSyamiko implements Initializable {
                 }
             });
         }
+        System.out.println(box.getCurrentMediaName());
         if (type == PROCESSING){
             player.setCycleCount(MediaPlayer.INDEFINITE);
             nameOfMusic.set(box.getDefaultProcessingName());
@@ -166,7 +169,6 @@ public class MusicWithSyamiko implements Initializable {
                 stage.show();
             } catch (Exception e){
                 e.printStackTrace();
-                System.out.println(e.toString());
             }
         }
         else {
@@ -190,7 +192,10 @@ public class MusicWithSyamiko implements Initializable {
     @FXML private ImageView loop;
     @FXML private ImageView processingHeart;
     @FXML private ImageView completeHeart;
-    @FXML private Label promptLabel;
+    @FXML private Label promptLabel;    
+    @FXML private AnchorPane importPane;
+    @FXML private ImageView importMusic;
+
     
     @FXML
     void OpenMusicExplorerForComplete(ActionEvent event) {
@@ -228,76 +233,16 @@ public class MusicWithSyamiko implements Initializable {
                 e1.printStackTrace();
             }
         }
+        importMusic.setOnMouseClicked(e -> activateImport());
 
         loop.setOpacity((PreferenceController.keepMusic) ? 1 : 0.5);
-        loop.setOnMouseClicked(e -> {
-            if (PreferenceController.keepMusic){
-                PreferenceController.keepMusic = false;
-                loop.setOpacity(0.5);
-            }
-            else {
-                PreferenceController.keepMusic = true;
-                loop.setOpacity(1);
-            }
-        });
+        loop.setOnMouseClicked(e -> activateLoop());
 
         shuffleButton.setOpacity((PreferenceController.randomMusic) ? 1 : 0.5);
-        shuffleButton.setOnMouseClicked(e -> {
-            if (PreferenceController.randomMusic){
-                PreferenceController.randomMusic = false;
-                shuffleButton.setOpacity(0.5);
-            }
-            else {
-                PreferenceController.randomMusic = true;
-                shuffleButton.setOpacity(1);
-            }
-        });
+        shuffleButton.setOnMouseClicked(e -> activateShuffle());
 
-        processingHeart.setOnMouseClicked(e -> {
-            if (!box.isDefaultProcessing()){
-                if (box.isProcessingMusic()){
-                    processingHeart.setImage(emptyHeartImage);
-                    box.restoreDefaultMusic(false);
-                }
-                else {
-                    processingHeart.setImage(fullHeartImage);
-                    box.setMusicToDefault(false);
-                }
-            }
-            else {
-                new Thread(() -> {
-                    var str = "This is the default processing music :)";
-                    promptLabel.setText(str);
-                    new TimeWait(5000);
-                    if (promptLabel.getText().equals(str)){
-                        promptLabel.setText("");
-                    }
-                }).start();
-            }
-        });
-        
-        completeHeart.setOnMouseClicked(e -> {
-            if (!box.isDefaultComplete()){
-                if (box.isCompleteMusic()){
-                    box.restoreDefaultMusic(true);
-                    completeHeart.setImage(emptyHeartImage);
-                }
-                else {
-                    completeHeart.setImage(fullHeartImage);
-                    box.setMusicToDefault(true);
-                }
-            }
-            else {
-                new Thread(() -> {
-                    var str = "This is the default complete music :)";
-                    promptLabel.setText(str);
-                    new TimeWait(5000);
-                    if (promptLabel.getText().equals(str)){
-                        promptLabel.setText("");
-                    }
-                }).start();
-            }
-        });
+        processingHeart.setOnMouseClicked(e -> activateProcessingHeart());
+        completeHeart.setOnMouseClicked(e -> activateCompleteHeart());
 
         Bindings.bindBidirectional(currentTime.textProperty(), progress, new StringConverter<Number>(){
             @Override
@@ -376,22 +321,27 @@ public class MusicWithSyamiko implements Initializable {
         };
         volumeBar.valueProperty().addListener(chVolume);
         
-        playMusicButton.setOnMouseClicked(e -> {
-            playOrPause();
-            nameOfMusic.set(box.getCurrentMediaName());
-            musicName.setText(carryReturnStringAndStripTypeAndSerialNumber(box.getCurrentMediaName(), 25));
-        });
-        nextMusicButton.setOnMouseClicked(e -> {
-            play(this, NEXT);
-            refresh();
-        });
-        lastMusicButton.setOnMouseClicked(e -> {
-            play(this, PREVIOUS);
-            refresh();
-        });
-        randomButton.setOnMouseClicked(e -> {
-            play(this, RANDOM);
-            refresh();
+        playMusicButton.setOnMouseClicked(e -> activatePlay());
+        nextMusicButton.setOnMouseClicked(e -> activateNext());
+        lastMusicButton.setOnMouseClicked(e -> activatePrevious());
+        randomButton.setOnMouseClicked(e -> activateRandom());
+
+        /* stage settings */
+        stage.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            switch (e.getCode()){
+                case SPACE -> activatePlay();
+                case RIGHT -> activateNext();
+                case LEFT-> activatePrevious();
+                // case UP -> activateNext();
+                // case DOWN -> activatePrevious();
+                case R -> activateRandom();
+                case S -> activateShuffle();
+                case L -> activateLoop();
+                case P -> activateProcessingHeart();
+                case C -> activateCompleteHeart();
+                case I -> activateImport();
+                default -> {}
+            }
         });
         /* 把控制器與撥放器整合才可以實現關閉 binds 以及 listeners */
         stage.setOnCloseRequest(e -> {
@@ -418,54 +368,134 @@ public class MusicWithSyamiko implements Initializable {
     }
 
     private void setPromptLabel() {
-        playMusicButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
-            promptLabel.setText("play / pause music");
+        playMusicButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("play / pause music"));
+        playMusicButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
+
+        nextMusicButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("next music"));
+        nextMusicButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
+
+        lastMusicButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("previous music"));
+        lastMusicButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
+
+        loop.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("loop music"));
+        loop.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
+
+        randomButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("random music"));
+        randomButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
+
+        shuffleButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("shuffle music"));
+        shuffleButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
+
+        processingHeart.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("as processing music"));
+        processingHeart.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
+
+        completeHeart.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("as complete music"));
+        completeHeart.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
+
+        importMusic.setOnMouseEntered(e -> {
+            importPane.setOpacity(1.);
+            promptLabel.setText("import musics");
         });
-        playMusicButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
+        importMusic.setOnMouseExited(e -> {
+            importPane.setOpacity(0.);
             promptLabel.setText("");
         });
-        nextMusicButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
-            promptLabel.setText("next music");
-        });
-        nextMusicButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
-            promptLabel.setText("");
-        });
-        lastMusicButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
-            promptLabel.setText("previous music");
-        });
-        lastMusicButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
-            promptLabel.setText("");
-        });
-        loop.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
-            promptLabel.setText("loop music");
-        });
-        loop.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
-            promptLabel.setText("");
-        });
-        randomButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
-            promptLabel.setText("random music");
-        });
-        randomButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
-            promptLabel.setText("");
-        });
-        shuffleButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
-            promptLabel.setText("shuffle music");
-        });
-        shuffleButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
-            promptLabel.setText("");
-        });
-        processingHeart.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
-            promptLabel.setText("as processing music");
-        });
-        processingHeart.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
-            promptLabel.setText("");
-        });
-        completeHeart.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> {
-            promptLabel.setText("as complete music");
-        });
-        completeHeart.addEventFilter(MouseEvent.MOUSE_EXITED, e -> {
-            promptLabel.setText("");
-        });
+    }
+    
+    private void activatePlay(){
+        playOrPause();
+        nameOfMusic.set(box.getCurrentMediaName());
+        musicName.setText(carryReturnStringAndStripTypeAndSerialNumber(box.getCurrentMediaName(), 25));
+    }
+
+    private void activateNext(){
+        play(this, NEXT);
+        refresh();
+    }
+
+    private void activatePrevious(){
+        play(this, PREVIOUS);
+        refresh();
+    }
+
+    private void activateRandom(){
+        play(this, RANDOM);
+        refresh();
+    }
+
+    private void activateShuffle(){
+        if (PreferenceController.randomMusic){
+            PreferenceController.randomMusic = false;
+            shuffleButton.setOpacity(0.5);
+        }
+        else {
+            PreferenceController.randomMusic = true;
+            shuffleButton.setOpacity(1);
+        }
+    }
+
+    private void activateLoop(){
+        if (PreferenceController.keepMusic){
+            PreferenceController.keepMusic = false;
+            loop.setOpacity(0.5);
+        }
+        else {
+            PreferenceController.keepMusic = true;
+            loop.setOpacity(1);
+        }
+    }
+
+    private void activateProcessingHeart(){
+        if (!box.isDefaultProcessing()){
+            if (box.isProcessingMusic()){
+                processingHeart.setImage(emptyHeartImage);
+                box.restoreDefaultMusic(false);
+            }
+            else {
+                processingHeart.setImage(fullHeartImage);
+                box.setMusicToDefault(false);
+            }
+        }
+        else {
+            new Thread(() -> {
+                var str = "This is the default processing music :)";
+                promptLabel.setText(str);
+                new TimeWait(5000);
+                if (promptLabel.getText().equals(str)){
+                    promptLabel.setText("");
+                }
+            }).start();
+        }
+    }
+
+    private void activateCompleteHeart(){
+        if (!box.isDefaultComplete()){
+            if (box.isCompleteMusic()){
+                box.restoreDefaultMusic(true);
+                completeHeart.setImage(emptyHeartImage);
+            }
+            else {
+                completeHeart.setImage(fullHeartImage);
+                box.setMusicToDefault(true);
+            }
+        }
+        else {
+            new Thread(() -> {
+                var str = "This is the default complete music :)";
+                promptLabel.setText(str);
+                new TimeWait(5000);
+                if (promptLabel.getText().equals(str)){
+                    promptLabel.setText("");
+                }
+            }).start();
+        }
+    }
+
+    private void activateImport(){
+        var tmp = new DirectoryChooser();
+        try {
+            box.importAWholeMusicFolder(tmp.showDialog(null).toPath());
+        } catch (Exception ex){} // 表示沒做選擇, InvocationTargetException
     }
     
     public static String carryReturnStringAndStripTypeAndSerialNumber(String str, int length){
@@ -480,7 +510,8 @@ public class MusicWithSyamiko implements Initializable {
             if (str.contains("_")){
                 while (tmp[i++] != '_'); // 掠過編號
             }
-            for (; i < tmp.length && tmp[i] != '.'; ++i){ // 掠過格式
+            int end = str.lastIndexOf('.');
+            for (; i < tmp.length && i < end; ++i){ // 掠過格式
                 currentSize += (Character.isAlphabetic(tmp[i])) ? 1 : 2;
                 if (currentSize >= length){
                     if (!Character.isAlphabetic(tmp[i]) || Character.isWhitespace(tmp[i])){ // 保持英文單字完整性

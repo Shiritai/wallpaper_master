@@ -83,6 +83,9 @@ public class WallpaperUtil {
     public static String getSerialNumber(){
         return Integer.toString(seed++);
     }
+    public static int getIntSerialNumber(){
+        return seed++;
+    }
     /** jump over this number */
     public static void passSerialNumber(){ ++seed; }
     /** Peek current serial number without changing it */

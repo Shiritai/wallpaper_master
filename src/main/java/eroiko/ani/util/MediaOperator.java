@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 
 import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
@@ -128,7 +130,7 @@ public class MediaOperator {
         setDefault(medias.get(current), isComplete);
     }
 
-    public void addNewMusic(Path path, boolean isComplete) throws IOException{
+    private void addNewMusic(Path path) throws IOException{
         var newMusic = Path.of(
             WallpaperPath.defaultMusicPath.toString()
              + String.format("\\%s%d_", (medias.size() + 1 < 10) ? "0" : "", medias.size() + 1)
@@ -139,6 +141,23 @@ public class MediaOperator {
             StandardCopyOption.REPLACE_EXISTING
         );
         medias.add(newMusic);
+    }
+
+    private void addNewMusic(Path path, int serialNumber) throws IOException{
+        var newMusic = Path.of(
+            WallpaperPath.defaultMusicPath.toString()
+             + String.format("\\%s%d_", (medias.size() + 1 < 10) ? "0" : "", serialNumber)
+             + path.getFileName()
+        );
+        Files.copy( // 複製目標
+            path, newMusic,
+            StandardCopyOption.REPLACE_EXISTING
+        );
+        medias.add(newMusic);
+    }
+
+    public void addNewMusic(Path path, boolean isComplete) throws IOException{
+        addNewMusic(path);
         setDefault(path, isComplete);
     }
 
@@ -280,5 +299,40 @@ public class MediaOperator {
     public Media getRandomMedia(){
         current = (int) (Math.random() * medias.size());
         return getMedia(current);
+    }
+
+    public void importAWholeMusicFolder(Path folder){
+        new Thread(() -> {
+            try {
+                var root = Files.newDirectoryStream(folder, "*.{mp3,wav,flac}");
+                var service = Executors.newCachedThreadPool();
+                var calls = new ArrayList<Callable<Boolean>>();
+                WallpaperUtil.resetSerialNumber(medias.size() + 1);
+                for (var p : root){
+                    calls.add(() -> {
+                        addNewMusic(p, WallpaperUtil.getIntSerialNumber());
+                        System.out.println("Add : " + p);
+                        return true;
+                    });
+                }
+                service.invokeAll(calls);
+            } catch (Exception ex){
+                ex.printStackTrace();
+            }
+        }).start();
+    }
+    
+    public static void cleanDefault(){
+        try {
+            var root = Files.newDirectoryStream(WallpaperPath.defaultMusicPath, "*.{mp3,wav,flac}");
+            for (var p : root){
+                if (p.getFileName().toString().startsWith("00_")){
+                    System.out.println("Clean : " + p);
+                    p.toFile().delete();
+                }
+            }
+        } catch (IOException e) {
+            System.out.println(e.toString());
+        }
     }
 }

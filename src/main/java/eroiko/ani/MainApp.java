@@ -12,6 +12,7 @@ import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
 import eroiko.ani.controller.MainController;
 import eroiko.ani.controller.PrimaryControllers.MusicWithSyamiko;
+import eroiko.ani.util.MediaOperator;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.application.Application;
@@ -88,7 +89,7 @@ public class MainApp extends Application{
         mainStage.show();
 
         mainStage.setOnCloseRequest(e -> {
-
+            MediaOperator.cleanDefault();
             Wallpaper.executeResultAndCleanPreview(); // 執行所有 Wallpaper 檔案操作!
             mainStage.close();
             Platform.exit();

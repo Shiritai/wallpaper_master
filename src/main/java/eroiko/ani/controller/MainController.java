@@ -605,7 +605,7 @@ public class MainController implements Initializable {
         terminalButtonDivider.setMinWidth(100);
         
         downloadAmountChoice.getItems().addAll(modes[0], modes[1], modes[2]);
-        downloadAmountChoice.setValue(modes[1]);
+        downloadAmountChoice.setValue(modes[2]);
         pathLabel.setText(" " + WallpaperPath.defaultDataPath.toString()) ;
         // mainPbar = new ProgressBar();
         hasChangedPreview.addListener((a, b, c) -> {
