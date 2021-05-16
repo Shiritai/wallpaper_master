@@ -24,7 +24,7 @@ public class AboutController implements Initializable{
     public void initialize(URL location, ResourceBundle resources) {
         aboutTextTW.setText(introTW);
         aboutText.setText(String.join("\n\n", intro, author + ",\t" + MainApp.version, others));
-        bartenderSaying.setText("It's my pleasure to be at you service.\nTime to get waifus and change wallpapers!");
+        bartenderSaying.setText("It's my pleasure to be at your service.\nTime to get waifus and change wallpapers!");
         aboutTextVersion.setText(MainApp.version);
     }
 }

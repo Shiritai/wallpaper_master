@@ -15,6 +15,8 @@ import eroiko.ani.controller.PrimaryControllers.MusicWithSyamiko;
 import eroiko.ani.util.MediaOperator;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
+import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
+import eroiko.ani.util.NeoWallpaper.Wallpaperize;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -91,6 +93,7 @@ public class MainApp extends Application{
         mainStage.setOnCloseRequest(e -> {
             MediaOperator.cleanDefault();
             Wallpaper.executeResultAndCleanPreview(); // 執行所有 Wallpaper 檔案操作!
+            new Wallpaperize().execute();
             mainStage.close();
             Platform.exit();
             System.exit(0);
@@ -107,7 +110,7 @@ public class MainApp extends Application{
         menuItems[2].setOnAction(e -> {
             var cb = Clipboard.getSystemClipboard().getFiles();
             try {
-                var tmpFile = new File(WallpaperPath.defaultWallpaperPath.toString()); // 未來必須改用 Preference Path
+                var tmpFile = new File(WallpaperPath.getWallpaperPath().toString()); // 未來必須改用 Preference Path
                 if (!tmpFile.exists()){
                     tmpFile.mkdir();
                 }
