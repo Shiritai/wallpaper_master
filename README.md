@@ -18,6 +18,6 @@ Undoubtedly, my dear **vscode**!
 
 ## Wallpaper (進版圖)
 
-![image](https://imgur.com/a/3ro0Tdh)
+![image](https://imgur.com/gallery/3ro0Tdh)
 
-![image](https://imgur.com/a/hh1sC8I)
+![image](https://imgur.com/gallery/hh1sC8I)
