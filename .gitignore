@@ -1,7 +1,5 @@
 *.log
 *.exe
-Free_test
-tempCodeRunnerFile.c
 .vscode
 *\img
 data
