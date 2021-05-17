@@ -18,4 +18,4 @@ Undoubtedly, my dear **vscode**!
 
 ## Wallpaper (進版圖)
 
-<blockquote class="imgur-embed-pub" lang="en" data-id="a/hh1sC8I"  ><a href="//imgur.com/a/hh1sC8I">Wallpaper master</a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script>
+![SSR](https://imgur.com/a/hh1sC8I)
