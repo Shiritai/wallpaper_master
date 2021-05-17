@@ -1,6 +1,6 @@
 # Wallpaper Master
 
-My first Individual project!
+My first Individual project! (For practice OwO)
 
 Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆們。
 
