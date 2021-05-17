@@ -18,4 +18,3 @@ Undoubtedly, my dear **vscode**!
 
 ## Wallpaper (進版圖)
 
-![SSR](https://imgur.com/a/hh1sC8I)
