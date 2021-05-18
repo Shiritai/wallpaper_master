@@ -2,6 +2,8 @@
 
 My first Individual project! (For practice OwO)
 
+(注意：尚未包裝好資源喔)
+
 Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆們。
 
 僅需簡單的輸入關鍵字，等待下載完畢，選擇喜愛的新老婆後便大功告成。
