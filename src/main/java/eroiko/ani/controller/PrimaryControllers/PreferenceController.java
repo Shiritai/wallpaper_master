@@ -77,7 +77,7 @@ public class PreferenceController implements Initializable {
         savingDir.editableProperty().set(WallpaperPath.useConfigOrNot());
         savingDir.setText(WallpaperPath.getWallpaperPath().toAbsolutePath().toString());
         savingDir.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-            if (customizeBox.selectedProperty().get() && e.getCode().equals(KeyCode.ENTER)){
+            if (customizeBox.selectedProperty().get() && e.getCode() == KeyCode.ENTER){
                 WallpaperPath.updateUserWallpaperPath(Path.of(savingDir.getText()));
                 savingDir.setText(WallpaperPath.getWallpaperPath().toString());
             }

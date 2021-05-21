@@ -413,19 +413,19 @@ public class MainController implements Initializable {
                 var wallpaperScene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperChooseWindow.fxml")));
                 wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
                     System.out.println("Meow!?");
-                    if (e.getCode().equals(KeyCode.RIGHT)){
+                    if (e.getCode() == KeyCode.RIGHT){
                         System.out.println("Right");
                         wp.getNextWallpaper();
                     }
-                    else if (e.getCode().equals(KeyCode.LEFT)){
+                    else if (e.getCode() == KeyCode.LEFT){
                         System.out.println("Left");
                         wp.getPreviousWallpaper();
                     }
-                    else if (e.getCode().equals(KeyCode.PLUS)){
+                    else if (e.getCode() == KeyCode.PLUS){
                         System.out.println("Plus");
                         wp.add();
                     }
-                    else if (e.getCode().equals(KeyCode.MINUS)){
+                    else if (e.getCode() == KeyCode.MINUS){
                         System.out.println("Minus");
                         wp.delete();
                     }
@@ -444,11 +444,11 @@ public class MainController implements Initializable {
                 var wallpaperScene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperViewWindow.fxml")));
                 wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
                     System.out.println("Meow!?");
-                    if (e.getCode().equals(KeyCode.RIGHT)){
+                    if (e.getCode() == KeyCode.RIGHT){
                         System.out.println("Right");
                         wp.getNextWallpaper();
                     }
-                    else if (e.getCode().equals(KeyCode.LEFT)){
+                    else if (e.getCode() == KeyCode.LEFT){
                         System.out.println("Left");
                         wp.getPreviousWallpaper();
                     }
@@ -493,24 +493,24 @@ public class MainController implements Initializable {
         stage.setTitle("Neo Wallpaper Viewer");
         var wallpaperScene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperWindow.fxml")));
         wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-            if (e.getCode().equals(KeyCode.RIGHT)){
+            if (e.getCode() == KeyCode.RIGHT){
                 if (!fixedWp.isEmpty()){
                     fixedWp.rightShift();
                 }
             }
-            else if (e.getCode().equals(KeyCode.LEFT)){
+            else if (e.getCode() == KeyCode.LEFT){
                 if (!fixedWp.isEmpty()){
                     fixedWp.leftShift();
                 }
             }
             if (!isPreview){
-                if (e.getCode().equals(KeyCode.EQUALS) || e.getCode().equals(KeyCode.UP)){
+                if (e.getCode() == KeyCode.EQUALS || e.getCode() == KeyCode.UP){
                     if (!fixedWp.isEmpty()){
                         fixedWp.add();
                     }
                     fixedWp.triggerChangedFlag();
                 }
-                else if (e.getCode().equals(KeyCode.MINUS) || e.getCode().equals(KeyCode.DOWN)){
+                else if (e.getCode() == KeyCode.MINUS || e.getCode() == KeyCode.DOWN){
                     if (!fixedWp.isEmpty()){
                         fixedWp.delete();
                     }
@@ -745,7 +745,7 @@ public class MainController implements Initializable {
             }
         });
         searchQueue.setOnKeyPressed(e -> {
-            if (e.getCode().equals(KeyCode.DELETE)){
+            if (e.getCode() == KeyCode.DELETE){
                 var allData = searchQueue.getItems();
                 var selectedData = searchQueue.getSelectionModel().getSelectedItems();
                 for (int i = selectedData.size() - 1; i >= 0; --i){
@@ -819,7 +819,6 @@ public class MainController implements Initializable {
     
     /* 採後序 */
     private void initTreeView() {
-        // var rootPath = FileSystems.getDefault().getPath("data");
         var rootPath = Path.of(pathLabel.getText().stripLeading());
         var root = new TreeItem<>(new myPair<>(rootPath.getFileName().toString(), rootPath), WallpaperUtil.fetchIconUsePath(rootPath));
         try {
@@ -827,18 +826,6 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        // treeFileExplorer.setCellFactory(new Callback<TreeView<Path>, TreeCell<Path>>() {
-        //     public TreeCell<Path> call(TreeView<Path> tv) {
-        //         return new TreeCell<Path>() {
-        //             @Override
-        //             protected void updateItem(Path item, boolean empty) {
-        //                 super.updateItem(item, empty);
-        //                 setText((empty || item == null) ? "" : item.getFileName().toString());
-        //             }
-        //         };
-        //     }
-        // });
-        // postOrderTraverseKillRedundantName(root); // 哀...
         root.setExpanded(true);
         treeFileExplorer.setRoot(root);
     }
@@ -846,31 +833,19 @@ public class MainController implements Initializable {
     private TreeItem<myPair<String, Path>> postOrderTraverse(TreeItem<myPair<String, Path>> cur) throws IOException{
         if (Files.isDirectory(cur.getValue().value)){
             for (var p : Files.newDirectoryStream(cur.getValue().value)){
-                // cur.getChildren().add(postOrderTraverse(new TreeItem<>(p))); // 非洲啊...
-                cur.getChildren().add(postOrderTraverse(new TreeItem<>(new myPair<>(p.getFileName().toString(), p), WallpaperUtil.fetchIconUsePath(p)))); // 非洲啊...
+                /* 不非洲了 OwO... myPair 真的萬用 */
+                cur.getChildren().add(postOrderTraverse(new TreeItem<>(new myPair<>(p.getFileName().toString(), p), WallpaperUtil.fetchIconUsePath(p))));
             }
         }
+        cur.getChildren().sort((a, b) -> {
+            boolean aD = Files.isDirectory(a.getValue().value);
+            boolean bD = Files.isDirectory(b.getValue().value);
+            if (aD && !bD){ return -1; }
+            if (!aD && bD){ return 1; }
+            return WallpaperUtil.pathNameCompare(a.getValue().key, b.getValue().key);
+        });
         return cur;
     }
-
-    // private TreeItem<Path> postOrderTraverse(TreeItem<Path> cur) throws IOException{
-    //     if (Files.isDirectory(cur.getValue())){
-    //         for (var p : Files.newDirectoryStream(cur.getValue())){
-    //             // cur.getChildren().add(postOrderTraverse(new TreeItem<>(p))); // 非洲啊...
-    //             cur.getChildren().add(postOrderTraverse(new TreeItem<>(p, WallpaperUtil.fetchIconUsePath(p)))); // 非洲啊...
-    //         }
-    //     }
-    //     return cur;
-    // }
-    
-    // private void postOrderTraverseKillRedundantName(TreeItem<Path> cur){ // 暫時會影響小圖示顯示問題...保留之後修改
-        // if (Files.isDirectory(cur.getValue())){
-        //     for (var p : cur.getChildren()){
-        //         postOrderTraverseKillRedundantName(p);
-        //         p.setValue(p.getValue().getFileName());
-        //     }
-        // }
-    // }
     
     private void treeViewSelected() throws IOException{
         var path = treeFileExplorer.getSelectionModel().getSelectedItem().getValue().value.toAbsolutePath();
@@ -882,7 +857,13 @@ public class MainController implements Initializable {
             viewImageTileTable.setHgap(8.);
             var paths = new ArrayList<Path>();
             Files.newDirectoryStream(path).forEach(e -> paths.add(e));
-            paths.sort((a, b) -> WallpaperUtil.pathNameCompare(a, b));
+            paths.sort((a, b) -> {
+                boolean aD = Files.isDirectory(a);
+                boolean bD = Files.isDirectory(b);
+                if (aD && !bD){ return -1; }
+                if (!aD && bD){ return 1; }
+                return WallpaperUtil.pathNameCompare(a, b);
+            });
             var list = new ArrayList<VBox>(paths.size());
             paths.forEach(p -> {
                 var iconView = WallpaperUtil.fetchIconUsePath(p);
@@ -896,10 +877,6 @@ public class MainController implements Initializable {
                 vbox.setAlignment(Pos.CENTER);
                 list.add(vbox);
             });
-            // var container = new VBox();
-            // container.setAlignment(Pos.CENTER);
-            // container.getChildren().addAll(viewImageTileTable);
-            // scrollableTile.setContent(container);
             viewImageTileTable.getChildren().addAll(list);
             scrollableTile.setContent(viewImageTileTable);
         }
@@ -912,39 +889,4 @@ public class MainController implements Initializable {
         scrollableTile.setFitToHeight(true);
         scrollableTile.setVbarPolicy(ScrollBarPolicy.ALWAYS);
     }
-    // private void treeViewSelected() throws IOException{
-        // var path = treeFileExplorer.getSelectionModel().getSelectedItem().getValue().toAbsolutePath();
-        // System.out.println(path);
-        // viewImageTileTable.getChildren().clear();
-        // if (Files.isDirectory(path.toRealPath().toAbsolutePath())){
-        //     // for (var p : path.toRealPath().getFileSystem().getRootDirectories()){
-        //     viewImageTileTable.setPadding(new Insets(5., 5., 5., 8.));
-        //     viewImageTileTable.setVgap(8.);
-        //     viewImageTileTable.setHgap(8.);
-        //     for (var p : Files.newDirectoryStream(path)){
-        //         var iconView = WallpaperUtil.fetchIconUsePath(p);
-        //         iconView.setFitHeight(58);
-        //         iconView.setFitWidth(58);
-
-        //         var name = new Text(p.getFileName().toString());
-        //         name.setStyle("-fx-font: 11 system;");
-
-        //         var vbox = new VBox(iconView, name);
-        //         vbox.setAlignment(Pos.CENTER);
-        //         viewImageTileTable.getChildren().add(vbox);
-        //     }
-        //     var container = new VBox();
-        //     container.setAlignment(Pos.CENTER);
-        //     container.getChildren().addAll(viewImageTileTable);
-        //     scrollableTile.setContent(container);
-        // }
-        // else {
-        //     var iv = new ImageView(new Image(path.toFile().toURI().toString()));
-        //     scrollableTile.setContent(iv);
-        // }
-
-        // scrollableTile.setPannable(true);
-        // scrollableTile.setFitToHeight(true);
-        // scrollableTile.setVbarPolicy(ScrollBarPolicy.ALWAYS);
-    // }
 }

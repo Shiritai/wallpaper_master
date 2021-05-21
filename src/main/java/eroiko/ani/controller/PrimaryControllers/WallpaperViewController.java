@@ -51,10 +51,10 @@ public class WallpaperViewController implements Initializable{
         wallpaperPosition.setText("Wallpaper Path : " + currentPath.toString());
         setMouseBehavior();
         stackPane.setOnKeyPressed(e -> {
-            if (e.getCode().equals(KeyCode.RIGHT)){
+            if (e.getCode() == KeyCode.RIGHT){
                 switchNextImage();
             }
-            else if (e.getCode().equals(KeyCode.LEFT)){
+            else if (e.getCode() == KeyCode.LEFT){
                 switchPreviousImage();
             }
         });

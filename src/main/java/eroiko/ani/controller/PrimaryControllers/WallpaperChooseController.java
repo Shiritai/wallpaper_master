@@ -77,10 +77,10 @@ public class WallpaperChooseController implements Initializable{
         wallpaperPosition.setText("Wallpaper Path : " + currentPath.toString());
         setMouseBehavior();
         stackPane.setOnKeyPressed(e -> {
-            if (e.getCode().equals(KeyCode.RIGHT)){
+            if (e.getCode() == KeyCode.RIGHT){
                 switchImage(NEXT);
             }
-            else if (e.getCode().equals(KeyCode.LEFT)){
+            else if (e.getCode() == KeyCode.LEFT){
                 switchImage(PREV);
             }
         });
@@ -124,20 +124,20 @@ public class WallpaperChooseController implements Initializable{
 
         // stackPane.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
         //     System.out.println("Meow!?");
-        //     if (e.getCode().equals(KeyCode.RIGHT)){
+        //     if (e.getCode() == KeyCode.RIGHT){
         //         System.out.println("1");
         //         wp.getNextWallpaper();
         //     }
-        //     else if (e.getCode().equals(KeyCode.LEFT)){
+        //     else if (e.getCode() == KeyCode.LEFT){
         //         System.out.println("2");
         //         wp.getLastWallpaper();
         //     }
-        //     else if (e.getCode().equals(KeyCode.PLUS)){
+        //     else if (e.getCode() == KeyCode.PLUS){
         //         System.out.println("3");
         //         wp.add();
         //         view.setImage(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/no_image.png").toString()));
         //     }
-        //     else if (e.getCode().equals(KeyCode.MINUS)){
+        //     else if (e.getCode() == KeyCode.MINUS){
         //         System.out.println("4");
         //         wp.delete();
         //         view.setImage(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/no_image.png").toString()));
