@@ -12,8 +12,9 @@ Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆們。
 
 ## Environment
 
-S
-詳見 pom.xml
+See `pom.xml`
+
+詳見 `pom.xml`
 
 ## IDE
 
