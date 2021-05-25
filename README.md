@@ -36,4 +36,4 @@ See [Wallpaper Master]()
 
 ![image](https://i.imgur.com/OqV05rM.jpg)
 
-![image](https://i.imgur.com/2vX9WQz.jpeg)
+![image](https://i.imgur.com/HMhxR8K.jpg)
