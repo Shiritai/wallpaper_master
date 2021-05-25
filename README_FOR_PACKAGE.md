@@ -1,8 +1,18 @@
 # Wallpaper Master
 
-## Version 版本 0.0.3
+`version 0.0.3 (2021/05/26)`
 
-### Release note
+## Introduction 簡介
+
+My first Individual project! (For practice OwO)
+
+Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆們。
+
+僅需簡單的輸入關鍵字，等待下載完畢，選擇喜愛的新老婆後便大功告成。
+
+桌布大師會幫你驗證搜尋的正確性、下載的效率、檔案管理等過程，並且提供非常多額外功能，諸如將資料夾與其中的圖片預覽、篩選、整理至桌布資料夾，右鍵複製的所有圖片可以直接存入桌布資料夾，還附上最小化至工作列，完整的音樂撥放器，以及多種快捷鍵支持等，功能眾多請盡情享受。(持續更新中...應該說暑假後持續更新)
+
+## Release note
 
 1. 完善 pom.xml 設定, 可以正常 package
 
@@ -16,21 +26,35 @@
 
 滑鼠點擊運行 `run.vbs` 即可。
 
-若想在運行時看到實際終端機, 請改成運行 `start.bat`。
+若想在運行時看到實際的終端機, 請改運行 `start.bat`。
 
 Double click `run.vbs`, and the application should run properly.
 
-If you'd like to see the command window while running Wallpaper Master, run `start.bat` alternatively.
+If you'd like to see the command window while running `Wallpaper Master`, run `start.bat` alternatively.
 
-## Introduction 簡介
+## File Settings 檔案設定
 
-My first Individual project! (For practice OwO)
+### Music Setting 音樂設定
 
-Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆們。
+在 data/music 資料夾下有預設的音樂, 若想要更改音樂庫的內容 :
 
-僅需簡單的輸入關鍵字，等待下載完畢，選擇喜愛的新老婆後便大功告成。
+1. 開啟 Wallpaper Master
 
-桌布大師會幫你驗證搜尋的正確性、下載的效率、檔案管理等過程，並且提供非常多額外功能，諸如將資料夾與其中的圖片預覽、篩選、整理至桌布資料夾，右鍵複製的所有圖片可以直接存入桌布資料夾，還附上最小化至工作列，完整的音樂撥放器，以及多種快捷鍵支持等，功能眾多請盡情享受。(持續更新中...應該說暑假後持續更新)
+2. 開啟 Music With Syamiko
+
+3. 滑鼠點擊 Syamiko 的手, 將會出現資料夾圖示
+
+4. 點擊資料夾圖示, 匯入音樂資料夾
+
+To change music repository :
+
+1. Open Wallpaper Master
+
+2. Open Music With Syamiko
+
+3. Click Syamiko's hand, a folder icon should be revealed
+
+4. Click the folder icon to import your own musics from your music folder
 
 ## Packaging Environment 包裝環境
 
