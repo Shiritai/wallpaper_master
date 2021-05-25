@@ -3,7 +3,7 @@ package eroiko.ani.controller.ConsoleTextArea;
 import java.io.IOException;
 import java.io.PipedInputStream;
 
-import eroiko.ani.util.myDS.ArrayByteToString;
+import eroiko.ani.util.MyDS.ArrayByteToString;
 import javafx.scene.control.TextArea;
 
 public class TerminalThread implements Runnable {

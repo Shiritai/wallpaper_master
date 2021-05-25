@@ -4,8 +4,8 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
 
-import eroiko.ani.util.MediaOperator;
-import eroiko.ani.util.SourceRedirector;
+import eroiko.ani.util.MediaClass.MediaOperator;
+import eroiko.ani.util.Method.SourceRedirector;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -24,13 +24,15 @@ public class PreferenceController implements Initializable {
 
     public static boolean quit;
     public static BooleanProperty showWallpapersAfterCrawling = new SimpleBooleanProperty(true);
+    // public static BooleanProperty minimizedMsg = new SimpleBooleanProperty(true);
     public static boolean keepMusic = false;
     public static boolean randomMusic = false;
-    
+    public static boolean minimizedMsg = true;
     
     @FXML private CheckBox showWallpapers;
     @FXML private CheckBox customizeBox;
     @FXML private TextField savingDir;
+    @FXML private CheckBox showMinimizedMessage;
 
     @FXML private CheckBox customizeProcessingMusic;
     @FXML private CheckBox customizeCompleteMusic;
@@ -89,7 +91,7 @@ public class PreferenceController implements Initializable {
             }
             else {
                 savingDir.editableProperty().set(false);
-                WallpaperPath.resetToDefaultWallpaperPath();
+                WallpaperPath.resetToDEFAULT_WALLPAPER_PATH();
                 savingDir.setText(WallpaperPath.getWallpaperPath().toString());
             }
         });
@@ -100,13 +102,12 @@ public class PreferenceController implements Initializable {
         });
 
         keepPlayingMusic.setSelected(keepMusic);
-        keepPlayingMusic.selectedProperty().addListener(e -> {
-            keepMusic = keepPlayingMusic.isSelected();
-        });
+        keepPlayingMusic.selectedProperty().addListener(e -> keepMusic = keepPlayingMusic.isSelected());
 
         randomPlayMusic.setSelected(randomMusic);
-        randomPlayMusic.selectedProperty().addListener(e -> {
-            randomMusic = randomPlayMusic.isSelected();
-        });
+        randomPlayMusic.selectedProperty().addListener(e -> randomMusic = randomPlayMusic.isSelected());
+
+        showMinimizedMessage.setSelected(minimizedMsg);
+        showMinimizedMessage.selectedProperty().addListener(e -> minimizedMsg = showMinimizedMessage.selectedProperty().get());  
     }
 }

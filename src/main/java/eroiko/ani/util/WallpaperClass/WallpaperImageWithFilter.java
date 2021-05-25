@@ -8,8 +8,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
+import eroiko.ani.util.MyDS.myPair;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
-import eroiko.ani.util.myDS.myPair;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.image.Image;
@@ -43,7 +43,7 @@ public class WallpaperImageWithFilter implements WallpaperProto{
     }
     
     public WallpaperImageWithFilter() throws IOException{
-        this(WallpaperPath.defaultImagePath);
+        this(WallpaperPath.DEFAULT_IMAGE_PATH);
     }
 
     private int rightShift(){

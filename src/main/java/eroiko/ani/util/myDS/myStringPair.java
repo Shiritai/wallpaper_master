@@ -1,4 +1,4 @@
-package eroiko.ani.util.myDS;
+package eroiko.ani.util.MyDS;
 
 public class myStringPair {
     public String key;

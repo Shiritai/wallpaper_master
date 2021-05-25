@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.filechooser.FileSystemView;
 
-import eroiko.ani.util.Dumper;
+import eroiko.ani.util.Method.Dumper;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.ImageView;
 

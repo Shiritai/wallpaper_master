@@ -12,9 +12,9 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import eroiko.ani.controller.MainController;
+import eroiko.ani.util.Method.TimeWait;
+import eroiko.ani.util.MyDS.myTriple;
 import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
-import eroiko.ani.util.myDS.TimeWait;
-import eroiko.ani.util.myDS.myTriple;
 
 // example : https://wallhaven.cc/search?q=Girls%27%20last%20tour&page=2
 public class CrawlerWallhaven extends CrawlerBase {

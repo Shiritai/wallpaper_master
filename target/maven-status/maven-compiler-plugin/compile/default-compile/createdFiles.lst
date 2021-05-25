@@ -1,7 +1,1 @@
-eroiko\ani\MainApp.class
-eroiko\ani\util\Dumper.class
-eroiko\ani\model\Crawler\CrawlerZeroChan.class
-eroiko\ani\model\Crawler\testCrawler.class
-eroiko\ani\controller\MainController.class
-eroiko\ani\model\Crawler\Crawler.class
-eroiko\ani\controller\ConsoleTextArea\TerminalThread.class
+eroiko\ani\controller\PrimaryControllers\MusicWithSyamiko$7.class

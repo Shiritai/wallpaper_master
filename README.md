@@ -12,9 +12,17 @@ Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆們。
 
 ## Environment
 
-詳見 `pom.xml`
+Java|JRE|JVM
+-|:-:|-
+15.0.2|15.0.2+7-27|15.0.2+7-27
 
-See `pom.xml`
+使用 Maven 管理, 並以 Maven Shade 包裝。
+
+詳見 `.jar` 檔裡的 `pom.xml`
+
+Use Maven to manage project, package with Maven Shade.
+
+See `pom.xml` in `.jar` file.
 
 ## IDE
 

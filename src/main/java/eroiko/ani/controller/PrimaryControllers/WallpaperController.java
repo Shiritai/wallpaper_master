@@ -1,5 +1,6 @@
 package eroiko.ani.controller.PrimaryControllers;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
@@ -78,7 +79,7 @@ public class WallpaperController implements Initializable{
             }
         });
         lastSize = wp.getSize();
-        viewMode = wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultImagePath);
+        viewMode = wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_IMAGE_PATH);
         refresh();
         setMouseBehavior();
     }
@@ -171,7 +172,11 @@ public class WallpaperController implements Initializable{
             lastSize = wp.getSize();
         }
         if (wp.isEmpty()){
-            view.setImage(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/no_image.png").toString()));
+            try {
+                view.setImage(new Image(WallpaperPath.IMAGE_SOURCE_PATH.resolve("no_image.png").toUri().toURL().toString()));
+            } catch (MalformedURLException e) {
+                System.out.println(e.toString());
+            }
             wallpaperName.setText("");
             wallpaperPosition.setText("You have choose all the images!");
         }

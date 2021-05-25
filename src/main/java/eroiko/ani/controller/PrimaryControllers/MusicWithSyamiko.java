@@ -2,13 +2,13 @@ package eroiko.ani.controller.PrimaryControllers;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
 
 import eroiko.ani.MainApp;
-import eroiko.ani.util.MediaOperator;
-import eroiko.ani.util.myDS.TimeWait;
+import eroiko.ani.util.MediaClass.MediaOperator;
+import eroiko.ani.util.Method.TimeWait;
+import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
@@ -31,7 +31,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -163,7 +162,7 @@ public class MusicWithSyamiko implements Initializable {
             try {
                 stage = new Stage();
                 stage.setTitle("Music with Syamiko");
-                stage.setScene(new Scene(FXMLLoader.load(FileSystems.getDefault().getPath("src/main/java/eroiko/ani/view/MusicWithSyamiko.fxml").toAbsolutePath().toUri().toURL())));
+                stage.setScene(new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("MusicWithSyamiko.fxml").toAbsolutePath().toUri().toURL())));
                 stage.setResizable(false);
                 stage.getIcons().add(MainApp.icon);
                 stage.show();
@@ -225,10 +224,10 @@ public class MusicWithSyamiko implements Initializable {
         openedWindow = true;
         if (pauseImage == null){
             try {
-                pauseImage = new Image(FileSystems.getDefault().getPath("src/main/java/eroiko/ani/img/pause.png").toUri().toURL().toString());
-                playImage = new Image(FileSystems.getDefault().getPath("src/main/java/eroiko/ani/img/play.png").toUri().toURL().toString());
-                emptyHeartImage = new Image(FileSystems.getDefault().getPath("src/main/java/eroiko/ani/img/heart.png").toUri().toURL().toString());
-                fullHeartImage = new Image(FileSystems.getDefault().getPath("src/main/java/eroiko/ani/img/heart filled.png").toUri().toURL().toString());
+                pauseImage = new Image(WallpaperPath.IMAGE_SOURCE_PATH.resolve("pause.png").toUri().toURL().toString());
+                playImage = new Image(WallpaperPath.IMAGE_SOURCE_PATH.resolve("play.png").toUri().toURL().toString());
+                emptyHeartImage = new Image(WallpaperPath.IMAGE_SOURCE_PATH.resolve("heart.png").toUri().toURL().toString());
+                fullHeartImage = new Image(WallpaperPath.IMAGE_SOURCE_PATH.resolve("heart filled.png").toUri().toURL().toString());
             } catch (MalformedURLException e1) {
                 e1.printStackTrace();
             }

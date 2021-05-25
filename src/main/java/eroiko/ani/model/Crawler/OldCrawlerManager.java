@@ -1,12 +1,13 @@
 package eroiko.ani.model.Crawler;
 
 import java.io.IOException;
-import java.nio.file.Path;
+// import java.nio.file.Path;
 import java.util.concurrent.Executors;
 
 import eroiko.ani.controller.MainController;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
-import eroiko.ani.util.WallpaperClass.WallpaperImage;
+// import eroiko.ani.util.WallpaperClass.WallpaperImage;
+
 /** Deprecated */
 public class OldCrawlerManager implements Runnable {
     private boolean quit;
@@ -24,12 +25,12 @@ public class OldCrawlerManager implements Runnable {
     
     public synchronized void run(){
         try {
-            CrawlerZeroChan crawler = new CrawlerZeroChan(WallpaperPath.defaultDataPath.toString(), keywords.split(" "), 2, 1);
+            CrawlerZeroChan crawler = new CrawlerZeroChan(WallpaperPath.DEFAULT_DATA_PATH.toString(), keywords.split(" "), 2, 1);
             var service = Executors.newCachedThreadPool();
             var previewResult = crawler.readMultiplePagesAndDownloadPreviews(pages, service);
     
             service.shutdown();
-            WallpaperImage wp = null;
+            // WallpaperImage wp = null;
             var service2 = Executors.newCachedThreadPool();
             crawler.downloadSelectedImagesUsingPAIRs(previewResult, service2);
             service2.shutdown();
@@ -42,7 +43,7 @@ public class OldCrawlerManager implements Runnable {
             if (!quit){
                 System.err.println("Opening Preview Viewing Window... " + crawler.getFolderPath().replace('/', '\\'));
             }
-            wp = new WallpaperImage(Path.of(crawler.getFolderPath().replace('/', '\\')));
+            // wp = new WallpaperImage(Path.of(crawler.getFolderPath().replace('/', '\\')));
             // MainController.preview = wp;
             MainController.hasChangedPreview.set(true);
             // MainController.staticImagePreview.setImage(MainController.preview.getCurrentWallpaper());

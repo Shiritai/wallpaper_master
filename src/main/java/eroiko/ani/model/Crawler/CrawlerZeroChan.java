@@ -11,7 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import eroiko.ani.controller.MainController;
-import eroiko.ani.util.myDS.myPair;
+import eroiko.ani.util.MyDS.myPair;
 
 /** Deprecated */
 public class CrawlerZeroChan extends Crawler{

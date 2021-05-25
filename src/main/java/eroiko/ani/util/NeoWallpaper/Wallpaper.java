@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import eroiko.ani.util.myDS.myPair;
-import eroiko.ani.util.myDS.myTriple;
+import eroiko.ani.util.MyDS.myPair;
+import eroiko.ani.util.MyDS.myTriple;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.image.Image;
@@ -25,10 +25,10 @@ public class Wallpaper {
     public static Wallpaper getWallpaper(int serialNumber){ return wallpapersToFile.get(serialNumber); }
     public static int addNewWallpaper(Wallpaper wp){
         wallpapersToFile.put(++lastWallpaperNumber, wp);
-        if (!wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultImagePath) && 
-            !wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultDataPath) &&
-            !wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultMusicPath) && 
-            !wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultWallpaperPath) && 
+        if (!wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_IMAGE_PATH) && 
+            !wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_DATA_PATH) &&
+            !wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_MUSIC_PATH) && 
+            !wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_WALLPAPER_PATH) && 
             !wp.getCurrentFullPath().getParent().equals(WallpaperPath.getWallpaperPath()) &&
             wp.hasPreview()
         ){
@@ -198,7 +198,7 @@ public class Wallpaper {
      * @throws IOException
      */
     public Wallpaper() throws IOException{
-        this(WallpaperPath.defaultImagePath, null);
+        this(WallpaperPath.DEFAULT_IMAGE_PATH, null);
     }
 
     public void resetBooleanBind(){

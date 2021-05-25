@@ -2,7 +2,6 @@ package eroiko.ani.controller;
 
 import java.io.*;
 import java.net.URL;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -12,15 +11,15 @@ import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.PrimaryControllers.*;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
-import eroiko.ani.util.*;
+import eroiko.ani.util.Method.DoubleToStringProperty;
+import eroiko.ani.util.Method.SourceRedirector;
+import eroiko.ani.util.Method.TimeWait;
+import eroiko.ani.util.MyDS.myPair;
 import eroiko.ani.util.NeoWallpaper.*;
 import eroiko.ani.util.WallpaperClass.*;
-import eroiko.ani.util.myDS.TimeWait;
-import eroiko.ani.util.myDS.myPair;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-// import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -158,7 +157,7 @@ public class MainController implements Initializable {
                                 default -> -1;
                             };
                             updateMessage("Ready...");
-                            var cw = new CrawlerManager(WallpaperPath.defaultDataPath.toString(), WallpaperUtil.capitalize(data.get(i).key).split(" "), mode);
+                            var cw = new CrawlerManager(WallpaperPath.DEFAULT_DATA_PATH.toString(), WallpaperUtil.capitalize(data.get(i).key).split(" "), mode);
                             updateMessage("Fetch image information");
                             cw.A_getLinks();
                             updateMessage("Download preview wallpapers");
@@ -218,7 +217,8 @@ public class MainController implements Initializable {
         try {
             var stage = new Stage();
             stage.setTitle("Properties");
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/PreferenceWindow.fxml"))));
+            // stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/PreferenceWindow.fxml"))));
+            stage.setScene(new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("PreferenceWindow.fxml").toUri().toURL())));
             stage.getIcons().add(MainApp.icon);
             stage.show();
         } catch (Exception e){
@@ -238,7 +238,8 @@ public class MainController implements Initializable {
         try {
             var stage = new Stage();
             stage.setTitle("About");
-            stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/AboutWindow.fxml"))));
+            // stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/AboutWindow.fxml"))));
+            stage.setScene(new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("AboutWindow.fxml").toUri().toURL())));
             stage.getIcons().add(MainApp.icon);
             stage.setResizable(false);
             stage.show();
@@ -377,7 +378,8 @@ public class MainController implements Initializable {
             try {
                 var stage = new Stage();
                 stage.setTitle("Music with Syamiko");
-                stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/MusicWindow.fxml"))));
+                stage.setScene(new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("MusicWindow.fxml").toUri().toURL())));
+                // stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/MusicWindow.fxml"))));
                 stage.getIcons().add(MainApp.icon);
                 stage.setResizable(false);
                 stage.setOnCloseRequest(e -> {
@@ -410,7 +412,8 @@ public class MainController implements Initializable {
             if (wp instanceof WallpaperImageWithFilter){
                 System.out.println("Open Wallpaper Filter...");
                 stage.setTitle("Wallpaper Filter");
-                var wallpaperScene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperChooseWindow.fxml")));
+                var wallpaperScene = new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("WallpaperChooseWindow.fxml").toUri().toURL()));
+                // var wallpaperScene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperChooseWindow.fxml")));
                 wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
                     System.out.println("Meow!?");
                     if (e.getCode() == KeyCode.RIGHT){
@@ -441,7 +444,8 @@ public class MainController implements Initializable {
             else {
                 System.out.println("Open Wallpaper Viewer...");
                 stage.setTitle("Wallpaper Viewer");
-                var wallpaperScene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperViewWindow.fxml")));
+                var wallpaperScene = new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("WallpaperViewWindow.fxml").toUri().toURL()));
+                // var wallpaperScene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperViewWindow.fxml")));
                 wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
                     System.out.println("Meow!?");
                     if (e.getCode() == KeyCode.RIGHT){
@@ -485,13 +489,14 @@ public class MainController implements Initializable {
             wp = Wallpaper.getWallpaper(serialNumber);
         }
         var fixedWp = wp;
-        boolean isPreview = wp.getCurrentFullPath().getParent().equals(WallpaperPath.defaultImagePath);
+        boolean isPreview = wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_IMAGE_PATH);
         final int fixedSerialNumber = serialNumber;
         var stage = new Stage();
         System.out.println("Open Neo Wallpaper Viewer...");
         System.out.println(wp.isChanged.get());
         stage.setTitle("Neo Wallpaper Viewer");
-        var wallpaperScene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperWindow.fxml")));
+        var wallpaperScene = new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("WallpaperWindow.fxml").toUri().toURL()));
+        // var wallpaperScene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperWindow.fxml")));
         wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (e.getCode() == KeyCode.RIGHT){
                 if (!fixedWp.isEmpty()){
@@ -580,7 +585,6 @@ public class MainController implements Initializable {
         try {
             var wpi = new Wallpaperize(tmp.showDialog(null).toPath(), toDefault);
             wpi.execute();
-            wpi = null; // 釋放記憶體
         } catch (Exception e){} // 表示沒做選擇, InvocationTargetException    
     }
 
@@ -606,7 +610,7 @@ public class MainController implements Initializable {
         
         downloadAmountChoice.getItems().addAll(modes[0], modes[1], modes[2]);
         downloadAmountChoice.setValue(modes[2]);
-        pathLabel.setText(" " + WallpaperPath.defaultDataPath.toString()) ;
+        pathLabel.setText(" " + WallpaperPath.DEFAULT_DATA_PATH.toString()) ;
         // mainPbar = new ProgressBar();
         hasChangedPreview.addListener((a, b, c) -> {
             pathLabel.setText(" " + theWallpaper.getCurrentFullPath().getParent().toAbsolutePath().toString());
@@ -848,7 +852,13 @@ public class MainController implements Initializable {
     }
     
     private void treeViewSelected() throws IOException{
-        var path = treeFileExplorer.getSelectionModel().getSelectedItem().getValue().value.toAbsolutePath();
+        Path path;
+        try {
+            path = treeFileExplorer.getSelectionModel().getSelectedItem().getValue().value.toAbsolutePath();
+        } catch (java.lang.NullPointerException ne){
+            System.out.println("No selected item.");
+            return;
+        }
         System.out.println(path);
         if (Files.isDirectory(path.toRealPath().toAbsolutePath())){
             viewImageTileTable.getChildren().clear();

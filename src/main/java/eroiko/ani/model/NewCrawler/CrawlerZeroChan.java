@@ -10,8 +10,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
 import eroiko.ani.controller.MainController;
-import eroiko.ani.util.myDS.TimeWait;
-import eroiko.ani.util.myDS.myTriple;
+import eroiko.ani.util.Method.TimeWait;
+import eroiko.ani.util.MyDS.myTriple;
 
 
 public class CrawlerZeroChan extends CrawlerBase{

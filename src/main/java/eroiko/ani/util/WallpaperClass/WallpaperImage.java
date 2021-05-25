@@ -53,7 +53,7 @@ public class WallpaperImage implements WallpaperProto{
     
     /** 建立預設圖片庫的 WallpaperImage */
     public WallpaperImage() throws IOException{
-        this(WallpaperPath.defaultImagePath);
+        this(WallpaperPath.DEFAULT_IMAGE_PATH);
     }
 
     public void add(){}

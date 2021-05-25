@@ -4,7 +4,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
 
-import eroiko.ani.util.SourceRedirector;
+import eroiko.ani.util.Method.SourceRedirector;
 import eroiko.ani.util.WallpaperClass.WallpaperImageWithFilter;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

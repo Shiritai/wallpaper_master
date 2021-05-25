@@ -6,6 +6,7 @@
   <groupId>eroiko.ani</groupId>
   <artifactId>wallpaper_master</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
 
   <name>wallpaper_master</name>
   <!-- FIXME change it to the project's website -->
@@ -19,7 +20,14 @@
 
   <dependencies>
 
-    <dependency>
+      <dependency>
+        <groupId>com.dustinredmond.fxtrayicon</groupId>
+        <artifactId>FXTrayIcon</artifactId>
+        <version>3.0.0</version>
+      </dependency>
+
+
+    <!-- <dependency>
       <groupId>com.dustinredmond.fxtrayicon</groupId>
       <artifactId>FXTrayIcon</artifactId>
       <version>3.0.0</version>
@@ -27,7 +35,7 @@
       <systemPath>
       D:\ShiZu_Code\Java\FXTrayIcon-3.0.0\FXTrayIcon-3.0.0.jar
       </systemPath>
-    </dependency>
+    </dependency> -->
 
     <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-controls -->
     <dependency>
@@ -94,31 +102,6 @@
       <version>3.12.0</version>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/de.jensd/fontawesomefx -->
-    <dependency>
-      <groupId>de.jensd</groupId>
-      <artifactId>fontawesomefx</artifactId>
-      <version>8.2</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.jensd</groupId>
-      <artifactId>fontawesomefx-materialdesignfont</artifactId>
-      <version>2.0.26-9.1.2</version>
-    </dependency>
-
-    <dependency>
-        <groupId>de.jensd</groupId>
-        <artifactId>fontawesomefx-commons</artifactId>
-        <version>9.1.2</version>
-    </dependency>
-
-    <dependency>
-      <groupId>de.jensd</groupId>
-      <artifactId>fontawesomefx-fontawesome</artifactId>
-      <version>4.7.0-9.1.2</version>
-    </dependency>
-
     <!-- https://mvnrepository.com/artifact/org.openjfx/javafx-media -->
     <dependency>
       <groupId>org.openjfx</groupId>
@@ -143,15 +126,15 @@
     </dependencies>
 
   <build>
-    <pluginManagement>
+    <!-- <pluginManagement> -->
       <!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
       <plugins>
-        <!-- clean lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#clean_Lifecycle -->
-        <plugin>
+
+        <!-- <plugin>
           <artifactId>maven-clean-plugin</artifactId>
           <version>3.1.0</version>
         </plugin>
-        <!-- default lifecycle, jar packaging: see https://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+        
         <plugin>
           <artifactId>maven-resources-plugin</artifactId>
           <version>3.0.2</version>
@@ -164,20 +147,50 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.1</version>
         </plugin>
+
+        <plugin>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-maven-plugin</artifactId>
+            <version>0.0.6</version>
+            <configuration>
+                <mainClass>eroiko.ani.MainApp</mainClass>
+            </configuration>
+        </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+                <execution>
+                    <phase>prepare-package</phase>
+                    <id>copy-dependencies</id>
+                    <goals>
+                        <goal>copy-dependencies</goal>
+                    </goals>
+                    <configuration>
+                        <outputDirectory>
+                            ${project.build.directory}/libs
+                        </outputDirectory>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
-          <!-- Add main class entrance here!!!!! -->
           <configuration>
             <archive>
               <manifest>
-                <!-- <addClasspath>true</addClasspath>
-                <classpathPrefix>lib/</classpathPrefix> -->
+                <addClasspath>true</addClasspath>
+                <classpathPrefix>libs/</classpathPrefix>
                 <mainClass>eroiko.ani.MainApp</mainClass>
               </manifest>
             </archive>
           </configuration>
-        </plugin>
+        </plugin> -->
+
+
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
           <version>2.5.2</version>
@@ -186,7 +199,7 @@
           <artifactId>maven-deploy-plugin</artifactId>
           <version>2.8.2</version>
         </plugin>
-        <!-- site lifecycle, see https://maven.apache.org/ref/current/maven-core/lifecycles.html#site_Lifecycle -->
+        
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
           <version>3.7.1</version>
@@ -195,27 +208,49 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-toolchains-plugin</artifactId>
+          <executions>
+            <execution>
+              <goals>
+                <goal>toolchain</goal>
+              </goals>
+              <configuration>
+                <toolchains>
+                  <jdk>
+                    <version>15</version>
+                  </jdk>
+                </toolchains>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-shade-plugin</artifactId>
+            <executions>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>shade</goal>
+                    </goals>
+                    <configuration>
+                        <shadedArtifactAttached>true</shadedArtifactAttached>
+                        <transformers>
+                            <transformer implementation=
+                              "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <mainClass>eroiko.ani.Main</mainClass>
+                        </transformer>
+                    </transformers>
+                </configuration>
+                </execution>
+            </executions>
+        </plugin>
+
       </plugins>
-    </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-toolchains-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>toolchain</goal>
-            </goals>
-            <configuration>
-              <toolchains>
-                <jdk>
-                  <version>15</version>
-                </jdk>
-              </toolchains>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
+    <!-- </pluginManagement> -->
   </build>
 </project>

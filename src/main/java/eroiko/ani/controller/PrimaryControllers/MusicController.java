@@ -3,8 +3,8 @@ package eroiko.ani.controller.PrimaryControllers;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import eroiko.ani.util.MediaOperator;
-import eroiko.ani.util.MusicBox;
+import eroiko.ani.util.MediaClass.MediaOperator;
+import eroiko.ani.util.MediaClass.MusicBox;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;

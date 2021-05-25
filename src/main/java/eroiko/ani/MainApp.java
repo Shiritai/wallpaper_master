@@ -2,7 +2,7 @@ package eroiko.ani;
 
 import java.awt.SystemTray;
 import java.io.*;
-import java.nio.file.FileSystems;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -12,10 +12,10 @@ import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
 import eroiko.ani.controller.MainController;
 import eroiko.ani.controller.PrimaryControllers.MusicWithSyamiko;
-import eroiko.ani.util.MediaOperator;
+import eroiko.ani.controller.PrimaryControllers.PreferenceController;
+import eroiko.ani.util.MediaClass.MediaOperator;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
-import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
 import eroiko.ani.util.NeoWallpaper.Wallpaperize;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -30,7 +30,7 @@ import javafx.stage.*;
 public class MainApp extends Application{
         
     public static boolean isTesting = true;
-    public static final String version = "version 0.0.2";
+    public static final String version = "version 0.0.3";
     public static Image icon;
     
     public static Stage mainStage;
@@ -47,10 +47,9 @@ public class MainApp extends Application{
     @Override
     public void start (Stage mainStage) throws IOException{
         MainApp.mainStage = mainStage;
-        Parent root = FXMLLoader.load(FileSystems.getDefault().getPath("src/main/java/eroiko/ani/view/MainWindow.fxml").toUri().toURL());
+        // Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/MainWindow.fxml"));
+        Parent root = FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("MainWindow.fxml").toUri().toURL());
         mainScene = new Scene(root);
-
-        // setListeners();
 
         if (SystemTray.isSupported()){
             setMinimizedMenu();
@@ -62,6 +61,9 @@ public class MainApp extends Application{
             if (SystemTray.isSupported() && !trayIcon.isShowing()){
                 initTrayIcon();
                 trayIcon.show();
+                if (PreferenceController.minimizedMsg){
+                    trayIcon.showMessage("Minimized Wallpaper Master", "Right click the tray icon to see more information");
+                }
             }
         });
         mainStage.setOnShowing(e -> {
@@ -83,7 +85,7 @@ public class MainApp extends Application{
             }
         });
         /* mainStage 基礎設定 */
-        icon = new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString());
+        icon = new Image(WallpaperPath.IMAGE_SOURCE_PATH.resolve("wallpaper79.png").toFile().toURI().toURL().toString());
         mainStage.getIcons().add(icon);
         mainStage.setTitle("Wallpaper Master");
         mainStage.setScene(mainScene);
@@ -130,7 +132,11 @@ public class MainApp extends Application{
     }
     
     private void initTrayIcon(){
-        trayIcon = new FXTrayIcon(mainStage, getClass().getResource("img/wallpaper79.png"));
+        try {
+            trayIcon = new FXTrayIcon(mainStage, WallpaperPath.IMAGE_SOURCE_PATH.resolve("wallpaper79.png").toAbsolutePath().toUri().toURL());
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         trayIcon.setTrayIconTooltip("Wallpaper Master\n" + version);
         for (var m : menuItems){
             trayIcon.addMenuItem(m);
