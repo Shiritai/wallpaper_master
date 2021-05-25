@@ -18,6 +18,7 @@ import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import eroiko.ani.util.NeoWallpaper.Wallpaperize;
 import javafx.application.Application;
+import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
@@ -41,12 +42,16 @@ public class MainApp extends Application{
     public static MenuItem [] childMenu;
     public static FXTrayIcon trayIcon;
 
+    public static HostServices hostServices;
+
     public static void main(String [] args){
         launch(args);
     }
 
     @Override
     public void start (Stage mainStage) throws IOException{
+        hostServices = getHostServices();
+
         MainApp.mainStage = mainStage;
         // Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/MainWindow.fxml"));
         Parent root = FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("MainWindow.fxml").toUri().toURL());
