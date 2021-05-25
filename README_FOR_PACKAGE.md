@@ -26,9 +26,17 @@ Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆們。
 
 ## Run 使用方法
 
+請先 [下載並安裝 Java SE 15](https://www.oracle.com/tw/java/technologies/javase-downloads.html) (大於或等於 15 皆可)
+
+並在環境變數裡加入相應的 `JDK_DIRECTORY/bin` 後,
+
 滑鼠點擊運行 `run.vbs` 即可。
 
 若想在運行時看到實際的終端機, 請改運行 `start.bat`。
+
+Please [download and install Java SE 15](https://www.oracle.com/tw/java/technologies/javase-downloads.html) (15 or later)
+
+Then add `JDK_DIRECTORY/bin` to PATH.
 
 Double click `run.vbs`, and the application should run properly.
 
