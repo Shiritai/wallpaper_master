@@ -28,6 +28,10 @@ See `pom.xml` in `.jar` file.
 
 Undoubtedly, my dear **vscode**!
 
+## Release version
+
+See [Wallpaper Master]()
+
 ## Wallpaper (進版圖)
 
 ![image](https://i.imgur.com/OqV05rM.jpg)
