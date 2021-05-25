@@ -34,7 +34,7 @@ Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆們。
 
 若想在運行時看到實際的終端機, 請改運行 `start.bat`。
 
-Please [download and install Java SE 15](https://www.oracle.com/tw/java/technologies/javase-downloads.html) (15 or later)
+Please [download and install Java SE 15](https://www.oracle.com/tw/java/technologies/javase-downloads.html) (or later)
 
 Then add `JDK_DIRECTORY/bin` to PATH.
 
