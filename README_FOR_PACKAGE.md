@@ -32,7 +32,7 @@ Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆們。
 
 Double click `run.vbs`, and the application should run properly.
 
-If you'd like to see the command window while running `Wallpaper Master`, run `start.bat` alternatively.
+If you'd like to see the command window while running, run `start.bat` alternatively.
 
 ## File Settings 檔案設定
 

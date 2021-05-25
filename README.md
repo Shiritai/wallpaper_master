@@ -30,7 +30,7 @@ Undoubtedly, my dear **vscode**!
 
 ## Release version
 
-See [Wallpaper Master]()
+See [Wallpaper Master](https://github.com/Shiritai/wallpaper_master_application)
 
 ## Wallpaper (進版圖)
 
