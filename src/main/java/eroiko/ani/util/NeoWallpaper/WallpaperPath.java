@@ -5,12 +5,13 @@ import java.nio.file.Path;
 
 public class WallpaperPath {
     public static final Path DEFAULT_DATA_PATH = FileSystems.getDefault().getPath("data").toAbsolutePath();
+    public static final Path DEFAULT_TMP_WALLPAPER_PATH = FileSystems.getDefault().getPath("data/tmp").toAbsolutePath();
     public static final Path DEFAULT_WALLPAPER_PATH = FileSystems.getDefault().getPath("data/wallpaper").toAbsolutePath();
     public static final Path DEFAULT_IMAGE_PATH = FileSystems.getDefault().getPath("data/default").toAbsolutePath();
     public static final Path DEFAULT_MUSIC_PATH = FileSystems.getDefault().getPath("data/music").toAbsolutePath();
     public static final Path IMAGE_SOURCE_PATH = FileSystems.getDefault().getPath("data/img").toAbsolutePath();
     public static final Path FXML_SOURCE_PATH = FileSystems.getDefault().getPath("data/view").toAbsolutePath();
-    // public static final Path FXML_SOURCE_PATH = FileSystems.getDefault().getPath("src/main/resources/view").toAbsolutePath();
+    
     private static Path userWallpaperPath = null;
     private static boolean useConfigWallpaperPath = false;
 

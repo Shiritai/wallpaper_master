@@ -2,7 +2,7 @@
 
 My first Individual project! (For practice OwO)
 
-(注意：尚未包裝好資源喔)
+包裝好的資源詳見 [Wallpaper Master](https://github.com/Shiritai/wallpaper_master_application)
 
 Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆們。
 

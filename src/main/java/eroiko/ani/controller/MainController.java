@@ -73,6 +73,7 @@ public class MainController implements Initializable {
     @FXML private ScrollPane scrollableTile;
     @FXML private Label pathLabel;
     @FXML private BorderPane openWindowsFileExplorer = new BorderPane();
+    @FXML private BorderPane refreshExplorer;
     @FXML private TabPane tableOfBrowser;
     
     /* About Search */
@@ -157,7 +158,7 @@ public class MainController implements Initializable {
                                 default -> -1;
                             };
                             updateMessage("Ready...");
-                            var cw = new CrawlerManager(WallpaperPath.DEFAULT_DATA_PATH.toString(), WallpaperUtil.capitalize(data.get(i).key).split(" "), mode);
+                            var cw = new CrawlerManager(WallpaperPath.DEFAULT_TMP_WALLPAPER_PATH.toString(), WallpaperUtil.capitalize(data.get(i).key).split(" "), mode);
                             updateMessage("Fetch image information");
                             cw.A_getLinks();
                             updateMessage("Download preview wallpapers");
@@ -197,7 +198,7 @@ public class MainController implements Initializable {
             @Override
             public void handle(WorkerStateEvent e){
                 System.out.println("Done, closing crawlerThread.");
-                MusicWithSyamiko.playProcessing();
+                MusicWithSyamiko.playComplete();
                 progressBarText.textProperty().unbind();
                 searchQueue.getItems().clear();
                 nowProcessingText.clear();
@@ -552,6 +553,7 @@ public class MainController implements Initializable {
         } catch (IOException e) {
             System.out.println(e.toString());
         }
+        initTreeView();
     }
 
     @FXML
@@ -758,6 +760,7 @@ public class MainController implements Initializable {
                 e.consume();
             }
         });
+        refreshExplorer.setOnMouseClicked(e -> initTreeView());
     }
 
     private void initSearchQueue(){

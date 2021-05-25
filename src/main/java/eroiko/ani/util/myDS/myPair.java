@@ -22,4 +22,8 @@ public class myPair<K, V>{
     public String toString(){
         return (isKeyToString) ? key.toString() : value.toString();
     }
+
+    public boolean equals(myPair<K, V> other){
+        return this.key.equals(other.key) && this.value.equals(other.value);
+    }
 }

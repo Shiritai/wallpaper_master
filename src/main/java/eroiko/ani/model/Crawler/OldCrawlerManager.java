@@ -25,7 +25,7 @@ public class OldCrawlerManager implements Runnable {
     
     public synchronized void run(){
         try {
-            CrawlerZeroChan crawler = new CrawlerZeroChan(WallpaperPath.DEFAULT_DATA_PATH.toString(), keywords.split(" "), 2, 1);
+            CrawlerZeroChan crawler = new CrawlerZeroChan(WallpaperPath.DEFAULT_TMP_WALLPAPER_PATH.toString(), keywords.split(" "), 2, 1);
             var service = Executors.newCachedThreadPool();
             var previewResult = crawler.readMultiplePagesAndDownloadPreviews(pages, service);
     
