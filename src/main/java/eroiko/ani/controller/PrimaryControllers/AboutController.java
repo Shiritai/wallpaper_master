@@ -9,7 +9,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.layout.Border;
 import javafx.scene.text.Text;
-// import javafx.scene.
 
 public class AboutController implements Initializable{
 

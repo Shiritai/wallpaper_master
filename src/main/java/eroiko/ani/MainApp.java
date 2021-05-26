@@ -7,8 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
-
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
+// import java.awt.Font;
 
 import eroiko.ani.controller.MainController;
 import eroiko.ani.controller.PrimaryControllers.MusicWithSyamiko;
@@ -26,6 +26,7 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
+import javafx.scene.text.Font;
 import javafx.stage.*;
 
 public class MainApp extends Application{
@@ -43,17 +44,24 @@ public class MainApp extends Application{
     public static FXTrayIcon trayIcon;
 
     public static HostServices hostServices;
+    public static Font rainbow26;
+    public static Font firaCode16;
+    public static Font firaCode12;
 
     public static void main(String [] args){
         launch(args);
     }
-
+    
     @Override
     public void start (Stage mainStage) throws IOException{
+        /* System settings */
         hostServices = getHostServices();
+        /* Load fonts */
+        rainbow26 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/rainyhearts.ttf").toFile()), 26.);
+        firaCode12 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Bold.ttf").toFile()), 12.);
+        firaCode16 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Bold.ttf").toFile()), 16.);
 
         MainApp.mainStage = mainStage;
-        // Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/MainWindow.fxml"));
         Parent root = FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("MainWindow.fxml").toUri().toURL());
         mainScene = new Scene(root);
 
