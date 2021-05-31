@@ -34,15 +34,23 @@ See [Wallpaper Master](https://github.com/Shiritai/wallpaper_master_application)
 
 ## Release note (version 0.0.4)
 
-1. 新增 Music With Akari, 可以自由欣賞所有資料夾的音樂
+1. 新增 Music With Akari, 可以在工作列 Mode 處開啟, 能自由在所有資料夾的音樂開啟音樂播放器
 
 2. 完成 Music With Akari 與 Music With Syamiko 的連動, 可以輕鬆導入音樂至 Music With Syamiko
 
-3. Music With Syamiko 多項修正
+3. Music With Syamiko 修正
 
 4. 完善 File Explorer, 支援圖片與音樂的預覽, 且樹狀圖中所有檔案可以雙擊開啟
 
-5. 字型全面完成維護
+5. 字型維護
+
+6. 多處補齊資源關閉與函示參考, 減少多餘匿名函式
+
+7. 調整資料結構與其應用, 加速 File Explorer 讀取時間
+
+8. 微調主視窗
+
+9. 最小化功能追加
 
 ## Wallpaper (進版圖)
 

@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import java.util.TreeMap;
 
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
@@ -86,6 +87,7 @@ public class MainController implements Initializable {
     @FXML private TableColumn<myPair<String, String>, String> amount;
     /* About downloading processing */
     private Service<Void> crawlerThread;
+    private Service<Void> doDFS;
     @FXML private ProgressBar mainPbar;
     @FXML private TextField nowProcessingText;
     @FXML private Label progressBarText;
@@ -209,7 +211,7 @@ public class MainController implements Initializable {
         OpenPreferenceWindow();
     }
     
-    public void OpenPreferenceWindow(){
+    public static void OpenPreferenceWindow(){
         PreferenceController.quit = quit;
         try {
             var stage = new Stage();
@@ -230,7 +232,7 @@ public class MainController implements Initializable {
         OpenAboutWindow();
     }
     
-    public void OpenAboutWindow(){
+    public static void OpenAboutWindow(){
         try {
             var stage = new Stage();
             stage.setTitle("About");
@@ -296,12 +298,14 @@ public class MainController implements Initializable {
                 imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
             }
             else {
+                pathLabel.setText(" " + file.toAbsolutePath().toString());
                 theWallpaper = new Wallpaper(file);
                 hasChangedPreview.set(true);
                 imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
             }
             event.consume();
         } catch (IOException e) {
+            e.printStackTrace();
             return;
         }
     }
@@ -362,8 +366,21 @@ public class MainController implements Initializable {
     }
 
     @FXML
-    void OpenMusicController(ActionEvent event) {
+    void OpenMusicWithSyamiko(ActionEvent event) {
         MusicWithSyamiko.openMusicWithSyamiko();
+    }
+
+    @FXML
+    void OpenMusicWithAkari(ActionEvent event) { // 暫時僅支持以音樂檔形式開啟
+        OpenMusicWithAkari();
+    }
+    
+    public static void OpenMusicWithAkari(){
+        var tmp = new javafx.stage.FileChooser();
+        try {
+            tmp.getExtensionFilters().addAll(new javafx.stage.FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3"));
+            MusicWithAkari.openMusicWithAkari(tmp.showOpenDialog(null).toPath());
+        } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
     }
     
     void OpenWallpaper(Wallpaper wp) throws IOException{
@@ -488,10 +505,12 @@ public class MainController implements Initializable {
         pathLabel.setText(" " + WallpaperPath.DEFAULT_DATA_PATH.toString());
         // mainPbar = new ProgressBar();
         hasChangedPreview.addListener((a, b, c) -> {
-            pathLabel.setText(" " + theWallpaper.getCurrentFullPath().getParent().toAbsolutePath().toString());
+            // pathLabel.setText(" " + theWallpaper.getCurrentFullPath().getParent().toAbsolutePath().toString());
+            if (!theWallpaper.isEmpty()){
+                imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
+            }
             initTreeView();
             hasChangedPreview.set(false);
-            imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
         });
         searchQueue.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         CrawlerManager.progress.addListener((a, b, c) -> {
@@ -512,6 +531,7 @@ public class MainController implements Initializable {
         pathLabel.setFont(MainApp.firaCode12);
         Terminal_in.setFont(MainApp.firaCode12);
         Terminal_out.setFont(MainApp.firaCode13);
+        percentageMark.setFont(MainApp.firaCode12);
     }
     
     public void initializeMouseEvents(){
@@ -562,7 +582,14 @@ public class MainController implements Initializable {
             }
         });
         treeFileExplorer.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2){
+            if (e.getClickCount() == 1){
+                var tmp = treeFileExplorer.getSelectionModel().getSelectedItem();
+                if (tmp != null){
+                    initTreeDir(tmp);
+                    tmp.setExpanded(true);
+                }
+            }
+            else if (e.getClickCount() == 2){
                 try {
                     treeViewSelected();
                 } catch (IOException e1) {
@@ -570,7 +597,6 @@ public class MainController implements Initializable {
                 }
             }
         });
-        // treeFileExplorer.setOnMouseDragged(arg0);
     }
     
     public void initializeKeyBoardShortcuts(){
@@ -709,39 +735,80 @@ public class MainController implements Initializable {
     }
     
     /* 採後序 */
-    private void initTreeView() {
+    private void initTreeView(){
         var rootPath = Path.of(pathLabel.getText().stripLeading());
         var root = new TreeItem<>(new myPair<>(rootPath.getFileName().toString(), rootPath), WallpaperUtil.fetchIconUsePath(rootPath));
+        if (doDFS != null && doDFS.isRunning()){
+            doDFS.cancel();
+        }
+        doDFS = new Service<Void>(){
+            @Override
+            protected Task<Void> createTask(){
+                return new Task<Void>(){
+                    @Override
+                    protected Void call(){
+                        var str = (rootPath.toAbsolutePath().toString().length() < 30) ? rootPath.toString() : "~~/" + rootPath.getFileName().toString();
+                        System.out.println("loading directory : " + rootPath);
+                        percentageMark.setText("loading directory : " + str);
+                        initTreeDir(root);
+                        return null;
+                    }
+                };
+            }
+        };
+        doDFS.setOnSucceeded(e -> {
+            root.setExpanded(true);
+            treeFileExplorer.setRoot(root);
+            var str = (rootPath.toAbsolutePath().toString().length() < 30) ? rootPath.toString() : "~~/" + rootPath.getFileName().toString();
+            System.out.println("Finish loading " + rootPath);
+            percentageMark.setText("Finish loading " + str);
+        });
+        doDFS.restart();
+    }
+
+    private void initTreeDir(TreeItem<myPair<String, Path>> root){
         try {
-            postOrderTraverse(root);
+            bfsSurface(root); // (2). 因此這裡為保險起見的遍歷影響其實不大
+            for (var cur : root.getChildren()){
+                bfsSurface(cur); // (1). 通常情況下主要時間都在第二層遍歷
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        root.setExpanded(true);
-        treeFileExplorer.setRoot(root);
     }
 
     private TreeItem<myPair<String, Path>> postOrderTraverse(TreeItem<myPair<String, Path>> cur) throws IOException{
         if (Files.isDirectory(cur.getValue().value)){
-            for (var p : Files.newDirectoryStream(cur.getValue().value)){
-                /* 不非洲了 OwO... myPair 真的萬用 */
-                cur.getChildren().add(postOrderTraverse(new TreeItem<>(new myPair<>(p.getFileName().toString(), p), WallpaperUtil.fetchIconUsePath(p))));
+            try (var dirStream = Files.newDirectoryStream(cur.getValue().value)){
+                for (var p : dirStream){
+                    /* 不非洲了 OwO... myPair 真的萬用 */
+                    cur.getChildren().add(postOrderTraverse(new TreeItem<>(new myPair<>(p.getFileName().toString(), p), WallpaperUtil.fetchIconUsePath(p))));
+                }
             }
         }
-        cur.getChildren().sort((a, b) -> {
-            boolean aD = Files.isDirectory(a.getValue().value);
-            boolean bD = Files.isDirectory(b.getValue().value);
-            if (aD && !bD){ return -1; }
-            if (!aD && bD){ return 1; }
-            return WallpaperUtil.pathNameCompare(a.getValue().key, b.getValue().key);
-        });
+        cur.getChildren().sort((a, b) -> WallpaperUtil.pathDirAndNameCompare(a.getValue().value, b.getValue().value));
+        return cur;
+    }
+
+    /** 採 TreeMap 排序優化 */
+    private TreeItem<myPair<String, Path>> bfsSurface(TreeItem<myPair<String, Path>> cur) throws IOException{
+        if (cur != null && Files.isDirectory(cur.getValue().value)){
+            try (var dirStream = Files.newDirectoryStream(cur.getValue().value)){
+                var map = new TreeMap<Path, TreeItem<myPair<String, Path>>>(WallpaperUtil::pathDirAndNameCompare);
+                dirStream.forEach(p -> map.put(p, new TreeItem<>(new myPair<>(p.getFileName().toString(), p), WallpaperUtil.fetchIconUsePath(p))));
+                cur.getChildren().clear(); // 先淨空當前內容
+                map.values().forEach(cur.getChildren()::add);
+            }
+        }
         return cur;
     }
     
     private void treeViewSelected() throws IOException{
         Path path;
+        TreeItem<myPair<String, Path>> dir;
         try {
-            path = treeFileExplorer.getSelectionModel().getSelectedItem().getValue().value.toAbsolutePath();
+            dir = treeFileExplorer.getSelectionModel().getSelectedItem();
+            path = dir.getValue().value.toAbsolutePath();
         } catch (java.lang.NullPointerException ne){
             System.out.println("No selected item.");
             return;
@@ -752,15 +819,13 @@ public class MainController implements Initializable {
             viewImageTileTable.setPadding(new Insets(5., 5., 5., 8.));
             viewImageTileTable.setVgap(8.);
             viewImageTileTable.setHgap(8.);
+
             var paths = new ArrayList<Path>();
-            Files.newDirectoryStream(path).forEach(e -> paths.add(e));
-            paths.sort((a, b) -> {
-                boolean aD = Files.isDirectory(a);
-                boolean bD = Files.isDirectory(b);
-                if (aD && !bD){ return -1; }
-                if (!aD && bD){ return 1; }
-                return WallpaperUtil.pathNameCompare(a, b);
-            });
+            try (var dirStream = Files.newDirectoryStream(path)){
+                dirStream.forEach(e -> paths.add(e));
+            }
+            paths.sort(WallpaperUtil::pathDirAndNameCompare);
+
             var list = new ArrayList<VBox>(paths.size());
             paths.forEach(p -> {
                 var iconView = WallpaperUtil.fetchIconUsePath(p);
@@ -772,6 +837,11 @@ public class MainController implements Initializable {
                 
                 var vbox = new VBox(iconView, name);
                 vbox.setAlignment(Pos.CENTER);
+                vbox.setOnMouseClicked(e -> {
+                    if (e.getClickCount() == 3){
+                        cmdOpenPath(p);
+                    }
+                });
                 list.add(vbox);
             });
             viewImageTileTable.getChildren().addAll(list);
@@ -795,37 +865,39 @@ public class MainController implements Initializable {
                 MusicWithAkari.openMusicWithAkari(path);
             }
             else {
-                var openFileThread = new Thread(() -> {
-                    try {
-                        var process = Runtime.getRuntime().exec("cmd /C " + path.toAbsolutePath());
-                        var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                        var output = new StringBuilder();
-                        String tmpStr;
-                        while ((tmpStr = reader.readLine()) != null){
-                            output.append(tmpStr);
-                        }
-                        int exitVal = process.waitFor();
-                        if (exitVal == 0){
-                            System.out.println("execute successfully");
-                            System.out.println(output);
-                            if (!quit){
-                                System.err.println(output);
-                            }
-                        }
-                        else {
-                            System.out.println("execute failed with exit code : " + exitVal);
-                        }
-                    } catch (Exception ex){
-                        ex.printStackTrace();
-                    }
-                });
+                var openFileThread = new Thread(() -> cmdOpenPath(path));
                 openFileThread.setDaemon(true);
                 openFileThread.start();
             }
         }
-
         scrollableTile.setPannable(true);
         scrollableTile.setFitToHeight(true);
         scrollableTile.setVbarPolicy(ScrollBarPolicy.ALWAYS);
     }
+
+    private void cmdOpenPath(Path path){
+        try {
+            var process = Runtime.getRuntime().exec("cmd /C " + "\"" + path.toAbsolutePath() + "\"");
+            var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            var output = new StringBuilder();
+            String tmpStr;
+            while ((tmpStr = reader.readLine()) != null){
+                output.append(tmpStr);
+            }
+            int exitVal = process.waitFor();
+            if (exitVal == 0){
+                System.out.println("execute successfully");
+                System.out.println(output);
+                if (!quit){
+                    System.err.println(output);
+                }
+            }
+            else {
+                System.out.println("execute failed with exit code : " + exitVal);
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+    }
 }
+

@@ -2,7 +2,6 @@ package eroiko.ani.util.WallpaperClass;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ public class WallpaperImage implements WallpaperProto{
     public BooleanProperty isChanged;
 
     private Path directory;
-    private DirectoryStream<Path> root;
     private ArrayList<Path> wallpapers;
     private int initIndex = -1;
     // private TreeMap<Integer, Path> wallpapers;
@@ -33,10 +31,11 @@ public class WallpaperImage implements WallpaperProto{
         isChanged = new SimpleBooleanProperty(false);
 
         this.directory = directory;
-        root = Files.newDirectoryStream(this.directory, "*.{jpg,jpeg,png}");
-        System.out.println(Path.of(this.directory.toString()));
         wallpapers = new ArrayList<Path>();
-        root.forEach(p -> wallpapers.add(p));
+        try (var root = Files.newDirectoryStream(this.directory, "*.{jpg,jpeg,png}")){
+            root.forEach(p -> wallpapers.add(p));
+        }
+        System.out.println(Path.of(this.directory.toString()));
         wallpapers.sort((a, b) -> WallpaperUtil.pathNameCompare(a.getFileName(), b.getFileName())); // 讓圖片照順序排佈
         if (initImage != null){
             setInitImage(initImage);

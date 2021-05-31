@@ -2,7 +2,6 @@ package eroiko.ani.util.NeoWallpaper;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -37,38 +36,38 @@ public class Wallpaperize {
     
     /** make wallpapers to "wallpaperXX" format */
     public int execute(){
-        DirectoryStream<Path> root = null;
         WallpaperUtil.resetSerialNumber();
         try {
-            root = Files.newDirectoryStream(path, "*.{jpg,jpeg,png}");
+            try (var root = Files.newDirectoryStream(path, "*.{jpg,jpeg,png}")){
+                if (root != null){
+                    var wallpaperList = new TreeMap<Integer, Path>();
+                    var notWallpaperList = new ArrayList<Path>();
+                    root.forEach(p -> {
+                        try {
+                            wallpaperList.put(WallpaperUtil.getSerialNumberFromAWallpaper(p), p);
+                        } catch (IllegalArgumentException ie){
+                            notWallpaperList.add(p); // not a WallpaperXX form
+                        }
+                    });
+                    WallpaperUtil.resetSerialNumber();
+                    notWallpaperList.forEach(p -> {
+                        while (wallpaperList.containsKey(WallpaperUtil.peekSerialNumber())){
+                            WallpaperUtil.passSerialNumber();
+                        }
+                        p.toFile().renameTo(
+                            new File(
+                                path.toAbsolutePath().toString() + 
+                                "/wallpaper" +
+                                WallpaperUtil.getSerialNumber() + 
+                                WallpaperUtil.getFileType(p)
+                            )
+                        );
+                        wallpaperize.add(p.getFileName().toString()); // 也許未來有用
+                    });
+                    return WallpaperUtil.peekSerialNumber();
+                }
+            }
         } catch (IOException e) {}
-        if (root != null){
-            var wallpaperList = new TreeMap<Integer, Path>();
-            var notWallpaperList = new ArrayList<Path>();
-            root.forEach(p -> {
-                try {
-                    wallpaperList.put(WallpaperUtil.getSerialNumberFromAWallpaper(p), p);
-                } catch (IllegalArgumentException ie){
-                    notWallpaperList.add(p); // not a WallpaperXX form
-                }
-            });
-            WallpaperUtil.resetSerialNumber();
-            notWallpaperList.forEach(p -> {
-                while (wallpaperList.containsKey(WallpaperUtil.peekSerialNumber())){
-                    WallpaperUtil.passSerialNumber();
-                }
-                p.toFile().renameTo(
-                    new File(
-                        path.toAbsolutePath().toString() + 
-                        "/wallpaper" +
-                        WallpaperUtil.getSerialNumber() + 
-                        WallpaperUtil.getFileType(p)
-                    )
-                );
-                wallpaperize.add(p.getFileName().toString()); // 也許未來有用
-            });
-            return WallpaperUtil.peekSerialNumber();
-        }
         return 0;
     }
     

@@ -98,7 +98,7 @@ public class MainApp extends Application{
         /* 定義全視窗快捷鍵 */
         mainScene.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> { //  彈出 Properties 視窗, 因為是對整個 Scene, 因此宣告在此
             if (new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN).match(e)){
-                new MainController().OpenPreferenceWindow();
+                MainController.OpenPreferenceWindow();
                 e.consume();
             }
         });
@@ -125,14 +125,21 @@ public class MainApp extends Application{
         });
     }
 
+    private static final int menuSize = 7;
+    
     private void setMinimizedMenu() {
-        menuItems = new MenuItem [5];
-        menuItems[0] = new MenuItem("Open Wallpaper Master");
-        menuItems[0].setOnAction(e -> mainStage.show());
-        menuItems[1] = new MenuItem("Open Music with Syamiko");
-        menuItems[1].setOnAction(e -> MusicWithSyamiko.openMusicWithSyamiko());
-        menuItems[2] = new MenuItem("Paste clipboard images to wallpaper folder");
-        menuItems[2].setOnAction(e -> {
+        int num = 0;
+        menuItems = new MenuItem [menuSize];
+        menuItems[num] = new MenuItem("About");
+        menuItems[num++].setOnAction(e -> MainController.OpenAboutWindow());
+        menuItems[num] = new MenuItem("Open Wallpaper Master");
+        menuItems[num++].setOnAction(e -> mainStage.show());
+        menuItems[num] = new MenuItem("Open Music with Syamiko");
+        menuItems[num++].setOnAction(e -> MusicWithSyamiko.openMusicWithSyamiko());
+        menuItems[num] = new MenuItem("Open Music with Akari");
+        menuItems[num++].setOnAction(e -> MainController.OpenMusicWithAkari());
+        menuItems[num] = new MenuItem("Paste images to wallpaper folder");
+        menuItems[num++].setOnAction(e -> {
             var cb = Clipboard.getSystemClipboard().getFiles();
             try {
                 var tmpFile = new File(WallpaperPath.getWallpaperPath().toString()); // 未來必須改用 Preference Path
@@ -148,10 +155,10 @@ public class MainApp extends Application{
                 System.out.println(e1.toString());
             }
         });
-        menuItems[3] = new MenuItem("Preference");
-        menuItems[3].setOnAction(e -> (new MainController()).OpenPreferenceWindow());
-        menuItems[4] = new MenuItem("Play/Pause music");
-        menuItems[4].setOnAction(e -> MusicWithSyamiko.playOrPause());
+        menuItems[num] = new MenuItem("Preference");
+        menuItems[num++].setOnAction(e -> MainController.OpenPreferenceWindow());
+        menuItems[num] = new MenuItem("Play/Pause music");
+        menuItems[num++].setOnAction(e -> MusicWithSyamiko.playOrPause());
     }
     
     private void initTrayIcon(){
@@ -164,9 +171,9 @@ public class MainApp extends Application{
         for (var m : menuItems){
             trayIcon.addMenuItem(m);
         }
-        trayIcon.insertSeparator(2);
-        // trayIcon.insertMenuItem(menu, 0);
-        trayIcon.insertSeparator(6);
+        trayIcon.insertSeparator(1);
+        trayIcon.insertSeparator(5);
+        trayIcon.insertSeparator(9);
         trayIcon.addExitItem(true);
     }
 }

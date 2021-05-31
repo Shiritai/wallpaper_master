@@ -1,7 +1,6 @@
 package eroiko.ani.util.MediaClass;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -33,18 +32,18 @@ public class MediaOperator {
     private MediaOperator(Path musicPath, Path certainPath, boolean isDefaultMusic){
         this.isDefaultMusic = isDefaultMusic;
         rootPath = musicPath;
-        DirectoryStream<Path> root = null;
         try {
-            root = Files.newDirectoryStream(rootPath, "*.{mp3,wav,flac}");
+            var root = Files.newDirectoryStream(rootPath, "*.{mp3,wav}"); // also can use try-with-resource
+            medias = new ArrayList<Path>();
+            root.forEach(p -> {
+                if (!p.getFileName().toString().startsWith("00_")){
+                    medias.add(p);
+                }
+            });
+            root.close();
         } catch (IOException e) {
             System.out.println(e.toString());
         }
-        medias = new ArrayList<Path>();
-        root.forEach(p -> {
-            if (!p.getFileName().toString().startsWith("00_")){
-                medias.add(p);
-            }
-        });
         medias.sort((a, b) -> WallpaperUtil.pathNameCompare(a.getFileName(), b.getFileName())); // 直接沿用有何不可 OwO
         current = (certainPath != null) ? medias.indexOf(certainPath) : 0;
     }
@@ -77,15 +76,17 @@ public class MediaOperator {
         boolean hasProcessing = false;
         boolean hasComplete = false;
         try {
-            for (var p : Files.newDirectoryStream(rootPath, "*.{mp3,wav,flac}")){
-                var tmp = p.getFileName().toString();
-                if (tmp.startsWith("00_0")){
-                    hasComplete = true;
-                    complete = p;
-                }
-                else if (tmp.startsWith("00_1")){
-                    hasProcessing = true;
-                    processing = p;
+            try (var dirStream = Files.newDirectoryStream(rootPath, "*.{mp3,wav}")){
+                for (var p : dirStream){
+                    var tmp = p.getFileName().toString();
+                    if (tmp.startsWith("00_0")){
+                        hasComplete = true;
+                        complete = p;
+                    }
+                    else if (tmp.startsWith("00_1")){
+                        hasProcessing = true;
+                        processing = p;
+                    }
                 }
             }
         } catch (IOException e) {
@@ -386,7 +387,7 @@ public class MediaOperator {
     public void importAWholeMusicFolder(Path folder){
         new Thread(() -> {
             try {
-                var root = Files.newDirectoryStream(folder, "*.{mp3,wav,flac}");
+                var root = Files.newDirectoryStream(folder, "*.{mp3,wav}");
                 var service = Executors.newCachedThreadPool();
                 var calls = new ArrayList<Callable<Boolean>>();
                 WallpaperUtil.resetSerialNumber(medias.size() + 1);
@@ -406,27 +407,28 @@ public class MediaOperator {
 
     /** 清除所有預設音樂 */
     public void clean(){
-        DirectoryStream<Path> root = null;
-        try {
-            root = Files.newDirectoryStream(rootPath, "*.{mp3,wav,flac}");
+        try { // use try-with-resource
+            try (var root = Files.newDirectoryStream(rootPath, "*.{mp3,wav}")){
+                for (var p : root){
+                    if (p.getFileName().toString().startsWith("00_")){
+                        System.out.println("Clean : " + p);
+                        p.toFile().delete();
+                    }
+                }
+            }
         } catch (IOException e) {
             System.out.println(e.toString());
-        }
-        for (var p : root){
-            if (p.getFileName().toString().startsWith("00_")){
-                System.out.println("Clean : " + p);
-                p.toFile().delete();
-            }
         }
     }
     
     public static void cleanDefault(){
         try {
-            var root = Files.newDirectoryStream(WallpaperPath.DEFAULT_MUSIC_PATH, "*.{mp3,wav,flac}");
-            for (var p : root){
-                if (p.getFileName().toString().startsWith("00_")){
-                    System.out.println("Clean : " + p);
-                    p.toFile().delete();
+            try (var root = Files.newDirectoryStream(WallpaperPath.DEFAULT_MUSIC_PATH, "*.{mp3,wav}")){
+                for (var p : root){
+                    if (p.getFileName().toString().startsWith("00_")){
+                        System.out.println("Clean : " + p);
+                        p.toFile().delete();
+                    }
                 }
             }
         } catch (IOException e) {

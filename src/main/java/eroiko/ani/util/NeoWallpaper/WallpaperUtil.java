@@ -1,6 +1,7 @@
 package eroiko.ani.util.NeoWallpaper;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,6 +31,14 @@ public class WallpaperUtil {
             return Integer.parseInt(m1.group(0)) - Integer.parseInt(m2.group(0));
         }
         return a.compareTo(b);
+    }
+
+    public static int pathDirAndNameCompare(Path a, Path b){
+        boolean aD = Files.isDirectory(a);
+        boolean bD = Files.isDirectory(b);
+        if (aD && !bD){ return -1; }
+        if (!aD && bD){ return 1; }
+        return a.toString().compareTo(b.toString()); // 這個不是比 Wallpaper 數字, 直接返回這個即可
     }
 
     // /* 取得各桌布的 Serial Number 直接建成 Map 比較有效率... */

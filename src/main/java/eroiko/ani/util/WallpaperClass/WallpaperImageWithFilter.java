@@ -37,6 +37,7 @@ public class WallpaperImageWithFilter implements WallpaperProto{
         System.out.println(Path.of(this.directory.toString()));
         wallpapers = new ArrayList<>();
         root.forEach(p -> wallpapers.add(new myPair<>(0, p)));
+        root.close();
         wallpapers.sort((a, b) -> WallpaperUtil.pathNameCompare(a.value.getFileName(), b.value.getFileName())); // 讓圖片照順序排佈
         size = wallpapers.size();
         length = wallpapers.size();

@@ -201,7 +201,7 @@ public class MusicWithSyamiko implements Initializable {
         if (customizeCompleteMusic.selectedProperty().get()){
             var tmp = new FileChooser();
             try {
-                tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));
+                tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3"));
                 MediaOperator.addNewCompleteToDefault(tmp.showOpenDialog(null).toPath());
             } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
         }
@@ -212,7 +212,7 @@ public class MusicWithSyamiko implements Initializable {
         if (customizeProcessingMusic.selectedProperty().get()){
             var tmp = new FileChooser();
             try {
-                tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));
+                tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3"));
                 MediaOperator.addNewProcessingToDefault(tmp.showOpenDialog(null).toPath());
             } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
         }

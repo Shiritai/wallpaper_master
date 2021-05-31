@@ -74,8 +74,10 @@ public class Wallpaper {
         WallpaperUtil.resetSerialNumber(); // 準備序列號種子, 填補空號的方式新增
         var numbers = new TreeSet<Integer>();
         try {
-            for (var p : Files.newDirectoryStream(WallpaperPath.getWallpaperPath())){
-                numbers.add(WallpaperUtil.getSerialNumberFromAWallpaper(p));
+            try (var dirStream = Files.newDirectoryStream(WallpaperPath.getWallpaperPath())){
+                for (var p : dirStream){
+                    numbers.add(WallpaperUtil.getSerialNumberFromAWallpaper(p));
+                }
             }
         } catch (IllegalArgumentException | IOException e1) {
             System.out.println(e1.toString());
@@ -97,11 +99,13 @@ public class Wallpaper {
         /* Clean preview directories */
         previewPathRec.forEach(p -> {
             try {
-                for (var pIn : Files.newDirectoryStream(p)){
-                    try {
-                        Files.delete(pIn);
-                    } catch (IOException e) {
-                        System.out.println("Previews does not exist, so we can't delete it.");
+                try (var dirStream = Files.newDirectoryStream(p)){
+                    for (var pIn : dirStream){
+                        try {
+                            Files.delete(pIn);
+                        } catch (IOException e) {
+                            System.out.println("Previews does not exist, so we can't delete it.");
+                        }
                     }
                 }
             } catch (IOException e) {
@@ -145,7 +149,9 @@ public class Wallpaper {
         wallpapers = new ArrayList<>();
 
         var fullArr = new ArrayList<Path>();
-        Files.newDirectoryStream(this.path, "*.{jpg,jpeg,png,gif}").forEach(p -> fullArr.add(p));
+        try (var dirStream = Files.newDirectoryStream(this.path, "*.{jpg,jpeg,png,gif}")){
+            dirStream.forEach(p -> fullArr.add(p));
+        }
         fullArr.sort(WallpaperUtil::pathNameCompare); // OwO
 
         if (!tmpTarget.exists()){ // 確認理想極端狀況 (只有 full)
@@ -155,7 +161,9 @@ public class Wallpaper {
         else {
             prevPath = tmpTarget.toPath();
             var prevArr = new ArrayList<Path>();
-            Files.newDirectoryStream(this.prevPath, "*.{jpg,jpeg,png,gif}").forEach(p -> prevArr.add(p));
+            try (var dirStream = Files.newDirectoryStream(this.prevPath, "*.{jpg,jpeg,png,gif}")){
+                dirStream.forEach(p -> prevArr.add(p));
+            }
             prevArr.sort(WallpaperUtil::pathNameCompare); // OwO
     
             int tmpSize = (fullArr.size() > prevArr.size()) ? fullArr.size() : prevArr.size();

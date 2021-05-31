@@ -177,8 +177,8 @@ public class MusicWithAkari implements Initializable {
         shuffleButton.setOpacity(0.5);
         shuffleButton.setOnMouseClicked(e -> activateShuffle());
 
-        addToSyamiko.setOnMouseClicked(e -> box.addCurrentMusic());
-        addToSyamikoText.setOnMouseClicked(e -> box.addCurrentMusic());
+        addToSyamiko.setOnMouseClicked(e -> activateAdd());
+        addToSyamikoText.setOnMouseClicked(e -> activateAdd());
         addToSyamikoDefault.setOnMouseClicked(e -> activateAddToDefault());
         addToSyamikoDefault.setOnScroll(e -> activateSwitchAddToDefault(e.getDeltaY()));
         addToSyamikoDefaultText.setOnMouseClicked(e -> activateAddToDefault());
@@ -275,7 +275,8 @@ public class MusicWithAkari implements Initializable {
                 case R -> activateRandom();
                 case S -> activateShuffle();
                 case L -> activateLoop();
-                case A -> activateAddToDefault();
+                case A -> activateAdd();
+                case PLUS -> activateAddToDefault();
                 case UP -> activateSwitchAddToDefault(1.);
                 case DOWN -> activateSwitchAddToDefault(-1.);
                 default -> {}
@@ -393,6 +394,14 @@ public class MusicWithAkari implements Initializable {
             case COMP -> "Comp";
             default -> "NULL";
         });
+    }
+
+    private void activateAdd(){
+        if (addToSyamikoText.getOpacity() != 1.){
+            addToSyamikoText.setOpacity(1.);
+            addToSyamikoText.setText("added");
+            box.addCurrentMusic();
+        }
     }
 
     private void activateAddToDefault(){
