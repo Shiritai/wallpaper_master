@@ -52,6 +52,10 @@ See [Wallpaper Master](https://github.com/Shiritai/wallpaper_master_application)
 
 9. 最小化功能追加
 
+## Known issue 已知問題
+
+1. 內嵌 File Explorer 直接開啟的功能在不同電腦上的可用性未知
+
 ## Wallpaper (進版圖)
 
 ![image](https://i.imgur.com/OqV05rM.jpg)
