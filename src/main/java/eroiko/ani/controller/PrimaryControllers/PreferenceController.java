@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.util.ResourceBundle;
 
 import eroiko.ani.util.MediaClass.MediaOperator;
-import eroiko.ani.util.Method.SourceRedirector;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -57,7 +56,7 @@ public class PreferenceController implements Initializable {
             var tmp = new FileChooser();
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));
-                MediaOperator.playBox.addNewCompleteToDefault(tmp.showOpenDialog(null).toPath());
+                MediaOperator.addNewCompleteToDefault(tmp.showOpenDialog(null).toPath());
             } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
         }
     }
@@ -68,7 +67,7 @@ public class PreferenceController implements Initializable {
             var tmp = new FileChooser();
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));
-                MediaOperator.playBox.addNewProcessingToDefault(tmp.showOpenDialog(null).toPath());
+                MediaOperator.addNewProcessingToDefault(tmp.showOpenDialog(null).toPath());
             } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
         }
     }
@@ -97,7 +96,7 @@ public class PreferenceController implements Initializable {
         });
         showWallpapers.setSelected(showWallpapersAfterCrawling.get());
         showWallpapers.selectedProperty().addListener((ov, old_val, new_val) -> {
-            SourceRedirector.showWallpapersAfterCrawling = new_val;
+            WallpaperController.showWallpapersAfterCrawling = new_val;
             PreferenceController.showWallpapersAfterCrawling.set(new_val);
         });
 

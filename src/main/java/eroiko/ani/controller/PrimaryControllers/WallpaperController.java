@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.ResourceBundle;
 import java.lang.Math;
 
+import eroiko.ani.MainApp;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.beans.property.BooleanProperty;
@@ -21,6 +22,7 @@ import javafx.scene.text.Text;
 public class WallpaperController implements Initializable{
     public static boolean quit;
     public static Path currentPath;
+    public static boolean showWallpapersAfterCrawling;
     
     public static final int REFRESH = 0;
     public static final int NEXT = 1;
@@ -82,6 +84,7 @@ public class WallpaperController implements Initializable{
         viewMode = wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_IMAGE_PATH);
         refresh();
         setMouseBehavior();
+        initFont();
     }
     
     private void setMouseBehavior(){
@@ -186,5 +189,11 @@ public class WallpaperController implements Initializable{
             wallpaperName.setText("Current Wallpaper : " + currentPath.getFileName().toString());
             wallpaperPosition.setText("Wallpaper Path : " + currentPath.toString());
         }
+    }
+
+    private void initFont(){
+        wallpaperName.setFont(MainApp.firaCode16);
+        wallpaperPosition.setFont(MainApp.firaCode16);
+        
     }
 }

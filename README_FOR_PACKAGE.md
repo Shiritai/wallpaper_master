@@ -1,30 +1,26 @@
 # Wallpaper Master
 
-`version 0.0.3 (2021/05/26)`
+`version 0.0.4 (2021/05/31)`
 
 ## Introduction 簡介
 
 My first Individual project! (For practice OwO)
 
-Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆們。
+Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆。僅需輸入關鍵字，等待下載完畢，選擇喜愛的桌布後就大功告成了。
 
-僅需簡單的輸入關鍵字，等待下載完畢，選擇喜愛的新老婆後便大功告成。
+桌布大師會驗證搜尋的正確性、下載的效率、檔案管理等過程，並且提供非常多額外功能，諸如將資料夾與其中的圖片預覽、篩選、整理至桌布資料夾，右鍵複製後的圖片可以直接存入桌布資料夾，還附上最小化至工作列，完整的音樂播放器，及多種快捷鍵支持等。功能眾多請盡情享受! (持續更新中...應該說暑假後持續更新)
 
-桌布大師會幫你驗證搜尋的正確性、下載的效率、檔案管理等過程，並且提供非常多額外功能，諸如將資料夾與其中的圖片預覽、篩選、整理至桌布資料夾，右鍵複製的所有圖片可以直接存入桌布資料夾，還附上最小化至工作列，完整的音樂撥放器，以及多種快捷鍵支持等，功能眾多請盡情享受。(持續更新中...應該說暑假後持續更新)
+## Release note (version 0.0.4)
 
-## Release note
+1. 新增 Music With Akari, 可以自由欣賞所有資料夾的音樂
 
-1. 完善 pom.xml 設定, 可以正常 package
+2. 完成 Music With Akari 與 Music With Syamiko 的連動, 可以輕鬆導入音樂至 Music With Syamiko
 
-2. 整合必要檔案, 可以一鍵運行
+3. Music With Syamiko 多項修正
 
-3. 調整檔案歸屬與標記
+4. 完善 File Explorer, 支援圖片與音樂的預覽, 且樹狀圖中所有檔案可以雙擊開啟
 
-4. 新增最小化系統提示, 可至 Preference 調整
-
-5. 更新部分功能
-
-6. 確保字型正常
+5. 字型全面完成維護
 
 ## Run 使用方法
 
@@ -44,30 +40,6 @@ Double click `run.vbs`, and the application should run properly.
 
 If you'd like to see the command window while running, run `start.bat` alternatively.
 
-## File Settings 檔案設定
-
-### Music Setting 音樂設定
-
-在 data/music 資料夾下有預設的音樂, 若想要更改音樂庫的內容 :
-
-1. 開啟 Wallpaper Master
-
-2. 開啟 Music With Syamiko
-
-3. 滑鼠點擊 Syamiko 的手, 將會出現資料夾圖示
-
-4. 點擊資料夾圖示, 匯入音樂資料夾
-
-To change music repository :
-
-1. Open Wallpaper Master
-
-2. Open Music With Syamiko
-
-3. Click Syamiko's hand, a folder icon should be revealed
-
-4. Click the folder icon to import your own musics from your music folder
-
 ## Packaging Environment 包裝環境
 
 Java|JRE|JVM
@@ -86,4 +58,4 @@ See `pom.xml` in `.jar` file
 
 ![image](https://i.imgur.com/OqV05rM.jpg)
 
-![image](https://i.imgur.com/HMhxR8K.jpg)
+![image](https://i.imgur.com/sktWxXr.jpg)

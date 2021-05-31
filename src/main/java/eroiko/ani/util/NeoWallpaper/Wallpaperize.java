@@ -17,7 +17,7 @@ public class Wallpaperize {
     private Path path;
     
     /** 
-     *  將當前資料夾 Wallpaperize, 並取得當前最高 {@code Serial number + 1} 方便再次使用 WallpaperUtil.gerSerialNumber
+     *  將當前資料夾 Wallpaperize, 並取得當前最高 {@code Serial number + 1} 方便再次使用 WallpaperUtil.gerSerialNumber()
      * @param toUseDefault : 是否將此資料夾設為預設 Wallpaper 資料夾
      */
     public Wallpaperize(Path path, boolean toUseDefault) throws IllegalArgumentException {

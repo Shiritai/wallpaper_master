@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 
 import eroiko.ani.MainApp;
 import eroiko.ani.util.MediaClass.MediaOperator;
+import eroiko.ani.util.Method.CarryReturn;
 import eroiko.ani.util.Method.TimeWait;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.beans.InvalidationListener;
@@ -36,7 +37,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-import javafx.scene.media.MediaView;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -87,8 +87,8 @@ public class MusicWithSyamiko implements Initializable {
     private static void play(MusicWithSyamiko th, int type, Path path){
         player.stop(); // 終止當前音樂
         player = switch (type) {
-            case PROCESSING -> new MediaPlayer(box.getDefaultProcessingMedia());
-            case COMPLETE -> new MediaPlayer(box.getDefaultCompleteMedia());
+            case PROCESSING -> new MediaPlayer(MediaOperator.getDefaultProcessingMedia());
+            case COMPLETE -> new MediaPlayer(MediaOperator.getDefaultCompleteMedia());
             case CURRENT -> new MediaPlayer(box.getCurrentMedia());
             case CERTAIN -> new MediaPlayer(new Media(path.toAbsolutePath().toString()));
             case RANDOM -> new MediaPlayer(box.getRandomMedia());
@@ -115,10 +115,10 @@ public class MusicWithSyamiko implements Initializable {
         System.out.println(box.getCurrentMediaName());
         if (type == PROCESSING){
             player.setCycleCount(MediaPlayer.INDEFINITE);
-            nameOfMusic.set(box.getDefaultProcessingName());
+            nameOfMusic.set(MediaOperator.getDefaultProcessingName());
         }
         else if (type == COMPLETE){
-            nameOfMusic.set(box.getDefaultCompleteName());
+            nameOfMusic.set(MediaOperator.getDefaultCompleteName());
         }
         else {
             nameOfMusic.set(box.getCurrentMediaName());
@@ -157,6 +157,7 @@ public class MusicWithSyamiko implements Initializable {
     private static Image pauseImage = null;
     private static Image emptyHeartImage = null;
     private static Image fullHeartImage = null;
+    private static final int lengthOfMusicName = 28;
     public static void openMusicWithSyamiko(){
         if (!openedWindow){
             try {
@@ -175,7 +176,6 @@ public class MusicWithSyamiko implements Initializable {
         }
     }
     /* Controller part */
-    @FXML private MediaView mediaBox;
     @FXML private Slider progressBar;
     @FXML private Slider volumeBar;
     @FXML private ImageView lastMusicButton;
@@ -202,7 +202,7 @@ public class MusicWithSyamiko implements Initializable {
             var tmp = new FileChooser();
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));
-                box.addNewCompleteToDefault(tmp.showOpenDialog(null).toPath());
+                MediaOperator.addNewCompleteToDefault(tmp.showOpenDialog(null).toPath());
             } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
         }
     }
@@ -213,14 +213,19 @@ public class MusicWithSyamiko implements Initializable {
             var tmp = new FileChooser();
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));
-                box.addNewProcessingToDefault(tmp.showOpenDialog(null).toPath());
+                MediaOperator.addNewProcessingToDefault(tmp.showOpenDialog(null).toPath());
             } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
         }
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        musicName.setOnMouseClicked(e -> musicName.setText(carryReturnStringAndStripTypeAndSerialNumber(box.getCurrentMediaName(), 25)));
+        /* Font settings */
+        musicName.setFont(MainApp.notoSansCJK22);
+        durationTime.setFont(MainApp.firaCode12);
+        currentTime.setFont(MainApp.firaCode12);
+
+        musicName.setOnMouseClicked(e -> musicName.setText(CarryReturn.stripTypeAndSerialNumberForMusicWithSyamiko(box.getCurrentMediaName(), lengthOfMusicName)));
         openedWindow = true;
         if (pauseImage == null){
             try {
@@ -286,7 +291,7 @@ public class MusicWithSyamiko implements Initializable {
         };
         playOrPauseImageSwitcher.addListener(chImage);
         
-        musicName.setText(carryReturnStringAndStripTypeAndSerialNumber(box.getCurrentMediaName(), 25));
+        musicName.setText(CarryReturn.stripTypeAndSerialNumberForMusicWithSyamiko(box.getCurrentMediaName(), lengthOfMusicName));
         Bindings.bindBidirectional(musicName.textProperty(), nameOfMusic, new StringConverter<String>(){
             @Override
             public String fromString(String arg0) {
@@ -294,7 +299,7 @@ public class MusicWithSyamiko implements Initializable {
             }
             @Override
             public String toString(String arg0) {
-                return carryReturnStringAndStripTypeAndSerialNumber(arg0, 25);
+                return CarryReturn.stripTypeAndSerialNumberForMusicWithSyamiko(arg0, lengthOfMusicName);
             }
         });
 
@@ -404,7 +409,7 @@ public class MusicWithSyamiko implements Initializable {
     private void activatePlay(){
         playOrPause();
         nameOfMusic.set(box.getCurrentMediaName());
-        musicName.setText(carryReturnStringAndStripTypeAndSerialNumber(box.getCurrentMediaName(), 25));
+        musicName.setText(CarryReturn.stripTypeAndSerialNumberForMusicWithSyamiko(box.getCurrentMediaName(), lengthOfMusicName));
     }
 
     private void activateNext(){
@@ -496,33 +501,4 @@ public class MusicWithSyamiko implements Initializable {
             box.importAWholeMusicFolder(tmp.showDialog(null).toPath());
         } catch (Exception ex){} // 表示沒做選擇, InvocationTargetException
     }
-    
-    public static String carryReturnStringAndStripTypeAndSerialNumber(String str, int length){
-        if (str != null){
-            if (str.startsWith("00_")){
-                str = str.substring(3);
-            }
-            String res = "";
-            var tmp = str.toCharArray();
-            int i = 0;
-            int currentSize = 0;
-            if (str.contains("_")){
-                while (tmp[i++] != '_'); // 掠過編號
-            }
-            int end = str.lastIndexOf('.');
-            for (; i < tmp.length && i < end; ++i){ // 掠過格式
-                currentSize += (Character.isAlphabetic(tmp[i])) ? 1 : 2;
-                if (currentSize >= length){
-                    if (!Character.isAlphabetic(tmp[i]) || Character.isWhitespace(tmp[i])){ // 保持英文單字完整性
-                        res += "\n";
-                        currentSize = 0;
-                    }
-                }
-                res += tmp[i];
-            }
-            return res;
-        }
-        return "<Ready to play>";
-    }
-
 }

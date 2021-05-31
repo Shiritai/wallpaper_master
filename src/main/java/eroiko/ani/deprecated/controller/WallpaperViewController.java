@@ -1,10 +1,10 @@
-package eroiko.ani.controller.PrimaryControllers;
+package eroiko.ani.deprecated.controller;
 
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
 
-import eroiko.ani.util.Method.SourceRedirector;
+import eroiko.ani.deprecated.SourceRedirector;
 import eroiko.ani.util.WallpaperClass.WallpaperImage;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

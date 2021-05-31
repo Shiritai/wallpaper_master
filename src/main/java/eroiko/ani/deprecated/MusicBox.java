@@ -1,8 +1,9 @@
-package eroiko.ani.util.MediaClass;
+package eroiko.ani.deprecated;
 
 import java.nio.file.Path;
 
-import eroiko.ani.controller.PrimaryControllers.MusicController;
+import eroiko.ani.deprecated.controller.MusicController;
+import eroiko.ani.util.MediaClass.MediaOperator;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.media.Media;
@@ -50,15 +51,14 @@ public class MusicBox {
             player.stop();
         }
         player = switch (type) {
-            case PROCESSING -> new MediaPlayer(mop.getDefaultProcessingMedia());
-            case COMPLETE -> new MediaPlayer(mop.getDefaultCompleteMedia());
+            case PROCESSING -> new MediaPlayer(MediaOperator.getDefaultProcessingMedia());
+            case COMPLETE -> new MediaPlayer(MediaOperator.getDefaultCompleteMedia());
             case CURRENT -> new MediaPlayer(mop.getCurrentMedia());
             case CERTAIN -> new MediaPlayer(new Media(path.toAbsolutePath().toString()));
             case RANDOM -> new MediaPlayer(mop.getRandomMedia());
             case NEXT -> new MediaPlayer(mop.getNextMedia());
             case PREVIOUS -> new MediaPlayer(mop.getPreviousMedia());
             default -> throw new IllegalArgumentException("Error type of image!");
-            // default -> new MediaPlayer(mop.getCurrentMedia());
         };
         if (type == PROCESSING){
             player.setCycleCount(MediaPlayer.INDEFINITE);

@@ -9,24 +9,20 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import eroiko.ani.controller.MainController;
 import eroiko.ani.util.Method.Dumper;
-import eroiko.ani.util.Method.SourceRedirector;
 import eroiko.ani.util.MyDS.myQuartet;
 import eroiko.ani.util.MyDS.myTriple;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
-/** 管理多線程搜尋 / 過濾 / 下載操作 */
+/** 管理多線程搜尋 / 下載操作 */
 public class CrawlerManager {
-    // private ProgressProperty prog = new ProgressProperty(Types.CRAWLER_ZERO_CHAN);
     private ArrayList<CrawlerBase> crawlers;
     /* Integer 的存在是為了確保多線程不會出錯 */
     private ArrayList<myQuartet<Integer, Integer, String, String>> wpLinks; // serial number, crawler type, preview link, full link
-    // private int previousPage;
     private int pages;
     private String [] keywords;
-    // public int prevCnt = 0; // 紀錄 Preview 編號
-    // public int fullCnt = 0; // 紀錄 Full image 編號
     public final String prevSavePath;
     public final String fullSavePath;
     /* Progress peeking */
@@ -294,7 +290,7 @@ public class CrawlerManager {
         } catch (Exception e){
             e.printStackTrace();
             System.out.println(e.toString());
-            if (!SourceRedirector.quit){
+            if (!MainController.quit){
                 System.err.println(e.toString());
             }
         }

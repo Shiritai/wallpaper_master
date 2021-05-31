@@ -1,10 +1,10 @@
-package eroiko.ani.controller.PrimaryControllers;
+package eroiko.ani.deprecated.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import eroiko.ani.deprecated.MusicBox;
 import eroiko.ani.util.MediaClass.MediaOperator;
-import eroiko.ani.util.MediaClass.MusicBox;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -42,7 +42,7 @@ public class MusicController implements Initializable{
             var tmp = new FileChooser();
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));
-                MediaOperator.playBox.addNewCompleteToDefault(tmp.showOpenDialog(null).toPath());
+                MediaOperator.addNewCompleteToDefault(tmp.showOpenDialog(null).toPath());
             } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
         }
     }
@@ -53,7 +53,7 @@ public class MusicController implements Initializable{
             var tmp = new FileChooser();
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));
-                MediaOperator.playBox.addNewProcessingToDefault(tmp.showOpenDialog(null).toPath());
+                MediaOperator.addNewProcessingToDefault(tmp.showOpenDialog(null).toPath());
             } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
         }
     }

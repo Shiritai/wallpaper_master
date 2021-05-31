@@ -12,11 +12,10 @@ import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.PrimaryControllers.*;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
 import eroiko.ani.util.Method.DoubleToStringProperty;
-import eroiko.ani.util.Method.SourceRedirector;
+import eroiko.ani.util.Method.Dumper;
 import eroiko.ani.util.Method.TimeWait;
 import eroiko.ani.util.MyDS.myPair;
 import eroiko.ani.util.NeoWallpaper.*;
-import eroiko.ani.util.WallpaperClass.*;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -124,7 +123,7 @@ public class MainController implements Initializable {
 
     @FXML
     void GoSearch(ActionEvent event) {
-        new TimeWait(2000);
+        new TimeWait(2000); // 等待 Queue 準備好
         if (searchQueue.getItems().size() > 0 && okToGo){
             okToGo = false;
             StartWalkingQueue();
@@ -148,9 +147,6 @@ public class MainController implements Initializable {
                     @Override
                     protected Void call() throws Exception {
                         for (int i = 0; i < size; ++i){
-                            if (isCancelled()){
-                                throw new InterruptedException();
-                            }
                             int mode = switch (data.get(i).value){
                                 case "Many (hundreds)" -> 6;
                                 case "Decent (about 200)" -> 2;
@@ -186,7 +182,7 @@ public class MainController implements Initializable {
                 && it.hasNext() && PreferenceController.showWallpapersAfterCrawling.get()){
                 new TimeWait(2000);
                 try {
-                    OpenWallpaper(false);
+                    OpenWallpaper(null);
                 } catch (IOException e1) {
                     System.out.println(e1.toString());
                 }
@@ -218,7 +214,6 @@ public class MainController implements Initializable {
         try {
             var stage = new Stage();
             stage.setTitle("Properties");
-            // stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/PreferenceWindow.fxml"))));
             stage.setScene(new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("PreferenceWindow.fxml").toUri().toURL())));
             stage.getIcons().add(MainApp.icon);
             stage.show();
@@ -239,7 +234,6 @@ public class MainController implements Initializable {
         try {
             var stage = new Stage();
             stage.setTitle("About");
-            // stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/AboutWindow.fxml"))));
             stage.setScene(new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("AboutWindow.fxml").toUri().toURL())));
             stage.getIcons().add(MainApp.icon);
             stage.setResizable(false);
@@ -264,19 +258,14 @@ public class MainController implements Initializable {
         var files = event.getDragboard().getFiles();
         var file = files.get(0).toPath();
         try {
-            if (WallpaperUtil.isImage(file)){
-                theWallpaper = new Wallpaper(file.getParent(), file);
-                hasChangedPreview.set(true);
-                imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
+            if (WallpaperUtil.isImage(file)){ // image
+                OpenWallpaper(new Wallpaper(file.getParent(), file));
             }
-            else {
-                theWallpaper = new Wallpaper(file);
-                hasChangedPreview.set(true);
-                imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
+            else { // directory
+                OpenWallpaper(new Wallpaper(file));
             }
-            event.consume();
         } catch (IOException e) {
-            return;
+            System.out.println(e.toString());
         }
     }
     
@@ -284,7 +273,6 @@ public class MainController implements Initializable {
     void PreviewImageDragOut(MouseEvent event) {
         Dragboard db = imagePreview.startDragAndDrop(TransferMode.ANY);
         var cb  = new ClipboardContent();
-        // cb.putImage(preview.getCurrentWallpaper());
         cb.putImage(theWallpaper.getCurrentFullImage());
         db.setContent(cb);
         event.consume();
@@ -302,16 +290,19 @@ public class MainController implements Initializable {
         var files = event.getDragboard().getFiles();
         var file = files.get(0).toPath();
         try {
-            if (WallpaperUtil.isImage(file)){ // image
-                OpenWallpaper(new Wallpaper(file.getParent(), file), true);
-                // OpenWallpaperViewWindow(new WallpaperImage(file.getParent().toAbsolutePath().toString(), false, file));
+            if (WallpaperUtil.isImage(file)){
+                theWallpaper = new Wallpaper(file.getParent(), file);
+                hasChangedPreview.set(true);
+                imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
             }
-            else { // directory
-                OpenWallpaper(new Wallpaper(file), true);
+            else {
+                theWallpaper = new Wallpaper(file);
+                hasChangedPreview.set(true);
+                imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
             }
-            // OpenWallpaperViewWindow(new WallpaperImage(file.toAbsolutePath().toString(), false));
+            event.consume();
         } catch (IOException e) {
-            System.out.println(e.toString());
+            return;
         }
     }
     
@@ -324,7 +315,6 @@ public class MainController implements Initializable {
             System.err.println(e1.toString());
         }
         quit = false;
-        SourceRedirector.quit = quit;
         new TerminalThread(pipIn, terminalThread, Terminal_out, quit);
         System.out.println("@2021/05/01 by Eroiko\n" + "GUI Terminal is activated!" + "\nUse Ctrl + C to cancel the terminal, and Ctrl + L to clear the text.");
     }
@@ -338,7 +328,6 @@ public class MainController implements Initializable {
         if (!quit){
             System.out.println("Closing GUI Terminal..."); // 在 GUI Terminal 上輸出
             quit = true;
-            SourceRedirector.quit = quit;
             notifyAll();
             try {
                 this.terminalThread.join(1000l);
@@ -350,6 +339,12 @@ public class MainController implements Initializable {
         else {
             System.out.println("Terminal has already been shutdown.");
         }
+    }
+
+    @FXML
+    void retryProcessingCrawler(ActionEvent event) {
+        crawlerThread.restart();
+        percentageMark.setText("restart crawler");
     }
 
     @FXML
@@ -368,118 +363,10 @@ public class MainController implements Initializable {
 
     @FXML
     void OpenMusicController(ActionEvent event) {
-        // OpenMusicWindow();
-        MusicWithSyamiko.openMusicWithSyamiko();;
+        MusicWithSyamiko.openMusicWithSyamiko();
     }
     
-    /** Deprecated */
-    public void OpenMusicWindow(){
-        // tableOfBrowser.getSelectionModel().select(3); // 3 is the index of the tab
-        if (!MusicController.isActivating.get()){
-            try {
-                var stage = new Stage();
-                stage.setTitle("Music with Syamiko");
-                stage.setScene(new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("MusicWindow.fxml").toUri().toURL())));
-                // stage.setScene(new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/MusicWindow.fxml"))));
-                stage.getIcons().add(MainApp.icon);
-                stage.setResizable(false);
-                stage.setOnCloseRequest(e -> {
-                    MusicController.isActivating.set(false);
-                });
-                stage.show();
-            } catch (Exception e){
-                e.printStackTrace();
-                System.out.println(e.toString());
-                if (!quit){
-                    System.err.println(e.toString());
-                }
-            }
-        }
-        else {
-            new Alert(Alert.AlertType.INFORMATION, "You've already open Music with Syamiko :)").showAndWait();
-        }
-    }
-
-    /** Deprecated */
-    void OpenWallpaperViewWindow(WallpaperProto wp, int width, int height) {
-        WallpaperViewController.quit = quit;
-        int serialNumber = SourceRedirector.addWallpaper(wp);
-        try {
-            var stage = new Stage();
-            if (width != 0){
-                stage.setWidth(width);
-                stage.setHeight(height);
-            }
-            if (wp instanceof WallpaperImageWithFilter){
-                System.out.println("Open Wallpaper Filter...");
-                stage.setTitle("Wallpaper Filter");
-                var wallpaperScene = new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("WallpaperChooseWindow.fxml").toUri().toURL()));
-                // var wallpaperScene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperChooseWindow.fxml")));
-                wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-                    System.out.println("Meow!?");
-                    if (e.getCode() == KeyCode.RIGHT){
-                        System.out.println("Right");
-                        wp.getNextWallpaper();
-                    }
-                    else if (e.getCode() == KeyCode.LEFT){
-                        System.out.println("Left");
-                        wp.getPreviousWallpaper();
-                    }
-                    else if (e.getCode() == KeyCode.PLUS){
-                        System.out.println("Plus");
-                        wp.add();
-                    }
-                    else if (e.getCode() == KeyCode.MINUS){
-                        System.out.println("Minus");
-                        wp.delete();
-                    }
-                    e.consume();
-                });
-                stage.setScene(wallpaperScene);
-                stage.getIcons().add(MainApp.icon);
-                stage.setOnCloseRequest(e -> {
-                    SourceRedirector.popToQueue(serialNumber);
-                    SourceRedirector.deleteWallpaper(serialNumber);
-                });
-            }
-            else {
-                System.out.println("Open Wallpaper Viewer...");
-                stage.setTitle("Wallpaper Viewer");
-                var wallpaperScene = new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("WallpaperViewWindow.fxml").toUri().toURL()));
-                // var wallpaperScene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperViewWindow.fxml")));
-                wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-                    System.out.println("Meow!?");
-                    if (e.getCode() == KeyCode.RIGHT){
-                        System.out.println("Right");
-                        wp.getNextWallpaper();
-                    }
-                    else if (e.getCode() == KeyCode.LEFT){
-                        System.out.println("Left");
-                        wp.getPreviousWallpaper();
-                    }
-                    e.consume();
-                });
-                stage.setScene(wallpaperScene);
-                stage.getIcons().add(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/wallpaper79.png").toString()));
-                stage.setOnCloseRequest(e -> {
-                    SourceRedirector.deleteWallpaper(serialNumber);
-                });
-            }
-            stage.show();
-        } catch (Exception e){
-            e.printStackTrace();
-            System.out.println(e.toString());
-            if (!quit){
-                System.err.println(e.toString());
-            }
-        }
-    }
-    /** Deprecated */
-    void OpenWallpaperViewWindow(WallpaperImage wp) {
-        OpenWallpaperViewWindow(wp, 0, 0);
-    }
-    
-    void OpenWallpaper(Wallpaper wp, boolean deleteAfterClose) throws IOException{
+    void OpenWallpaper(Wallpaper wp) throws IOException{
         WallpaperController.quit = quit;
         int serialNumber = -1;
         if (wp != null){
@@ -491,13 +378,12 @@ public class MainController implements Initializable {
         }
         var fixedWp = wp;
         boolean isPreview = wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_IMAGE_PATH);
+        System.out.println("Is preview ? " + isPreview);
         final int fixedSerialNumber = serialNumber;
         var stage = new Stage();
         System.out.println("Open Neo Wallpaper Viewer...");
-        System.out.println(wp.isChanged.get());
         stage.setTitle("Neo Wallpaper Viewer");
         var wallpaperScene = new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("WallpaperWindow.fxml").toUri().toURL()));
-        // var wallpaperScene = new Scene(FXMLLoader.load(getClass().getClassLoader().getResource("eroiko/ani/view/WallpaperWindow.fxml")));
         wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (e.getCode() == KeyCode.RIGHT){
                 if (!fixedWp.isEmpty()){
@@ -527,22 +413,10 @@ public class MainController implements Initializable {
         });
         stage.setScene(wallpaperScene);
         stage.getIcons().add(MainApp.icon);
-        if (deleteAfterClose){
-            stage.setOnCloseRequest(e -> {
-                SourceRedirector.deleteWallpaper(fixedSerialNumber);
-                Wallpaper.appendToResultList(fixedSerialNumber);
-            });
-        }
-        else {
-            stage.setOnCloseRequest(e -> {
-                Wallpaper.appendToResultList(fixedSerialNumber);
-            });
-        }
+        stage.setOnCloseRequest(e -> {
+            Wallpaper.appendToResultList(fixedSerialNumber);
+        });
         stage.show();
-    }
-
-    void OpenWallpaper(boolean deleteAfterClose) throws IOException{
-        OpenWallpaper(null, deleteAfterClose);
     }
     
     @FXML
@@ -563,7 +437,7 @@ public class MainController implements Initializable {
 
     public void OpenFileExplorer(){
         try {
-            Runtime.getRuntime().exec("explorer /select," + theWallpaper.getCurrentFullPath());
+            Runtime.getRuntime().exec("explorer /select," + pathLabel.getText());
         } catch (IOException ex) {
             System.out.println(ex.toString());
             if (!quit){
@@ -601,18 +475,17 @@ public class MainController implements Initializable {
         okToGo = true;
         staticImagePreview = imagePreview;
         staticPathLabel = pathLabel;
-        // imagePreview.setImage(preview.getCurrentWallpaper());
         imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
 
         Terminal_out.setEditable(false);
 
         searchBar.setPromptText(">  Search Artwork");
-
-        terminalButtonDivider.setMinWidth(100);
+        
+        terminalButtonDivider.setMinWidth(120);
         
         downloadAmountChoice.getItems().addAll(modes[0], modes[1], modes[2]);
         downloadAmountChoice.setValue(modes[2]);
-        pathLabel.setText(" " + WallpaperPath.DEFAULT_DATA_PATH.toString()) ;
+        pathLabel.setText(" " + WallpaperPath.DEFAULT_DATA_PATH.toString());
         // mainPbar = new ProgressBar();
         hasChangedPreview.addListener((a, b, c) -> {
             pathLabel.setText(" " + theWallpaper.getCurrentFullPath().getParent().toAbsolutePath().toString());
@@ -631,13 +504,21 @@ public class MainController implements Initializable {
         initializeMouseEvents();
         initSearchQueue();
         initTreeView();
+        initFont();
+    }
+    
+    public void initFont(){
+        searchBar.setFont(MainApp.firaCode12);
+        pathLabel.setFont(MainApp.firaCode12);
+        Terminal_in.setFont(MainApp.firaCode12);
+        Terminal_out.setFont(MainApp.firaCode13);
     }
     
     public void initializeMouseEvents(){
         imagePreview.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2){
                 try {
-                    OpenWallpaper(theWallpaper, false);
+                    OpenWallpaper(theWallpaper);
                 } catch (IOException e1) {
                     System.out.println(e1.toString());
                 }
@@ -681,12 +562,15 @@ public class MainController implements Initializable {
             }
         });
         treeFileExplorer.setOnMouseClicked(e -> {
-            try {
-                treeViewSelected();
-            } catch (IOException e1) {
-                System.out.println(e1);
+            if (e.getClickCount() == 2){
+                try {
+                    treeViewSelected();
+                } catch (IOException e1) {
+                    System.out.println(e1);
+                }
             }
         });
+        // treeFileExplorer.setOnMouseDragged(arg0);
     }
     
     public void initializeKeyBoardShortcuts(){
@@ -893,9 +777,51 @@ public class MainController implements Initializable {
             viewImageTileTable.getChildren().addAll(list);
             scrollableTile.setContent(viewImageTileTable);
         }
-        else {
-            var iv = new ImageView(new Image(path.toFile().toURI().toString()));
-            scrollableTile.setContent(iv);
+        else { // 真正的 FileExplorer 因此完善 OwO
+            if (Dumper.isImage(path)){
+                var iv = new ImageView(new Image(path.toFile().toURI().toString()));
+                iv.setOnMouseClicked(e -> {
+                    if (e.getClickCount() == 2){
+                        try {
+                            OpenWallpaper(new Wallpaper(path.getParent(), path));
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                });
+                scrollableTile.setContent(iv);
+            }
+            else if (Dumper.isMusic(path)) {
+                MusicWithAkari.openMusicWithAkari(path);
+            }
+            else {
+                var openFileThread = new Thread(() -> {
+                    try {
+                        var process = Runtime.getRuntime().exec("cmd /C " + path.toAbsolutePath());
+                        var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+                        var output = new StringBuilder();
+                        String tmpStr;
+                        while ((tmpStr = reader.readLine()) != null){
+                            output.append(tmpStr);
+                        }
+                        int exitVal = process.waitFor();
+                        if (exitVal == 0){
+                            System.out.println("execute successfully");
+                            System.out.println(output);
+                            if (!quit){
+                                System.err.println(output);
+                            }
+                        }
+                        else {
+                            System.out.println("execute failed with exit code : " + exitVal);
+                        }
+                    } catch (Exception ex){
+                        ex.printStackTrace();
+                    }
+                });
+                openFileThread.setDaemon(true);
+                openFileThread.start();
+            }
         }
 
         scrollableTile.setPannable(true);

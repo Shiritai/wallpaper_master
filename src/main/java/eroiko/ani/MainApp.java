@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
-// import java.awt.Font;
 
 import eroiko.ani.controller.MainController;
 import eroiko.ani.controller.PrimaryControllers.MusicWithSyamiko;
@@ -32,8 +31,8 @@ import javafx.stage.*;
 public class MainApp extends Application{
         
     public static boolean isTesting = true;
-    public static final String version = "version 0.0.3";
-    public static final String date = "2021/05/26";
+    public static final String version = "version 0.0.4";
+    public static final String date = "2021/05/31";
     public static Image icon;
     
     public static Stage mainStage;
@@ -44,9 +43,14 @@ public class MainApp extends Application{
     public static FXTrayIcon trayIcon;
 
     public static HostServices hostServices;
-    public static Font rainbow26;
-    public static Font firaCode16;
+    public static Font rainbow28;
     public static Font firaCode12;
+    public static Font firaCode13;
+    public static Font firaCode16;
+    public static Font firaCode20;
+    public static Font firaCodeBold24;
+    public static Font bookAntiquaItalic25;
+    public static Font notoSansCJK22;
 
     public static void main(String [] args){
         launch(args);
@@ -57,9 +61,14 @@ public class MainApp extends Application{
         /* System settings */
         hostServices = getHostServices();
         /* Load fonts */
-        rainbow26 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/rainyhearts.ttf").toFile()), 26.);
-        firaCode12 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Bold.ttf").toFile()), 12.);
-        firaCode16 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Bold.ttf").toFile()), 16.);
+        rainbow28 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/rainyhearts.ttf").toFile()), 28.);
+        firaCode12 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 12.);
+        firaCode13 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 13.);
+        firaCode16 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 16.);
+        firaCode20 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 20.);
+        firaCodeBold24 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Bold.ttf").toFile()), 24.);
+        bookAntiquaItalic25 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/Book Antiqua Italic.ttf").toFile()), 25.);
+        notoSansCJK22 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/NotoSansCJKtc-Regular.otf").toFile()), 22.);
 
         MainApp.mainStage = mainStage;
         Parent root = FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("MainWindow.fxml").toUri().toURL());
@@ -107,7 +116,7 @@ public class MainApp extends Application{
         mainStage.show();
 
         mainStage.setOnCloseRequest(e -> {
-            MediaOperator.cleanDefault();
+            MediaOperator.playBox.clean();
             Wallpaper.executeResultAndCleanPreview(); // 執行所有 Wallpaper 檔案操作!
             new Wallpaperize().execute();
             mainStage.close();
@@ -122,7 +131,7 @@ public class MainApp extends Application{
         menuItems[0].setOnAction(e -> mainStage.show());
         menuItems[1] = new MenuItem("Open Music with Syamiko");
         menuItems[1].setOnAction(e -> MusicWithSyamiko.openMusicWithSyamiko());
-        menuItems[2] = new MenuItem("Take clipboard images to wallpaper folder");
+        menuItems[2] = new MenuItem("Paste clipboard images to wallpaper folder");
         menuItems[2].setOnAction(e -> {
             var cb = Clipboard.getSystemClipboard().getFiles();
             try {

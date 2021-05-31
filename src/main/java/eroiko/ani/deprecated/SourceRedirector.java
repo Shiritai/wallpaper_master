@@ -1,4 +1,4 @@
-package eroiko.ani.util.Method;
+package eroiko.ani.deprecated;
 
 import java.nio.file.FileSystems;
 import java.nio.file.Path;

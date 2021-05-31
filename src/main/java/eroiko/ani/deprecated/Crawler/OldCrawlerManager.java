@@ -1,4 +1,4 @@
-package eroiko.ani.model.Crawler;
+package eroiko.ani.deprecated.Crawler;
 
 import java.io.IOException;
 // import java.nio.file.Path;
