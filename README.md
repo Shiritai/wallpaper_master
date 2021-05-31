@@ -44,7 +44,7 @@ See [Wallpaper Master](https://github.com/Shiritai/wallpaper_master_application)
 
 5. 字型維護
 
-6. 多處補齊資源關閉與函示參考, 減少多餘匿名函式
+6. 補齊資源關閉與函示參考, 減少多餘匿名函式
 
 7. 調整資料結構與其應用, 加速 File Explorer 讀取時間
 
