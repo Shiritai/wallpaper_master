@@ -32,25 +32,27 @@ Undoubtedly, my dear **vscode**!
 
 See [Wallpaper Master](https://github.com/Shiritai/wallpaper_master_application)
 
-## Release note (version 0.0.4)
+## Release note (version 0.1.1)
 
-1. 新增 Music With Akari, 可以在工作列 Mode 處開啟, 能自由在所有資料夾的音樂開啟音樂播放器
+1. 調整版本號規則, 最右位為細微調整, 中間位為大改後的版本, 最高位保留
 
-2. 完成 Music With Akari 與 Music With Syamiko 的連動, 可以輕鬆導入音樂至 Music With Syamiko
+2. 新增 Music With Akari, 可以在工作列 Mode 處開啟, 能自由在所有資料夾的音樂開啟音樂播放器
 
-3. Music With Syamiko 修正
+3. 完成 Music With Akari 與 Music With Syamiko 的連動, 可以輕鬆導入音樂至 Music With Syamiko
 
-4. 完善 File Explorer, 支援圖片與音樂的預覽, 且樹狀圖中所有檔案可以雙擊開啟
+4. 新增兩個音樂播放器的音量快捷鍵
 
-5. 字型維護
+5. 完善 File Explorer, 支援圖片與音樂的預覽, 且樹狀圖中所有檔案可以雙擊開啟
 
-6. 補齊資源關閉與函示參考, 減少多餘匿名函式
+6. 字型維護
 
-7. 調整資料結構與其應用, 加速 File Explorer 讀取時間
+7. 補齊資源關閉與函示參考, 減少多餘匿名函式
 
-8. 微調主視窗
+8. 調整資料結構與其應用, 加速 File Explorer 讀取時間
 
-9. 最小化功能追加
+9. 微調主視窗
+
+10. 最小化功能追加
 
 ## Known issue 已知問題
 

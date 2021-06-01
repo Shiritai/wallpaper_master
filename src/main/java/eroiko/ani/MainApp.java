@@ -31,8 +31,8 @@ import javafx.stage.*;
 public class MainApp extends Application{
         
     public static boolean isTesting = true;
-    public static final String version = "version 0.0.4";
-    public static final String date = "2021/05/31";
+    public static final String version = "version 0.1.1";
+    public static final String date = "2021/06/01";
     public static Image icon;
     
     public static Stage mainStage;

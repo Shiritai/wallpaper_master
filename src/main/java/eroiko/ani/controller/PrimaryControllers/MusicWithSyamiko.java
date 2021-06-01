@@ -316,11 +316,11 @@ public class MusicWithSyamiko implements Initializable {
         progressBar.setOnMouseDragged(e -> player.seek(Duration.seconds(progressBar.getValue())));
         progressBar.setOnMouseClicked(e -> player.seek(Duration.seconds(progressBar.getValue())));
         
-        volumeBar.setValue(volume.get() * 1000);
+        volumeBar.setValue(volume.get() * 500);
         InvalidationListener chVolume = new InvalidationListener() {
             @Override 
             public void invalidated(Observable o) {
-                player.setVolume(volumeBar.getValue() / 1000);
+                player.setVolume(volumeBar.getValue() / 500);
             }
         };
         volumeBar.valueProperty().addListener(chVolume);
@@ -336,8 +336,8 @@ public class MusicWithSyamiko implements Initializable {
                 case SPACE -> activatePlay();
                 case RIGHT -> activateNext();
                 case LEFT-> activatePrevious();
-                // case UP -> activateNext();
-                // case DOWN -> activatePrevious();
+                case UP -> activateVolumeUp();
+                case DOWN -> activateVolumeDown();
                 case R -> activateRandom();
                 case S -> activateShuffle();
                 case L -> activateLoop();
@@ -500,5 +500,31 @@ public class MusicWithSyamiko implements Initializable {
         try {
             box.importAWholeMusicFolder(tmp.showDialog(null).toPath());
         } catch (Exception ex){} // 表示沒做選擇, InvocationTargetException
+    }
+
+    private void activateVolumeUp(){
+        if (player == null){
+            return;
+        }
+        var tmp = volumeBar.getValue();
+        if (tmp + 1. > 100.){
+            volumeBar.valueProperty().set(100.);
+        }
+        else {
+            volumeBar.valueProperty().set(tmp + 1.);
+        }
+    }
+    
+    private void activateVolumeDown(){
+        if (player == null){
+            return;
+        }
+        var tmp = volumeBar.getValue();
+        if (tmp - 1. < 0.){
+            volumeBar.valueProperty().set(0.);
+        }
+        else {
+            volumeBar.valueProperty().set(tmp - 1.);
+        }
     }
 }

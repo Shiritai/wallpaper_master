@@ -5,9 +5,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import eroiko.ani.util.WallpaperClass.WallpaperProto;
+import eroiko.ani.deprecated.WallpaperClass.WallpaperImageWithFilter;
+import eroiko.ani.deprecated.WallpaperClass.WallpaperProto;
 import eroiko.ani.util.MyDS.myQuartet;
-import eroiko.ani.util.WallpaperClass.WallpaperImageWithFilter;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 

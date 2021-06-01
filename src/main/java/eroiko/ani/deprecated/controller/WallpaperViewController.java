@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.util.ResourceBundle;
 
 import eroiko.ani.deprecated.SourceRedirector;
-import eroiko.ani.util.WallpaperClass.WallpaperImage;
+import eroiko.ani.deprecated.WallpaperClass.WallpaperImage;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;

@@ -109,7 +109,7 @@ public class MusicWithAkari implements Initializable {
     /* Open window */
     private static Image playImage = null;
     private static Image pauseImage = null;
-    private static final int lengthOfMusicName = 40;
+    private static final int lengthOfMusicName = 30;
 
     public static void openMusicWithAkari(Path musicPath){
         temporaryPath = musicPath;
@@ -252,11 +252,11 @@ public class MusicWithAkari implements Initializable {
         progressBar.setOnMouseDragged(e -> player.seek(Duration.seconds(progressBar.getValue())));
         progressBar.setOnMouseClicked(e -> player.seek(Duration.seconds(progressBar.getValue())));
         
-        volumeBar.setValue(volume.get() * 1000);
+        volumeBar.setValue(volume.get() * 500);
         InvalidationListener chVolume = new InvalidationListener() {
             @Override 
             public void invalidated(Observable o) {
-                player.setVolume(volumeBar.getValue() / 1000);
+                player.setVolume(volumeBar.getValue() / 500);
             }
         };
         volumeBar.valueProperty().addListener(chVolume);
@@ -272,13 +272,15 @@ public class MusicWithAkari implements Initializable {
                 case SPACE -> activatePlay();
                 case RIGHT -> activateNext();
                 case LEFT-> activatePrevious();
+                case UP -> activateVolumeUp();
+                case DOWN-> activateVolumeDown();
                 case R -> activateRandom();
                 case S -> activateShuffle();
                 case L -> activateLoop();
                 case A -> activateAdd();
                 case PLUS -> activateAddToDefault();
-                case UP -> activateSwitchAddToDefault(1.);
-                case DOWN -> activateSwitchAddToDefault(-1.);
+                case PERIOD -> activateSwitchAddToDefault(1.);
+                case COMMA -> activateSwitchAddToDefault(-1.);
                 default -> {}
             }
         });
@@ -332,8 +334,8 @@ public class MusicWithAkari implements Initializable {
         addToSyamikoText.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("add this music to repo"));
         addToSyamiko.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
 
-        addToSyamikoDefault.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("add music to default..."));
-        addToSyamikoDefaultText.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("add music to default..."));
+        addToSyamikoDefault.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("add music to default"));
+        addToSyamikoDefaultText.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("add music to default"));
         addToSyamikoDefault.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
     }
     
@@ -399,7 +401,7 @@ public class MusicWithAkari implements Initializable {
     private void activateAdd(){
         if (addToSyamikoText.getOpacity() != 1.){
             addToSyamikoText.setOpacity(1.);
-            addToSyamikoText.setText("added");
+            addToSyamikoText.setText("Added");
             box.addCurrentMusic();
         }
     }
@@ -415,6 +417,32 @@ public class MusicWithAkari implements Initializable {
                 addToSyamikoDefaultText.setOpacity(1.);
             }
             default -> addToSyamikoDefaultText.setOpacity(0.5);
+        }
+    }
+
+    private void activateVolumeUp(){
+        if (player == null){
+            return;
+        }
+        var tmp = volumeBar.getValue();
+        if (tmp + 1. > 100.){
+            volumeBar.valueProperty().set(100.);
+        }
+        else {
+            volumeBar.valueProperty().set(tmp + 1.);
+        }
+    }
+    
+    private void activateVolumeDown(){
+        if (player == null){
+            return;
+        }
+        var tmp = volumeBar.getValue();
+        if (tmp - 1. < 0.){
+            volumeBar.valueProperty().set(0.);
+        }
+        else {
+            volumeBar.valueProperty().set(tmp - 1.);
         }
     }
 }

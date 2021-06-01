@@ -1,4 +1,4 @@
-package eroiko.ani.util.WallpaperClass;
+package eroiko.ani.deprecated.WallpaperClass;
 
 import java.nio.file.Path;
 
