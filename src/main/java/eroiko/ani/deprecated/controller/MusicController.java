@@ -19,8 +19,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.media.MediaView;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-// import javafx.util.Duration;
 
+/** {@code <deprecated>} */
+@Deprecated
 public class MusicController implements Initializable{
     
     public static BooleanProperty isActivating = new SimpleBooleanProperty(false);

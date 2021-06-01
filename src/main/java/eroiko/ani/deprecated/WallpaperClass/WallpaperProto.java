@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import javafx.scene.image.Image;
 
 /** {@code <deprecated>} */
+@Deprecated
 public interface WallpaperProto {
     public void add(int certainNumber);
     public void add();

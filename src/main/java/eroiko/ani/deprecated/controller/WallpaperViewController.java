@@ -16,7 +16,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-/** deprecated */
+/** {@code <deprecated>} */
+@Deprecated
 public class WallpaperViewController implements Initializable{
     public static boolean quit;
     public static Path currentPath;

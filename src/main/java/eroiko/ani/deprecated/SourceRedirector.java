@@ -11,7 +11,8 @@ import eroiko.ani.util.MyDS.myQuartet;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 
-/** Deprecated */
+/** {@code <deprecated>} */
+@Deprecated
 public class SourceRedirector {
     /* 權宜用的類別 */
     public static final Path DEFAULT_DATA_PATH = FileSystems.getDefault().getPath("data").toAbsolutePath();

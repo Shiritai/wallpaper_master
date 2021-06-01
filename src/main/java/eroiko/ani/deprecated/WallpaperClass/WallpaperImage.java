@@ -14,6 +14,7 @@ import javafx.scene.image.Image;
 
 
 /** {@code <deprecated>} 實作類似 Iterator 的資料結構, 所有 get functions (除了 Current) 都會移動 Index */
+@Deprecated
 public class WallpaperImage implements WallpaperProto{
     public BooleanProperty isChanged;
 

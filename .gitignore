@@ -1,9 +1,9 @@
+target/*
+*.class
+*.jar
 *.log
 *.exe
 .vscode
 *\img
 data
 music
-*.jar
-*.class
-target

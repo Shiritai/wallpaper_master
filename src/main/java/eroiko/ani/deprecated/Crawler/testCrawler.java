@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.concurrent.Executors;
 
+/** {@code <deprecated>} */
+@Deprecated
 public class testCrawler {
     public static void main(String[] args) {
         var console = new Scanner(in);

@@ -17,7 +17,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
-/** deprecated */
+/** {@code <deprecated>} */
+@Deprecated
 public class WallpaperChooseController implements Initializable{
     public static boolean quit;
     public static Path currentPath;
@@ -121,30 +122,6 @@ public class WallpaperChooseController implements Initializable{
 
         choosePercentage.setOnMouseEntered(e -> choosePercentage.setOpacity(0.2));
         choosePercentage.setOnMouseExited(e -> choosePercentage.setOpacity(1.));
-
-        // stackPane.addEventHandler(KeyEvent.KEY_PRESSED, e -> {
-        //     System.out.println("Meow!?");
-        //     if (e.getCode() == KeyCode.RIGHT){
-        //         System.out.println("1");
-        //         wp.getNextWallpaper();
-        //     }
-        //     else if (e.getCode() == KeyCode.LEFT){
-        //         System.out.println("2");
-        //         wp.getLastWallpaper();
-        //     }
-        //     else if (e.getCode() == KeyCode.PLUS){
-        //         System.out.println("3");
-        //         wp.add();
-        //         view.setImage(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/no_image.png").toString()));
-        //     }
-        //     else if (e.getCode() == KeyCode.MINUS){
-        //         System.out.println("4");
-        //         wp.delete();
-        //         view.setImage(new Image(getClass().getClassLoader().getResource("eroiko/ani/img/no_image.png").toString()));
-        //     }
-        //     e.consume();
-        // });
-        // stackPane.requestFocus();
     }
 
     private void switchImage(int behavior){

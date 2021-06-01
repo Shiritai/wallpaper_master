@@ -1,14 +1,13 @@
 package eroiko.ani.deprecated.Crawler;
 
 import java.io.IOException;
-// import java.nio.file.Path;
 import java.util.concurrent.Executors;
 
 import eroiko.ani.controller.MainController;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
-// import eroiko.ani.util.WallpaperClass.WallpaperImage;
 
-/** Deprecated */
+/** {@code <deprecated>} */
+@Deprecated
 public class OldCrawlerManager implements Runnable {
     private boolean quit;
     private String keywords;

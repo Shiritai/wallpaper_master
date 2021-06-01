@@ -87,7 +87,7 @@ public class MainController implements Initializable {
     @FXML private TableColumn<myPair<String, String>, String> amount;
     /* About downloading processing */
     private Service<Void> crawlerThread;
-    private Service<Void> doDFS;
+    private Service<Void> doBFS;
     @FXML private ProgressBar mainPbar;
     @FXML private TextField nowProcessingText;
     @FXML private Label progressBarText;
@@ -734,14 +734,13 @@ public class MainController implements Initializable {
         }
     }
     
-    /* 採後序 */
     private void initTreeView(){
         var rootPath = Path.of(pathLabel.getText().stripLeading());
         var root = new TreeItem<>(new myPair<>(rootPath.getFileName().toString(), rootPath), WallpaperUtil.fetchIconUsePath(rootPath));
-        if (doDFS != null && doDFS.isRunning()){
-            doDFS.cancel();
+        if (doBFS != null && doBFS.isRunning()){
+            doBFS.cancel();
         }
-        doDFS = new Service<Void>(){
+        doBFS = new Service<Void>(){
             @Override
             protected Task<Void> createTask(){
                 return new Task<Void>(){
@@ -756,14 +755,14 @@ public class MainController implements Initializable {
                 };
             }
         };
-        doDFS.setOnSucceeded(e -> {
+        doBFS.setOnSucceeded(e -> {
             root.setExpanded(true);
             treeFileExplorer.setRoot(root);
             var str = (rootPath.toAbsolutePath().toString().length() < 30) ? rootPath.toString() : "~~/" + rootPath.getFileName().toString();
             System.out.println("Finish loading " + rootPath);
             percentageMark.setText("Finish loading " + str);
         });
-        doDFS.restart();
+        doBFS.restart();
     }
 
     private void initTreeDir(TreeItem<myPair<String, Path>> root){
@@ -777,18 +776,19 @@ public class MainController implements Initializable {
         }
     }
 
-    private TreeItem<myPair<String, Path>> postOrderTraverse(TreeItem<myPair<String, Path>> cur) throws IOException{
-        if (Files.isDirectory(cur.getValue().value)){
-            try (var dirStream = Files.newDirectoryStream(cur.getValue().value)){
-                for (var p : dirStream){
-                    /* 不非洲了 OwO... myPair 真的萬用 */
-                    cur.getChildren().add(postOrderTraverse(new TreeItem<>(new myPair<>(p.getFileName().toString(), p), WallpaperUtil.fetchIconUsePath(p))));
-                }
-            }
-        }
-        cur.getChildren().sort((a, b) -> WallpaperUtil.pathDirAndNameCompare(a.getValue().value, b.getValue().value));
-        return cur;
-    }
+    /* 採後續遍歷過於低效, 棄用之 */
+    // private TreeItem<myPair<String, Path>> postOrderTraverse(TreeItem<myPair<String, Path>> cur) throws IOException{
+    //     if (Files.isDirectory(cur.getValue().value)){
+    //         try (var dirStream = Files.newDirectoryStream(cur.getValue().value)){
+    //             for (var p : dirStream){
+    //                 /* 不非洲了 OwO... myPair 真的萬用 */
+    //                 cur.getChildren().add(postOrderTraverse(new TreeItem<>(new myPair<>(p.getFileName().toString(), p), WallpaperUtil.fetchIconUsePath(p))));
+    //             }
+    //         }
+    //     }
+    //     cur.getChildren().sort((a, b) -> WallpaperUtil.pathDirAndNameCompare(a.getValue().value, b.getValue().value));
+    //     return cur;
+    // }
 
     /** 採 TreeMap 排序優化 */
     private TreeItem<myPair<String, Path>> bfsSurface(TreeItem<myPair<String, Path>> cur) throws IOException{
