@@ -18,11 +18,11 @@ Java|JRE|JVM
 
 使用 Maven 管理, 並以 Maven Shade 包裝。
 
-詳見 `.jar` 檔裡的 `pom.xml`
+詳見 `pom.xml`
 
 Use Maven to manage project, package with Maven Shade.
 
-See `pom.xml` in `.jar` file.
+See `pom.xml`
 
 ## IDE
 
