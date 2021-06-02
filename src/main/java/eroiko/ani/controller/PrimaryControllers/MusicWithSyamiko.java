@@ -200,17 +200,19 @@ public class MusicWithSyamiko implements Initializable {
     void OpenMusicExplorerForComplete(ActionEvent event) {
         if (customizeCompleteMusic.selectedProperty().get()){
             var tmp = new FileChooser();
+            tmp.setTitle("Choose complete music");
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3"));
                 MediaOperator.addNewCompleteToDefault(tmp.showOpenDialog(null).toPath());
             } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
         }
     }
-
+    
     @FXML
     void OpenMusicExplorerForProcessing(ActionEvent event) {
         if (customizeProcessingMusic.selectedProperty().get()){
             var tmp = new FileChooser();
+            tmp.setTitle("Choose processing music");
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3"));
                 MediaOperator.addNewProcessingToDefault(tmp.showOpenDialog(null).toPath());
@@ -338,6 +340,7 @@ public class MusicWithSyamiko implements Initializable {
                 case LEFT-> activatePrevious();
                 case UP -> activateVolumeUp();
                 case DOWN -> activateVolumeDown();
+                case DIGIT0, NUMPAD0 -> { play(CURRENT); refresh(); }
                 case R -> activateRandom();
                 case S -> activateShuffle();
                 case L -> activateLoop();
@@ -381,7 +384,7 @@ public class MusicWithSyamiko implements Initializable {
         lastMusicButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("previous music"));
         lastMusicButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
 
-        loop.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("loop music"));
+        loop.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("keep playing music"));
         loop.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
 
         randomButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("random music"));
@@ -407,6 +410,11 @@ public class MusicWithSyamiko implements Initializable {
     }
     
     private void activatePlay(){
+        if (!currentTime.getText().equals("00:00") && currentTime.getText().equals(durationTime.getText())){
+            play(CURRENT);
+            refresh();
+            return;
+        }
         playOrPause();
         nameOfMusic.set(box.getCurrentMediaName());
         musicName.setText(CarryReturn.stripTypeAndSerialNumberForMusicWithSyamiko(box.getCurrentMediaName(), lengthOfMusicName));

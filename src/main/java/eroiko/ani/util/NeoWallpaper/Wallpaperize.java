@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
@@ -35,7 +36,7 @@ public class Wallpaperize {
     }
     
     /** make wallpapers to "wallpaperXX" format */
-    public int execute(){
+    public void execute(){
         WallpaperUtil.resetSerialNumber();
         try {
             try (var root = Files.newDirectoryStream(path, "*.{jpg,jpeg,png}")){
@@ -64,11 +65,65 @@ public class Wallpaperize {
                         );
                         wallpaperize.add(p.getFileName().toString()); // 也許未來有用
                     });
-                    return WallpaperUtil.peekSerialNumber();
                 }
             }
         } catch (IOException e) {}
-        return 0;
+    }
+
+    public void mergeWith(Path source){
+        try {
+            try (var root = Files.newDirectoryStream(path, "*.{jpg,jpeg,png}")){
+                if (root != null){
+                    WallpaperUtil.resetSerialNumber();
+                    var wallpaperList = new TreeMap<Integer, Path>();
+                    var inner = new ArrayList<Path>();
+                    root.forEach(p -> {
+                        try {
+                            wallpaperList.put(WallpaperUtil.getSerialNumberFromAWallpaper(p), p);
+                        } catch (IllegalArgumentException ie){
+                            inner.add(p); // not a WallpaperXX form
+                        }
+                    });
+                    /* merge inner and outer files */
+                    WallpaperUtil.resetSerialNumber();
+                    inner.forEach(p -> {
+                        while (wallpaperList.containsKey(WallpaperUtil.peekSerialNumber())){
+                            WallpaperUtil.passSerialNumber();
+                        }
+                        p.toFile().renameTo(
+                            new File(
+                                path.toAbsolutePath().toString() + 
+                                "/wallpaper" +
+                                WallpaperUtil.getSerialNumber() + 
+                                WallpaperUtil.getFileType(p)
+                            )
+                        );
+                        wallpaperize.add(p.getFileName().toString()); // 也許未來有用
+                    });
+                    var outer = new ArrayList<Path>();
+                    try (var sourceRoot = Files.newDirectoryStream(source, "*.{jpg,jpeg,png}")){
+                        sourceRoot.forEach(p -> outer.add(p));
+                    }
+                    outer.forEach(p -> {
+                        while (wallpaperList.containsKey(WallpaperUtil.peekSerialNumber())){
+                            WallpaperUtil.passSerialNumber();
+                        }
+                        try {
+                            Files.copy(p, Path.of(
+                                path.toAbsolutePath().toString() +
+                                "/wallpaper" +
+                                WallpaperUtil.getSerialNumber() + 
+                                WallpaperUtil.getFileType(p)
+                            ), StandardCopyOption.REPLACE_EXISTING
+                            );
+                        } catch (IOException ie){
+                            System.out.println(ie.toString());
+                        }
+                        wallpaperize.add(p.getFileName().toString()); // 也許未來有用
+                    });
+                }
+            }
+        } catch (IOException e) {}
     }
     
 }

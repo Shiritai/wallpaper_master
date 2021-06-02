@@ -1,5 +1,5 @@
-target/*
 *.class
+target
 *.jar
 *.log
 *.exe

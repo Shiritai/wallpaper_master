@@ -43,6 +43,7 @@ public class PreferenceController implements Initializable {
     void OpenFileChooser(ActionEvent event) {
         if (customizeBox.selectedProperty().get()){
             var tmp = new DirectoryChooser();
+            tmp.setTitle("Choose default wallpaper path");
             try {
                 WallpaperPath.updateUserWallpaperPath(tmp.showDialog(null).toPath());
                 savingDir.setText(WallpaperPath.getWallpaperPath().toString());
@@ -54,6 +55,7 @@ public class PreferenceController implements Initializable {
     public void OpenMusicExplorerForComplete(ActionEvent event) {
         if (customizeCompleteMusic.selectedProperty().get()){
             var tmp = new FileChooser();
+            tmp.setTitle("Choose complete music");
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));
                 MediaOperator.addNewCompleteToDefault(tmp.showOpenDialog(null).toPath());
@@ -65,6 +67,7 @@ public class PreferenceController implements Initializable {
     void OpenMusicExplorerForProcessing(ActionEvent event) {
         if (customizeProcessingMusic.selectedProperty().get()){
             var tmp = new FileChooser();
+            tmp.setTitle("Choose processing music");
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));
                 MediaOperator.addNewProcessingToDefault(tmp.showOpenDialog(null).toPath());

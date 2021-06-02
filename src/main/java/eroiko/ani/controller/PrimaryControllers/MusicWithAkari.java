@@ -273,7 +273,7 @@ public class MusicWithAkari implements Initializable {
                 case RIGHT -> activateNext();
                 case LEFT-> activatePrevious();
                 case UP -> activateVolumeUp();
-                case DOWN-> activateVolumeDown();
+                case DOWN -> activateVolumeDown();
                 case R -> activateRandom();
                 case S -> activateShuffle();
                 case L -> activateLoop();
@@ -281,6 +281,7 @@ public class MusicWithAkari implements Initializable {
                 case PLUS -> activateAddToDefault();
                 case PERIOD -> activateSwitchAddToDefault(1.);
                 case COMMA -> activateSwitchAddToDefault(-1.);
+                case DIGIT0, NUMPAD0 -> { play(CURRENT); refresh(); }
                 default -> {}
             }
         });
@@ -321,7 +322,7 @@ public class MusicWithAkari implements Initializable {
         lastMusicButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("previous music"));
         lastMusicButton.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
 
-        loop.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("loop music"));
+        loop.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("keep playing music"));
         loop.addEventFilter(MouseEvent.MOUSE_EXITED, e -> promptLabel.setText(""));
 
         randomButton.addEventFilter(MouseEvent.MOUSE_ENTERED, e -> promptLabel.setText("random music"));
@@ -340,6 +341,11 @@ public class MusicWithAkari implements Initializable {
     }
     
     private void activatePlay(){
+        if (!currentTime.getText().equals("00:00") && currentTime.getText().equals(durationTime.getText())){
+            play(CURRENT);
+            refresh();
+            return;
+        }
         playOrPause();
         nameOfMusic.set(box.getCurrentMediaName());
         musicName.setText(CarryReturn.stripTypeAndSerialNumberForMusicWithAkari(box.getCurrentMediaName(), lengthOfMusicName));

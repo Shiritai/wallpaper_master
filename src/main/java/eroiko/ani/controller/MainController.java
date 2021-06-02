@@ -1,5 +1,6 @@
 package eroiko.ani.controller;
 
+import java.awt.Desktop;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
@@ -377,6 +378,7 @@ public class MainController implements Initializable {
     
     public static void OpenMusicWithAkari(){
         var tmp = new javafx.stage.FileChooser();
+        tmp.setTitle("Open music with Akari");
         try {
             tmp.getExtensionFilters().addAll(new javafx.stage.FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3"));
             MusicWithAkari.openMusicWithAkari(tmp.showOpenDialog(null).toPath());
@@ -475,10 +477,44 @@ public class MainController implements Initializable {
     
     public void WallpaperizeFolder(boolean toDefault){
         var tmp = new DirectoryChooser();
+        tmp.setTitle("Choose a folder to Wallpaperize");
         try {
             var wpi = new Wallpaperize(tmp.showDialog(null).toPath(), toDefault);
             wpi.execute();
         } catch (Exception e){} // 表示沒做選擇, InvocationTargetException    
+    }
+    
+    @FXML
+    void MergeToWallpaper(ActionEvent event) {
+        MergeToWallpaper(WallpaperPath.getWallpaperPath(), false);
+    }
+
+    @FXML
+    void MergeWallpaperFolders(ActionEvent event) {
+        try {
+            var tmp = new DirectoryChooser();
+            tmp.setTitle("Choose your main folder");
+            MergeToWallpaper(tmp.showDialog(null).toPath(), false);
+        } catch (Exception e){}
+    }
+
+    @FXML
+    void MergeWallpaperFoldersAsDefault(ActionEvent event) {
+        try {
+            var tmp = new DirectoryChooser();
+            tmp.setTitle("Choose your main folder");
+            MergeToWallpaper(tmp.showDialog(null).toPath(), true);
+        } catch (Exception e) {}
+    }
+    
+    public void MergeToWallpaper(Path origin, boolean toDefault){
+        try {
+            var tar = new DirectoryChooser();
+            tar.setTitle("Choose merge sources");
+            var target = tar.showDialog(null).toPath();
+            var wpi = new Wallpaperize(origin, toDefault);
+            wpi.mergeWith(target);
+        } catch (Exception e){} // 表示沒做選擇, InvocationTargetException        
     }
 
     @Override
@@ -582,19 +618,10 @@ public class MainController implements Initializable {
             }
         });
         treeFileExplorer.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 1){
-                var tmp = treeFileExplorer.getSelectionModel().getSelectedItem();
-                if (tmp != null){
-                    initTreeDir(tmp);
-                    tmp.setExpanded(true);
-                }
-            }
-            else if (e.getClickCount() == 2){
-                try {
-                    treeViewSelected();
-                } catch (IOException e1) {
-                    System.out.println(e1);
-                }
+            try {
+                treeViewSelected(e);
+            } catch (IOException e1) {
+                System.out.println(e1);
             }
         });
     }
@@ -758,7 +785,7 @@ public class MainController implements Initializable {
         doBFS.setOnSucceeded(e -> {
             root.setExpanded(true);
             treeFileExplorer.setRoot(root);
-            var str = (rootPath.toAbsolutePath().toString().length() < 30) ? rootPath.toString() : "~~/" + rootPath.getFileName().toString();
+            var str = (rootPath.toAbsolutePath().toString().length() < 30) ? rootPath.toString() : "*/" + rootPath.getFileName().toString();
             System.out.println("Finish loading " + rootPath);
             percentageMark.setText("Finish loading " + str);
         });
@@ -803,7 +830,7 @@ public class MainController implements Initializable {
         return cur;
     }
     
-    private void treeViewSelected() throws IOException{
+    private void treeViewSelected(MouseEvent me) throws IOException{
         Path path;
         TreeItem<myPair<String, Path>> dir;
         try {
@@ -815,6 +842,14 @@ public class MainController implements Initializable {
         }
         System.out.println(path);
         if (Files.isDirectory(path.toRealPath().toAbsolutePath())){
+            if (me.getClickCount() == 1){
+                var tmp = treeFileExplorer.getSelectionModel().getSelectedItem();
+                if (tmp != null){
+                    initTreeDir(tmp);
+                    tmp.setExpanded(true);
+                }
+            }
+
             viewImageTileTable.getChildren().clear();
             viewImageTileTable.setPadding(new Insets(5., 5., 5., 8.));
             viewImageTileTable.setVgap(8.);
@@ -849,6 +884,9 @@ public class MainController implements Initializable {
         }
         else { // 真正的 FileExplorer 因此完善 OwO
             if (Dumper.isImage(path)){
+                if (me.getClickCount() == 2){
+                    OpenWallpaper(new Wallpaper(path.getParent(), path));
+                }
                 var iv = new ImageView(new Image(path.toFile().toURI().toString()));
                 iv.setOnMouseClicked(e -> {
                     if (e.getClickCount() == 2){
@@ -862,12 +900,20 @@ public class MainController implements Initializable {
                 scrollableTile.setContent(iv);
             }
             else if (Dumper.isMusic(path)) {
-                MusicWithAkari.openMusicWithAkari(path);
+                if (me.getClickCount() == 2){
+                    MusicWithAkari.openMusicWithAkari(path);
+                }
             }
             else {
-                var openFileThread = new Thread(() -> cmdOpenPath(path));
-                openFileThread.setDaemon(true);
-                openFileThread.start();
+                if (me.getClickCount() == 2){
+                    try {
+                        Desktop.getDesktop().open(path.toFile());
+                    } catch (IOException ie){
+                        var openFileThread = new Thread(() -> cmdOpenPath(path));
+                        openFileThread.setDaemon(true);
+                        openFileThread.start();
+                    }
+                }
             }
         }
         scrollableTile.setPannable(true);

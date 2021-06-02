@@ -41,6 +41,7 @@ public class MusicController implements Initializable{
     void OpenMusicExplorerForComplete(ActionEvent event) {
         if (customizeCompleteMusic.selectedProperty().get()){
             var tmp = new FileChooser();
+            tmp.setTitle("Choose complete music");
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));
                 MediaOperator.addNewCompleteToDefault(tmp.showOpenDialog(null).toPath());
@@ -52,6 +53,7 @@ public class MusicController implements Initializable{
     void OpenMusicExplorerForProcessing(ActionEvent event) {
         if (customizeProcessingMusic.selectedProperty().get()){
             var tmp = new FileChooser();
+            tmp.setTitle("Choose processing music");
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));
                 MediaOperator.addNewProcessingToDefault(tmp.showOpenDialog(null).toPath());

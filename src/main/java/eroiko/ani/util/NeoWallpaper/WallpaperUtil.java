@@ -34,6 +34,9 @@ public class WallpaperUtil {
     }
 
     public static int pathDirAndNameCompare(Path a, Path b){
+        if (Dumper.isImage(a) && Dumper.isImage(b)){ // 確保 Wallpaper 顯示正確的編號
+            return pathNameCompare(a, b);
+        }
         boolean aD = Files.isDirectory(a);
         boolean bD = Files.isDirectory(b);
         if (aD && !bD){ return -1; }
@@ -96,7 +99,7 @@ public class WallpaperUtil {
         return seed++;
     }
     /** jump over this number */
-    public static void passSerialNumber(){ ++seed; }
+    public static int passSerialNumber(){ return seed++; }
     /** Peek current serial number without changing it */
     public static int peekSerialNumber(){
         return seed;
@@ -138,8 +141,4 @@ public class WallpaperUtil {
         tmp.paintIcon(null, tmpBufferImage.getGraphics(), 0, 0);
         return new ImageView(SwingFXUtils.toFXImage(tmpBufferImage, null));
     }
-
-    // public DirectoryStream<Path> tmpP(Path path){
-    //     return path.getFileSystem().getRootDirectories();
-    // }
 }
