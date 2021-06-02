@@ -1,4 +1,4 @@
-package eroiko.ani.util.MyDS;
+package eroiko.ani.deprecated.unused;
 
 public class myStringPair {
     public String key;

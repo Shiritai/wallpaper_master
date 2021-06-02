@@ -45,6 +45,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 
+/** 一肩扛起 Controller 與 player 的重擔 */
 public class MusicWithSyamiko implements Initializable {
     /* Player part */
     public static final int PROCESSING = 0;

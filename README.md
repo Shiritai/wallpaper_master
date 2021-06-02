@@ -50,7 +50,7 @@ See [Wallpaper Master](https://github.com/Shiritai/wallpaper_master_application)
 
 8. 字型維護
 
-9.  微調主視窗
+9. 微調主視窗
 
 10. 最小化功能追加與修改
 
@@ -63,6 +63,8 @@ See [Wallpaper Master](https://github.com/Shiritai/wallpaper_master_application)
 3. 調整資料結構與其應用, 加速 File Explorer 讀取時間
 
 4. 新增 Deprecated 標註
+
+5. 當前使用程式碼行數 (不包含 deprecated 類) 約 : 4730 行
 
 ## Known issue 已知問題
 

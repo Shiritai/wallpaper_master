@@ -3,6 +3,7 @@ package eroiko.ani.model.NewCrawler;
 // import eroiko.ani.util.SourceRedirector;
 
 /* Deprecated Class... */
+@Deprecated
 public class CrawlerThread {
     private CrawlerManager cw;
     public CrawlerThread(String folderPath, String [] keywords, Integer pages){
