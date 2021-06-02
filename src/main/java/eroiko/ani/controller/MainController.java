@@ -873,8 +873,18 @@ public class MainController implements Initializable {
                 var vbox = new VBox(iconView, name);
                 vbox.setAlignment(Pos.CENTER);
                 vbox.setOnMouseClicked(e -> {
-                    if (e.getClickCount() == 3){
-                        cmdOpenPath(p);
+                    if (e.getClickCount() == 2){
+                        if (Dumper.isImage(p)){
+                            try {
+                                OpenWallpaper(new Wallpaper(p.getParent(), p));
+                            } catch (IOException e1) { System.out.println("Failed to open wallpaper"); }
+                        }
+                        else if (Dumper.isMusic(p)){
+                            MusicWithAkari.openMusicWithAkari(p);
+                        }
+                        else {
+                            openFile(p);
+                        }
                     }
                 });
                 list.add(vbox);
@@ -906,13 +916,7 @@ public class MainController implements Initializable {
             }
             else {
                 if (me.getClickCount() == 2){
-                    try {
-                        Desktop.getDesktop().open(path.toFile());
-                    } catch (IOException ie){
-                        var openFileThread = new Thread(() -> cmdOpenPath(path));
-                        openFileThread.setDaemon(true);
-                        openFileThread.start();
-                    }
+                    openFile(path);
                 }
             }
         }
@@ -921,7 +925,17 @@ public class MainController implements Initializable {
         scrollableTile.setVbarPolicy(ScrollBarPolicy.ALWAYS);
     }
 
-    private void cmdOpenPath(Path path){
+    public void openFile(Path path){
+        try {
+            Desktop.getDesktop().open(path.toFile());
+        } catch (IOException ie){
+            var openFileThread = new Thread(() -> cmdOpenPath(path));
+            openFileThread.setDaemon(true);
+            openFileThread.start();
+        }
+    } 
+
+    public void cmdOpenPath(Path path){
         try {
             var process = Runtime.getRuntime().exec("cmd /C " + "\"" + path.toAbsolutePath() + "\"");
             var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));

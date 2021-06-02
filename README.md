@@ -40,17 +40,17 @@ See [Wallpaper Master](https://github.com/Shiritai/wallpaper_master_application)
 
 3. 完成 Music With Akari 與 Music With Syamiko 的配合, 可以輕鬆導入音樂至 Music With Syamiko
 
-4. 新增兩個音樂播放器的音量快捷鍵
+4. 新增兩個音樂播放器的音量快捷鍵, 並更改播放邏輯
 
 5. 完善 File Explorer, 支援圖片與音樂的預覽, 且樹狀圖中所有檔案可以雙擊開啟
 
-6. File Explorer 中圖片排序優化
+6. File Explorer 中圖片排序優化, 更改點擊邏輯
 
 7. 將 Wallpaperize 功能進行擴展, 新增 Merge wallpapers 功能, 可直接在工作列選用
 
 8. 字型維護
 
-9. 微調主視窗
+9.  微調主視窗
 
 10. 最小化功能追加與修改
 

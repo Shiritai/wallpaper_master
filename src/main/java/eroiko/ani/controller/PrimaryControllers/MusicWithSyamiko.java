@@ -99,8 +99,8 @@ public class MusicWithSyamiko implements Initializable {
         player.currentTimeProperty().addListener((a, b, c) -> progress.setValue(c.toSeconds()));
         player.volumeProperty().addListener(e -> volume.set(player.getVolume()));
         player.setVolume(volume.get());
-        if (PreferenceController.keepMusic){
-            player.setOnEndOfMedia(() -> {
+        player.setOnEndOfMedia(() -> {
+            if (PreferenceController.keepMusic){
                 if (PreferenceController.randomMusic){
                     play(RANDOM);
                 }
@@ -110,8 +110,8 @@ public class MusicWithSyamiko implements Initializable {
                 if (th != null){
                     th.refresh();
                 }
-            });
-        }
+            }
+        });
         System.out.println(box.getCurrentMediaName());
         if (type == PROCESSING){
             player.setCycleCount(MediaPlayer.INDEFINITE);

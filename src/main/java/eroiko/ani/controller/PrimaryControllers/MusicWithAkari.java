@@ -87,8 +87,8 @@ public class MusicWithAkari implements Initializable {
         player.currentTimeProperty().addListener((a, b, c) -> progress.setValue(c.toSeconds()));
         player.volumeProperty().addListener(e -> volume.set(player.getVolume()));
         player.setVolume(volume.get());
-        if (loop.getOpacity() == 1){
-            player.setOnEndOfMedia(() -> {
+        player.setOnEndOfMedia(() -> {
+            if (loop.getOpacity() == 1){
                 if (shuffleButton.getOpacity() == 1){
                     play(RANDOM);
                 }
@@ -96,8 +96,8 @@ public class MusicWithAkari implements Initializable {
                     play(NEXT);
                 }
                 refresh();
-            });
-        }
+            }
+        });
         System.out.println(box.getCurrentMediaName());
         nameOfMusic.set(box.getCurrentMediaName());
         player.setOnReady(() -> {
