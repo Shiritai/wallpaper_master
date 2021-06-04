@@ -7,7 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
-import java.util.TreeMap;
+import java.util.TreeSet;
 
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
@@ -442,6 +442,7 @@ public class MainController implements Initializable {
     void SwitchBackToImgPath(ActionEvent event) {
         try {
             theWallpaper = new Wallpaper();
+            pathLabel.setText(" " + theWallpaper.getCurrentFullPath().getParent());
             imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
         } catch (IOException e) {
             System.out.println(e.toString());
@@ -817,14 +818,12 @@ public class MainController implements Initializable {
     //     return cur;
     // }
 
-    /** 採 TreeMap 排序優化 */
     private TreeItem<myPair<String, Path>> bfsSurface(TreeItem<myPair<String, Path>> cur) throws IOException{
         if (cur != null && Files.isDirectory(cur.getValue().value)){
             try (var dirStream = Files.newDirectoryStream(cur.getValue().value)){
-                var map = new TreeMap<Path, TreeItem<myPair<String, Path>>>(WallpaperUtil::pathDirAndNameCompare);
-                dirStream.forEach(p -> map.put(p, new TreeItem<>(new myPair<>(p.getFileName().toString(), p), WallpaperUtil.fetchIconUsePath(p))));
                 cur.getChildren().clear(); // 先淨空當前內容
-                map.values().forEach(cur.getChildren()::add);
+                dirStream.forEach(p -> cur.getChildren().add(new TreeItem<>(new myPair<>(p.getFileName().toString(), p), WallpaperUtil.fetchIconUsePath(p))));
+                cur.getChildren().sort((a, b) -> WallpaperUtil.pathDirAndNameCompare(a.getValue().value, b.getValue().value));
             }
         }
         return cur;
@@ -855,11 +854,10 @@ public class MainController implements Initializable {
             viewImageTileTable.setVgap(8.);
             viewImageTileTable.setHgap(8.);
 
-            var paths = new ArrayList<Path>();
+            var paths = new TreeSet<Path>(WallpaperUtil::pathDirAndNameCompare);
             try (var dirStream = Files.newDirectoryStream(path)){
                 dirStream.forEach(e -> paths.add(e));
             }
-            paths.sort(WallpaperUtil::pathDirAndNameCompare);
 
             var list = new ArrayList<VBox>(paths.size());
             paths.forEach(p -> {

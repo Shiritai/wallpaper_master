@@ -16,32 +16,44 @@ public class WallpaperUtil {
     public static Pattern numberMatcher = Pattern.compile("\\d+");
     /* 比較同類型, 以編號區分的檔案, 使用正則表達式, 適用於 ArrayList, Set */
     public static int pathNameCompare(Path a, Path b){
-        Matcher m1 = numberMatcher.matcher(a.toString());
-        Matcher m2 = numberMatcher.matcher(b.toString());
+        Matcher m1 = numberMatcher.matcher(a.getFileName().toString());
+        Matcher m2 = numberMatcher.matcher(b.getFileName().toString());
         if (m1.find() && m2.find()){
             return Integer.parseInt(m1.group(0)) - Integer.parseInt(m2.group(0));
         }
+        else if (m1.find()){
+            return 1;
+        }
+        else if (m2.find()){
+            return -1;
+        }
         return a.toString().compareTo(b.toString());
     }
-
+    
     public static int pathNameCompare(String a, String b){
         Matcher m1 = numberMatcher.matcher(a);
         Matcher m2 = numberMatcher.matcher(b);
         if (m1.find() && m2.find()){
             return Integer.parseInt(m1.group(0)) - Integer.parseInt(m2.group(0));
         }
+        else if (m1.find()){
+            return 1;
+        }
+        else if (m2.find()){
+            return -1;
+        }
         return a.compareTo(b);
     }
 
     public static int pathDirAndNameCompare(Path a, Path b){
-        if (Dumper.isImage(a) && Dumper.isImage(b)){ // 確保 Wallpaper 顯示正確的編號
+        if (Dumper.isImage(a) && Dumper.isImage(b)){ // 比 Wallpaper 數字, 確保 Wallpaper 依正確的編號顯示
             return pathNameCompare(a, b);
         }
         boolean aD = Files.isDirectory(a);
         boolean bD = Files.isDirectory(b);
         if (aD && !bD){ return -1; }
         if (!aD && bD){ return 1; }
-        return a.toString().compareTo(b.toString()); // 這個不是比 Wallpaper 數字, 直接返回這個即可
+        return a.toString().compareTo(b.toString()); // 這個不是直接返回這個即可
     }
 
     // /* 取得各桌布的 Serial Number 直接建成 Map 比較有效率... */

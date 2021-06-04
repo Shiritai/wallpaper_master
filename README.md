@@ -1,8 +1,10 @@
 # Wallpaper Master
 
-My first Individual project! (For practice OwO)
+`version 0.1.2 (2021/06/04)`
 
-包裝好的資源詳見 [Wallpaper Master](https://github.com/Shiritai/wallpaper_master_application)
+## Introduction 簡介
+
+My first Individual project! (For practice OwO)
 
 Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆們。
 
@@ -10,29 +12,25 @@ Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆們。
 
 桌布大師會幫你驗證搜尋的正確性、下載的效率、檔案管理等過程，並且提供非常多額外功能，諸如將資料夾與其中的圖片預覽、篩選、整理至桌布資料夾，右鍵複製的所有圖片可以直接存入桌布資料夾，還附上最小化至工作列，完整的音樂撥放器，以及多種快捷鍵支持等，功能眾多請盡情享受。(持續更新中...應該說暑假後持續更新)
 
-## Environment
+## Run 使用方法
 
-Java|JRE|JVM
--|:-:|-
-15.0.2|15.0.2+7-27|15.0.2+7-27
+請先 [下載並安裝 Java SE 15](https://www.oracle.com/tw/java/technologies/javase-downloads.html) (大於或等於 15 皆可)
 
-使用 Maven 管理, 並以 Maven Shade 包裝。
+並在環境變數裡加入相應的 `JDK_DIRECTORY/bin` 後,
 
-詳見 `pom.xml`
+滑鼠點擊運行 `run.vbs` 即可。
 
-Use Maven to manage project, package with Maven Shade.
+若想在運行時看到實際的終端機, 請改運行 `start.bat`。
 
-See `pom.xml`
+Please [download and install Java SE 15 or newer](https://www.oracle.com/tw/java/technologies/javase-downloads.html)
 
-## IDE
+Then add `JDK_DIRECTORY/bin` to PATH.
 
-Undoubtedly, my dear **vscode**!
+Double click `run.vbs`, and the application should run properly.
 
-## Release version
+If you'd like to see the command window while running, run `start.bat` alternatively.
 
-See [Wallpaper Master](https://github.com/Shiritai/wallpaper_master_application)
-
-## Release note (version 0.1.1)
+## Release note (version 0.1.2)
 
 1. 調整版本號規則, 最右位為細微調整, 中間位為大改後的版本, 最高位保留
 
@@ -44,7 +42,7 @@ See [Wallpaper Master](https://github.com/Shiritai/wallpaper_master_application)
 
 5. 完善 File Explorer, 支援圖片與音樂的預覽, 且樹狀圖中所有檔案可以雙擊開啟
 
-6. File Explorer 中圖片排序優化, 更改點擊邏輯
+6. File Explorer 中圖片錯誤修正, 更改點擊邏輯
 
 7. 將 Wallpaperize 功能進行擴展, 新增 Merge wallpapers 功能, 可直接在工作列選用
 
@@ -68,7 +66,25 @@ See [Wallpaper Master](https://github.com/Shiritai/wallpaper_master_application)
 
 ## Known issue 已知問題
 
-1. 內嵌 File Explorer 直接開啟的功能在不同電腦上的可用性未知
+1. 內嵌 File Explorer 多數功能僅能在 Windows 下使用
+
+## Environment
+
+Java|JRE|JVM
+-|:-:|-
+15.0.2|15.0.2+7-27|15.0.2+7-27
+
+使用 Maven 管理, 並以 Maven Shade 包裝。
+
+詳見 `pom.xml`
+
+Use Maven to manage project, package with Maven Shade.
+
+See `pom.xml`
+
+## IDE
+
+Undoubtedly, my dear **vscode**!
 
 ## Wallpaper (進版圖)
 
