@@ -1,6 +1,6 @@
 # Wallpaper Master
 
-`version 0.1.2 (2021/06/04)`
+`version 0.1.3 (2021/06/05)`
 
 ## Introduction 簡介
 
@@ -30,43 +30,29 @@ Double click `run.vbs`, and the application should run properly.
 
 If you'd like to see the command window while running, run `start.bat` alternatively.
 
-## Release note (version 0.1.2)
+## Release note (version 0.1.3)
 
-1. 調整版本號規則, 最右位為細微調整, 中間位為大改後的版本, 最高位保留
+1. File Explorer 中圖片錯誤修正, 更改點擊邏輯
 
-2. 新增 Music With Akari, 可以在工作列 Window 處以及最小化右鍵處開啟, 或者雙擊 File Explorer 裡的音樂檔, 實現在所有資料夾裡開啟音樂播放器
+2. 改變主視窗大小與比例
 
-3. 完成 Music With Akari 與 Music With Syamiko 的配合, 可以輕鬆導入音樂至 Music With Syamiko
+3. Terminal 大幅強化, 可接受並執行數個 Linux-based 指令
 
-4. 新增兩個音樂播放器的音量快捷鍵, 並更改播放邏輯
-
-5. 完善 File Explorer, 支援圖片與音樂的預覽, 且樹狀圖中所有檔案可以雙擊開啟
-
-6. File Explorer 中圖片錯誤修正, 更改點擊邏輯
-
-7. 將 Wallpaperize 功能進行擴展, 新增 Merge wallpapers 功能, 可直接在工作列選用
-
-8. 字型維護
-
-9. 微調主視窗
-
-10. 最小化功能追加與修改
+4. Terminal 新增與 File Explorer 的連動
 
 ## Program Change Note 內部優化紀錄
 
 1. 補齊資源關閉
 
-2. 以函示參考減少多餘匿名函式
+2. 加強函式參考的應用
 
-3. 調整資料結構與其應用, 加速 File Explorer 讀取時間
+3. Terminal 為 OCP 與 java.nio 的練習成果
 
-4. 新增 Deprecated 標註
-
-5. 當前使用程式碼行數 (不包含 deprecated 類) 約 : 4730 行
+4. 當前使用程式碼行數 (不包含 deprecated 類) 約 : 4900 行
 
 ## Known issue 已知問題
 
-1. 內嵌 File Explorer 多數功能僅能在 Windows 下使用
+1. <代發現, wait to be found>
 
 ## Environment
 

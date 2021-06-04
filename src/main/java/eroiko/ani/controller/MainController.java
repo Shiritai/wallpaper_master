@@ -13,6 +13,7 @@ import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.PrimaryControllers.*;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
+import eroiko.ani.util.CLI.Console;
 import eroiko.ani.util.Method.DoubleToStringProperty;
 import eroiko.ani.util.Method.Dumper;
 import eroiko.ani.util.Method.TimeWait;
@@ -40,14 +41,12 @@ import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 public class MainController implements Initializable {
     /* Support variables */
-    // public static WallpaperImage preview;
     public static ImageView staticImagePreview;
     public static BooleanProperty hasChangedPreview = new SimpleBooleanProperty(false);
     public static Label staticPathLabel;
@@ -65,6 +64,7 @@ public class MainController implements Initializable {
     @FXML private TextArea Terminal_out = new TextArea();
     @FXML private TextField Terminal_in = new TextField();
     @FXML private SplitPane terminalButtonDivider;
+    public Console console;
 
     @FXML private ImageView imagePreview;
     
@@ -94,10 +94,7 @@ public class MainController implements Initializable {
     @FXML private Label progressBarText;
     @FXML private Text percentageMark;
 
-    /* Media */
-    @FXML private Rectangle lastMusicButton;
-    @FXML private Rectangle playMusicButton;
-    @FXML private Rectangle nextMusicButton;
+    private Path currentPath;
 
 
     @FXML
@@ -299,8 +296,9 @@ public class MainController implements Initializable {
                 imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
             }
             else {
-                pathLabel.setText(" " + file.toAbsolutePath().toString());
-                theWallpaper = new Wallpaper(file);
+                currentPath = file;
+                pathLabel.setText(" " + currentPath.toAbsolutePath());
+                theWallpaper = new Wallpaper(currentPath);
                 hasChangedPreview.set(true);
                 imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
             }
@@ -321,7 +319,10 @@ public class MainController implements Initializable {
         }
         quit = false;
         new TerminalThread(pipIn, terminalThread, Terminal_out, quit);
-        System.out.println("@2021/05/01 by Eroiko\n" + "GUI Terminal is activated!" + "\nUse Ctrl + C to cancel the terminal, and Ctrl + L to clear the text.");
+        System.out.println("Host name : " + MainApp.hostName + "\nCreate by Eroiko, terminal version 1.0 at 2021/06/05" +
+        "\nGUI Terminal is activated!" + "\nUse Ctrl + C to cancel the terminal, and Ctrl + L to clear the text." +
+        "\nSupport several linux-based commands such as\n\"ls\", \"cd <../children_path>\", \"mkdir/rm <dir_path>\", etc.\n");
+        console = new Console(currentPath, MainApp.hostName, true);
     }
 
     @FXML
@@ -330,6 +331,7 @@ public class MainController implements Initializable {
     }
     
     synchronized void killTerminal(){
+        console = null;
         if (!quit){
             System.out.println("Closing GUI Terminal..."); // 在 GUI Terminal 上輸出
             quit = true;
@@ -442,7 +444,8 @@ public class MainController implements Initializable {
     void SwitchBackToImgPath(ActionEvent event) {
         try {
             theWallpaper = new Wallpaper();
-            pathLabel.setText(" " + theWallpaper.getCurrentFullPath().getParent());
+            currentPath = WallpaperPath.DEFAULT_DATA_PATH;
+            pathLabel.setText(" " + currentPath);
             imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
         } catch (IOException e) {
             System.out.println(e.toString());
@@ -457,7 +460,7 @@ public class MainController implements Initializable {
 
     public void OpenFileExplorer(){
         try {
-            Runtime.getRuntime().exec("explorer /select," + pathLabel.getText());
+            Runtime.getRuntime().exec("explorer /select," + currentPath);
         } catch (IOException ex) {
             System.out.println(ex.toString());
             if (!quit){
@@ -535,14 +538,13 @@ public class MainController implements Initializable {
 
         searchBar.setPromptText(">  Search Artwork");
         
-        terminalButtonDivider.setMinWidth(120);
+        terminalButtonDivider.setMinWidth(150);
         
         downloadAmountChoice.getItems().addAll(modes[0], modes[1], modes[2]);
         downloadAmountChoice.setValue(modes[2]);
-        pathLabel.setText(" " + WallpaperPath.DEFAULT_DATA_PATH.toString());
-        // mainPbar = new ProgressBar();
+        currentPath = WallpaperPath.DEFAULT_DATA_PATH;
+        pathLabel.setText(" " + currentPath);
         hasChangedPreview.addListener((a, b, c) -> {
-            // pathLabel.setText(" " + theWallpaper.getCurrentFullPath().getParent().toAbsolutePath().toString());
             if (!theWallpaper.isEmpty()){
                 imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
             }
@@ -566,8 +568,8 @@ public class MainController implements Initializable {
     public void initFont(){
         searchBar.setFont(MainApp.firaCode12);
         pathLabel.setFont(MainApp.firaCode12);
-        Terminal_in.setFont(MainApp.firaCode12);
-        Terminal_out.setFont(MainApp.firaCode13);
+        Terminal_in.setFont(MainApp.firaCode13);
+        Terminal_out.setFont(MainApp.firaCode15);
         percentageMark.setFont(MainApp.firaCode12);
     }
     
@@ -628,7 +630,36 @@ public class MainController implements Initializable {
     }
     
     public void initializeKeyBoardShortcuts(){
-        Terminal_in.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> {
+        Terminal_in.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
+                if (console != null){
+                    console.setPath(currentPath);
+                    if (console.readConsole(Terminal_in.getText()) == 1){
+                        killTerminal(); // exit!
+                    }
+                    initTreeView();
+                }
+                else {
+                    System.out.println(Terminal_in.getText());
+                }
+                if (!quit){
+                    System.err.println(Terminal_in.getText());
+                }
+                Terminal_in.clear();
+                e.consume();
+            }
+            else if (new KeyCodeCombination(KeyCode.C, KeyCodeCombination.CONTROL_DOWN).match(e)){
+                System.out.println("GUI Terminal Quit : KeyBoard Interrupt");
+                killTerminal();
+                Terminal_in.clear();
+                e.consume();
+            }
+            else if (new KeyCodeCombination(KeyCode.L, KeyCodeCombination.CONTROL_DOWN).match(e)){
+                Terminal_out.setText("");
+                e.consume();
+            }
+        });
+        Terminal_out.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
                 System.out.println(Terminal_in.getText());
                 if (!quit){
@@ -648,27 +679,7 @@ public class MainController implements Initializable {
                 e.consume();
             }
         });
-        Terminal_out.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> {
-            if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
-                System.out.println(Terminal_in.getText());
-                if (!quit){
-                    System.err.println(Terminal_in.getText());
-                }
-                Terminal_in.clear();
-                e.consume();
-            }
-            else if (new KeyCodeCombination(KeyCode.C, KeyCodeCombination.CONTROL_DOWN).match(e)){
-                System.out.println("GUI Terminal Quit : KeyBoard Interrupt");
-                killTerminal();
-                Terminal_in.clear();
-                e.consume();
-            }
-            else if (new KeyCodeCombination(KeyCode.L, KeyCodeCombination.CONTROL_DOWN).match(e)){
-                Terminal_out.setText("");
-                e.consume();
-            }
-        });
-        searchBar.addEventFilter(KeyEvent.KEY_PRESSED, (e) -> {
+        searchBar.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
                 var tmp = searchBar.getText();
                 if (tmp.length() > 0){
@@ -763,7 +774,7 @@ public class MainController implements Initializable {
     }
     
     private void initTreeView(){
-        var rootPath = Path.of(pathLabel.getText().stripLeading());
+        var rootPath = currentPath;
         var root = new TreeItem<>(new myPair<>(rootPath.getFileName().toString(), rootPath), WallpaperUtil.fetchIconUsePath(rootPath));
         if (doBFS != null && doBFS.isRunning()){
             doBFS.cancel();
@@ -775,7 +786,7 @@ public class MainController implements Initializable {
                     @Override
                     protected Void call(){
                         var str = (rootPath.toAbsolutePath().toString().length() < 30) ? rootPath.toString() : "~~/" + rootPath.getFileName().toString();
-                        System.out.println("loading directory : " + rootPath);
+                        System.err.println("loading directory : " + rootPath);
                         percentageMark.setText("loading directory : " + str);
                         initTreeDir(root);
                         return null;
@@ -786,8 +797,8 @@ public class MainController implements Initializable {
         doBFS.setOnSucceeded(e -> {
             root.setExpanded(true);
             treeFileExplorer.setRoot(root);
-            var str = (rootPath.toAbsolutePath().toString().length() < 30) ? rootPath.toString() : "*/" + rootPath.getFileName().toString();
-            System.out.println("Finish loading " + rootPath);
+            var str = (rootPath.toAbsolutePath().toString().length() < 45) ? rootPath.toString() : "*/" + rootPath.getFileName().toString();
+            System.err.println("Finish loading " + rootPath);
             percentageMark.setText("Finish loading " + str);
         });
         doBFS.restart();
@@ -804,20 +815,7 @@ public class MainController implements Initializable {
         }
     }
 
-    /* 採後續遍歷過於低效, 棄用之 */
-    // private TreeItem<myPair<String, Path>> postOrderTraverse(TreeItem<myPair<String, Path>> cur) throws IOException{
-    //     if (Files.isDirectory(cur.getValue().value)){
-    //         try (var dirStream = Files.newDirectoryStream(cur.getValue().value)){
-    //             for (var p : dirStream){
-    //                 /* 不非洲了 OwO... myPair 真的萬用 */
-    //                 cur.getChildren().add(postOrderTraverse(new TreeItem<>(new myPair<>(p.getFileName().toString(), p), WallpaperUtil.fetchIconUsePath(p))));
-    //             }
-    //         }
-    //     }
-    //     cur.getChildren().sort((a, b) -> WallpaperUtil.pathDirAndNameCompare(a.getValue().value, b.getValue().value));
-    //     return cur;
-    // }
-
+    /* myPair 真的萬用 */
     private TreeItem<myPair<String, Path>> bfsSurface(TreeItem<myPair<String, Path>> cur) throws IOException{
         if (cur != null && Files.isDirectory(cur.getValue().value)){
             try (var dirStream = Files.newDirectoryStream(cur.getValue().value)){
@@ -872,7 +870,12 @@ public class MainController implements Initializable {
                 vbox.setAlignment(Pos.CENTER);
                 vbox.setOnMouseClicked(e -> {
                     if (e.getClickCount() == 2){
-                        if (Dumper.isImage(p)){
+                        if (Files.isDirectory(p)){
+                            currentPath = p;
+                            pathLabel.setText(" " + currentPath);
+                            initTreeView();
+                        }
+                        else if (Dumper.isImage(p)){
                             try {
                                 OpenWallpaper(new Wallpaper(p.getParent(), p));
                             } catch (IOException e1) { System.out.println("Failed to open wallpaper"); }

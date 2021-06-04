@@ -6,8 +6,6 @@ import java.util.regex.Pattern;
 
 import eroiko.ani.util.Method.Dumper;
 
-// import eroiko.ani.controller.MainController;
-
 /** {@code <deprecated>} */
 @Deprecated
 public class Crawler {
@@ -43,7 +41,7 @@ public class Crawler {
                     String.format("wallpaper%d%s", (isFull) ? Crawler.fullCnt++ : Crawler.prevCnt++, suffix))
                     // uri.toString())
                 );
-                new Dumper().dump(in, out);
+                Dumper.dump(in, out);
             } catch (IOException e){    
                 System.out.println("IO failed!");
                 successful = false;

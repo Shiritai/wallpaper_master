@@ -43,6 +43,7 @@ public class TerminalThread implements Runnable {
                         this.outPusher.read(b);
                         tmp.add(b);
                     } while (!tmp.endsWith("\n") && !tmp.endsWith("\n") && !this.quitFlag);
+
                     this.terminalOutArea.appendText(tmp.toString());
                 }
             } catch (IOException ie) {
@@ -50,5 +51,7 @@ public class TerminalThread implements Runnable {
                 System.err.println(ie.toString());
             }
         }
+
     }
+
 }

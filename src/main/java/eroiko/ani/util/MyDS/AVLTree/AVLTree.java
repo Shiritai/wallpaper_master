@@ -8,7 +8,7 @@ public class AVLTree<K extends Comparable<K>, V>{
         public V value;
         public Node left, right;
         public int height; // 以高度作為平衡因子
-        
+
         public Node(K key, V value){
             this.key = key;
             this.value = value;

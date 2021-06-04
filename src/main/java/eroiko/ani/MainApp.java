@@ -6,6 +6,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.Map;
 
 import com.dustinredmond.fxtrayicon.FXTrayIcon;
 
@@ -31,9 +32,10 @@ import javafx.stage.*;
 public class MainApp extends Application{
         
     public static boolean isTesting = true;
-    public static final String version = "version 0.1.1";
-    public static final String date = "2021/06/01";
+    public static final String version = "version 0.1.3";
+    public static final String date = "2021/06/05";
     public static Image icon;
+    public static String hostName;
     
     public static Stage mainStage;
     public static Scene mainScene;
@@ -46,6 +48,7 @@ public class MainApp extends Application{
     public static Font rainbow28;
     public static Font firaCode12;
     public static Font firaCode13;
+    public static Font firaCode15;
     public static Font firaCode16;
     public static Font firaCode20;
     public static Font firaCodeBold24;
@@ -60,10 +63,13 @@ public class MainApp extends Application{
     public void start (Stage mainStage) throws IOException{
         /* System settings */
         hostServices = getHostServices();
+        hostName = getComputerName();
+        System.out.println("Computer name : " + hostName);
         /* Load fonts */
         rainbow28 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/rainyhearts.ttf").toFile()), 28.);
         firaCode12 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 12.);
         firaCode13 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 13.);
+        firaCode15 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 15.);
         firaCode16 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 16.);
         firaCode20 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 20.);
         firaCodeBold24 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Bold.ttf").toFile()), 24.);
@@ -175,5 +181,15 @@ public class MainApp extends Application{
         trayIcon.insertSeparator(5);
         trayIcon.insertSeparator(9);
         trayIcon.addExitItem(true);
+    }
+
+    private String getComputerName(){
+        Map<String, String> env = System.getenv();
+        if (env.containsKey("COMPUTERNAME"))
+            return env.get("COMPUTERNAME");
+        else if (env.containsKey("HOSTNAME"))
+            return env.get("HOSTNAME");
+        else
+            return "Unknown Computer";
     }
 }
