@@ -50,7 +50,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 ## Known issue 已知問題
 
-1. <代發現, wait to be found>
+1. <待發現, wait to be found>
 
 ## Environment
 
