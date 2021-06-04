@@ -40,7 +40,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 4. Terminal 新增與 File Explorer 的連動
 
-## Program Change Note 內部優化紀錄
+## Program Change Note 內部變化紀錄
 
 1. 補齊資源關閉
 
