@@ -311,6 +311,10 @@ public class MainController implements Initializable {
     
     @FXML
     void startTerminal(ActionEvent event) {
+        startTerminal();
+    }
+    
+    void startTerminal(){    
         try {
             pipIn = new PipedInputStream();
             System.setOut(new PrintStream(new PipedOutputStream(pipIn), true));
@@ -320,8 +324,9 @@ public class MainController implements Initializable {
         quit = false;
         new TerminalThread(pipIn, terminalThread, Terminal_out, quit);
         System.out.println("Host name : " + MainApp.hostName + "\nCreate by Eroiko, terminal version 1.0 at 2021/06/05" +
-        "\nGUI Terminal is activated!" + "\nUse Ctrl + C to cancel the terminal, and Ctrl + L to clear the text." +
-        "\nSupport several linux-based commands such as\n\"ls\", \"cd <../children_path>\", \"mkdir/rm <dir_path>\", etc.\n");
+        "\nUse Ctrl + C to cancel the terminal, and Ctrl + L to clear the text." +
+        "\nSupport several linux-based commands such as\n\"ls\", \"cd <../dir_path>\", \"mkdir/rm <dir_path>\", etc." +
+        "\ntry key in \"meow\" and see what will happen\n");
         console = new Console(currentPath, MainApp.hostName, true);
     }
 
@@ -558,11 +563,12 @@ public class MainController implements Initializable {
         });
         nowProcessingText.setEditable(false);
         
+        initFont();
         initializeKeyBoardShortcuts();
         initializeMouseEvents();
         initSearchQueue();
         initTreeView();
-        initFont();
+        startTerminal();
     }
     
     public void initFont(){
@@ -634,9 +640,11 @@ public class MainController implements Initializable {
             if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
                 if (console != null){
                     console.setPath(currentPath);
+                    console.restoreCommandTraverse();
                     if (console.readConsole(Terminal_in.getText()) == 1){
                         killTerminal(); // exit!
                     }
+                    currentPath = console.getCurrentPath();
                     initTreeView();
                 }
                 else {
@@ -647,6 +655,22 @@ public class MainController implements Initializable {
                 }
                 Terminal_in.clear();
                 e.consume();
+            }
+            else if (e.getCode() == KeyCode.UP){
+                if (console != null){
+                    var tmp = console.getPreviousCommand();
+                    if (tmp != null){
+                        Terminal_in.setText(tmp);
+                    }
+                }
+            }
+            else if (e.getCode() == KeyCode.DOWN){
+                if (console != null){
+                    var tmp = console.getLaterCommand();
+                    if (tmp != null){
+                        Terminal_in.setText(tmp);
+                    }
+                }
             }
             else if (new KeyCodeCombination(KeyCode.C, KeyCodeCombination.CONTROL_DOWN).match(e)){
                 System.out.println("GUI Terminal Quit : KeyBoard Interrupt");
@@ -775,7 +799,9 @@ public class MainController implements Initializable {
     
     private void initTreeView(){
         var rootPath = currentPath;
-        var root = new TreeItem<>(new myPair<>(rootPath.getFileName().toString(), rootPath), WallpaperUtil.fetchIconUsePath(rootPath));
+        pathLabel.setText(" " + currentPath);
+        var rootName = (rootPath.getNameCount() == 0) ? rootPath.toString() : rootPath.getFileName().toString();
+        var root = new TreeItem<>(new myPair<>(rootName, rootPath), WallpaperUtil.fetchIconUsePath(rootPath));
         if (doBFS != null && doBFS.isRunning()){
             doBFS.cancel();
         }
@@ -936,7 +962,7 @@ public class MainController implements Initializable {
         }
     } 
 
-    public void cmdOpenPath(Path path){
+    public static void cmdOpenPath(Path path){
         try {
             var process = Runtime.getRuntime().exec("cmd /C " + "\"" + path.toAbsolutePath() + "\"");
             var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));

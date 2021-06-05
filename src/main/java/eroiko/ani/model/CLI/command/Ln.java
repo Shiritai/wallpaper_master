@@ -1,6 +1,7 @@
 package eroiko.ani.model.CLI.command;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -15,7 +16,7 @@ public class Ln extends Command {
     }
 
     @Override
-    public void execute() throws IllegalArgumentException {
+    public void execute() throws IllegalArgumentException, AccessDeniedException {
         if (dirName.toFile().exists() && !linkName.toFile().exists()){
             try {
                 Files.createSymbolicLink(linkName, dirName);

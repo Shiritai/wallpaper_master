@@ -34,11 +34,13 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 1. File Explorer 中圖片錯誤修正, 更改點擊邏輯
 
-2. 改變主視窗大小與比例
+2. 改變主視窗大小與比例, 鎖定不必要的大小調整
 
 3. Terminal 大幅強化, 可接受並執行數個 Linux-based 指令
 
 4. Terminal 新增與 File Explorer 的連動
+
+5. Add easter egg to GUI Terminal
 
 ## Program Change Note 內部變化紀錄
 

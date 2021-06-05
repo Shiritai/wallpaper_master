@@ -1,6 +1,7 @@
 package eroiko.ani.model.CLI.command;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -12,7 +13,7 @@ public class Rm extends Command{
     }
 
     @Override
-    public void execute() throws IllegalArgumentException{
+    public void execute() throws IllegalArgumentException, AccessDeniedException{
         Path target = thisDir.resolve(fileName);
         if (target.toFile().exists()){ // traverse and delete
             delete(target);

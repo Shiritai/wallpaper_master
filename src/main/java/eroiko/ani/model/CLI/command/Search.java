@@ -16,6 +16,7 @@ public class Search extends Command {
         search(thisDir);
     }
 
+    /** 未處理 AccessDeniedException */
     private void search(Path cur){
         if (cur != null){
             if (cur.getFileName().toString().contains(keyword)){

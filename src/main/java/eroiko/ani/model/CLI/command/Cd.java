@@ -1,5 +1,6 @@
 package eroiko.ani.model.CLI.command;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -11,7 +12,7 @@ public class Cd extends Command {
     }
 
     @Override
-    public void execute() throws IllegalArgumentException {
+    public void execute() throws IllegalArgumentException, AccessDeniedException {
         if (target.toString().equals("..")){
             thisDir = thisDir.getParent();
             if (thisDir == null){

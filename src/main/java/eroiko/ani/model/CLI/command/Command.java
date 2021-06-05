@@ -1,4 +1,5 @@
 package eroiko.ani.model.CLI.command;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 
 /**
@@ -9,7 +10,7 @@ public abstract class Command {
     protected static Path thisDir;
     protected static Path defaultDir;
     protected static boolean printRelative = false;
-    abstract public void execute() throws IllegalArgumentException;
+    abstract public void execute() throws IllegalArgumentException, AccessDeniedException;
 
     public static Path getCurrentPath(){
         thisDir = thisDir.normalize();
