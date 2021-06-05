@@ -2,6 +2,8 @@ package eroiko.ani.model.CLI;
 
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
+import java.text.DateFormat;
+import java.util.Date;
 
 import eroiko.ani.model.CLI.command.*;
 
@@ -13,7 +15,7 @@ public class Console {
         this.computerName = computerName;
         Command.setDefaultPath(root);
         Command.setPrintBehavior(printRelative);
-        System.out.println("# guiTerminal@" + computerName + " at " + Command.getCurrentPath());
+        System.out.println(toString());
     }
     
     public void setPath(Path root){
@@ -31,11 +33,11 @@ public class Console {
     
     public int readConsole(String cmd){
         if (!cmd.equals("")){
-            System.out.println("# guiTerminal@" + computerName + " at " + Command.getCurrentPath() + "\n@ " + cmd);
+            System.out.println(toString(cmd));
             History.addHistory(cmd);
         }
         else {
-            System.out.println("# guiTerminal@" + computerName + " at " + Command.getCurrentPath());
+            System.out.println(toString());
         }
         String [] cmdLine = cmd.split(" ");
         try {
@@ -61,5 +63,20 @@ public class Console {
 
         }
         return 0;
+    }
+
+    @Override
+    public String toString(){
+        return getInfo();
+    }
+    
+    public String toString(String cmd){
+        return getInfo() + "\n@ " + cmd;
+    }
+    
+    public String getInfo(){
+        return "# guiTerminal@" + computerName + " in " + 
+            Command.getCurrentPath() + " [" + 
+            DateFormat.getTimeInstance(DateFormat.MEDIUM).format(new Date()) + "]";
     }
 }

@@ -40,7 +40,9 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 4. Terminal 新增與 File Explorer 的連動
 
-5. Add easter egg to GUI Terminal
+5. Terminal 新增終端機的當前狀態顯示
+
+6. Add easter egg to GUI Terminal
 
 ## Program Change Note 內部變化紀錄
 
