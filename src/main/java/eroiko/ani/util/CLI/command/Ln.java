@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/** 有待在 Windows 上更好的實作, 目前這個指令只能在 Linux 下順利運行 */
 public class Ln extends Command {
     private final Path dirName;
     private final Path linkName;

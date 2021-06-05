@@ -30,7 +30,7 @@ public class Console {
                 case "rm" -> new Rm(cmdLine[1]).execute();
                 case "cat" -> new Cat(cmdLine[1]).execute();
                 case "ls" -> new Thread(() -> new Ls().execute()).start(); // 可能會很久, 且必定無異常, 因此另開新執行緒
-                case "ln" -> new Ln(cmdLine[1], cmdLine[2]).execute(); // 可用性未知
+                // case "ln" -> new Ln(cmdLine[1], cmdLine[2]).execute(); // 可用性未知
                 case "search" -> new Thread(() -> new Search(cmdLine[1]).execute()).start(); // 可能會很久, 且必定無異常, 因此另開新執行緒
                 // case "clear" -> throw new RuntimeException();
                 case "exit" -> { return 1; } // 終止程式
