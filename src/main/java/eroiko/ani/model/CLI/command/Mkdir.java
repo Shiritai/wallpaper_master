@@ -1,4 +1,4 @@
-package eroiko.ani.util.CLI.command;
+package eroiko.ani.model.CLI.command;
 
 public class Mkdir extends Command {
     private final String fileName;

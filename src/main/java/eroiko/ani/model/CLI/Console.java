@@ -1,8 +1,8 @@
-package eroiko.ani.util.CLI;
+package eroiko.ani.model.CLI;
 
 import java.nio.file.Path;
 
-import eroiko.ani.util.CLI.command.*;
+import eroiko.ani.model.CLI.command.*;
 
 public class Console {
     

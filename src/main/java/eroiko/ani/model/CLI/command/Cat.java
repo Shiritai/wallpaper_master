@@ -1,4 +1,4 @@
-package eroiko.ani.util.CLI.command;
+package eroiko.ani.model.CLI.command;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;

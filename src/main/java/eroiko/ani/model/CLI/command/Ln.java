@@ -1,4 +1,4 @@
-package eroiko.ani.util.CLI.command;
+package eroiko.ani.model.CLI.command;
 
 import java.io.IOException;
 import java.nio.file.Files;
