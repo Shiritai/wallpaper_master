@@ -1,3 +1,5 @@
+/** Created at 2021/06/05 */
+
 package eroiko.ani.model.CLI;
 
 import java.io.PrintStream;
