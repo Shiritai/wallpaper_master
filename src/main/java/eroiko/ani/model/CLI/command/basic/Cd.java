@@ -18,7 +18,8 @@ public class Cd extends Command {
     public void execute() throws IllegalArgumentException, AccessDeniedException {
         if (target.toString().equals("..")){
             thisDir = thisDir.getParent();
-            if (thisDir == null){
+            if (thisDir.getNameCount() == 0){
+                out.println("Is root!");
                 thisDir = defaultDir;
             }
         }

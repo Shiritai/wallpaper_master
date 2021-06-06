@@ -15,6 +15,7 @@ import eroiko.ani.model.CLI.command.basic.*;
 import eroiko.ani.model.CLI.command.external.*;
 import eroiko.ani.model.CLI.command.fundamental.*;
 import eroiko.ani.model.CLI.command.special.*;
+import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
 
 public class Console {
     
@@ -39,6 +40,7 @@ public class Console {
         this.userName = userName;
         Command.setDefaultPath(root);
         Command.setPrintBehavior(printRelative);
+        Command.setAllCommandPrintStream(consoleOut);
         consoleOut.println(toString());
         service = Executors.newCachedThreadPool();
         rq = new RequestCommand();
@@ -81,8 +83,8 @@ public class Console {
         }
         else {
             if (!cmd.equals("")){ //  when the user didn't press ENTER
-                consoleOut.println(toString(cmd));
                 History.addHistory(cmd);
+                consoleOut.println(toString(cmd));
             }
             String [] cmdLine = cmd.split(" ");
             try {
@@ -94,7 +96,7 @@ public class Console {
                     case "touch" -> new Touch(cmdLine[1], cmdLine[2]).execute();
                     case "rm" -> new Rm(rq, cmdLine[1]).execute();
                     case "cat" -> new Cat(cmdLine[1]).execute();
-                    case "ls" -> service.submit(() -> new Ls().execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
+                    case "ls" -> service.submit(() -> new Ls(WallpaperUtil::pathDirAndNameCompare).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
                     // case "ln" -> new Ln(cmdLine[1], cmdLine[2]).execute(); // 可用性未知
                     case "search" -> service.submit(() -> new Search(cmdLine[1]).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
                     case "clear" -> throw new ClearConsoleException(); // 之後可能會去實現

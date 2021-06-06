@@ -1,6 +1,6 @@
 # Wallpaper Master
 
-`version 0.1.3 (2021/06/05)`
+`version 0.1.3 (2021/06/06)`
 
 ## Introduction 簡介
 
