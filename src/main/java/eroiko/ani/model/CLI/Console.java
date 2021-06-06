@@ -1,5 +1,6 @@
 package eroiko.ani.model.CLI;
 
+import java.io.PrintStream;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 import java.text.DateFormat;
@@ -14,19 +15,43 @@ import eroiko.ani.model.CLI.command.special.*;
 
 public class Console {
     
+    private PrintStream consoleOut;
     public final String computerName;
     public final String userName;
     ExecutorService service;
     private RequestCommand rq;
     
-    public Console(Path root, String computerName, String userName, boolean printRelative){
+    /**
+     * Create a new Console
+     * <p> The console is based on java.nio so it can go to files which is over the assigned root
+     * @param consoleOut  PrintStream of this console
+     * @param root  assign the initial root path of this console
+     * @param computerName  assign this device's name
+     * @param userName  assign the user name
+     * @param printRelative {@code true} to print file path by its relative path or {@code false} to print by only its file name 
+     */
+    public Console(PrintStream consoleOut, Path root, String computerName, String userName, boolean printRelative){
+        this.consoleOut = consoleOut;
         this.computerName = computerName;
         this.userName = userName;
         Command.setDefaultPath(root);
         Command.setPrintBehavior(printRelative);
-        System.out.println(toString());
+        consoleOut.println(toString());
         service = Executors.newCachedThreadPool();
         rq = new RequestCommand();
+    }
+    
+    /**
+     * Create a new Console
+     * <p> The console is based on java.nio so it can go to files which is over the assigned root
+     * <p> Use default PrintStream : {@code System.out}
+     * @param root  assign initial the root path of this console
+     * @param computerName  assign this device's name
+     * @param userName  assign the user name
+     * @param printRelative {@code true} to print file path by its relative path or {@code false} to print by only its file name 
+     */
+    public Console(Path root, String computerName, String userName, boolean printRelative){
+        this(System.out, root, computerName, userName, printRelative);
     }
     
     public void setPath(Path root){
@@ -44,22 +69,22 @@ public class Console {
     
     /**
      * @param cmd the command to execute
-     * @throws ClearTerminalException when need to clear terminal space
+     * @throws ClearTerminalException when need to clear terminal text space
      */
-    public int readConsole(String cmd){
+    public int readLine(String cmd){
         if (rq.checkNeedRequest()){
             rq.takeCommand(cmd);
         }
         else {
             if (!cmd.equals("")){ //  when the user didn't press ENTER
-                System.out.println(toString(cmd));
+                consoleOut.println(toString(cmd));
                 History.addHistory(cmd);
             }
             String [] cmdLine = cmd.split(" ");
             try {
                 switch (cmdLine[0]){
                     /* Basic */
-                    case "" -> System.out.println(toString()); // this is when the user pressed ENTER
+                    case "" -> consoleOut.println(toString()); // this is when the user pressed ENTER
                     case "cd" -> new Cd(cmdLine[1]).execute();
                     case "mkdir" -> new Mkdir(cmdLine[1]).execute();
                     case "touch" -> new Touch(cmdLine[1], cmdLine[2]).execute();
@@ -72,7 +97,7 @@ public class Console {
                     case "clear" -> throw new ClearTerminalException(); // 之後可能會去實現
                     case "exit" -> { return 1; } // 終止程式
                     case "history" -> new History().execute();
-                    case "echo" -> System.out.println(cmd.substring(cmd.indexOf(' ') + 1)); // 若遇到無空白的情況, cmd.indexOf(' ') + 1 = 0, 表輸出 echo
+                    case "echo" -> consoleOut.println(cmd.substring(cmd.indexOf(' ') + 1)); // 若遇到無空白的情況, cmd.indexOf(' ') + 1 = 0, 表輸出 echo
                     /* Special */
                     case "wallpaper" -> {
                         var tmp = new String[cmdLine.length - 1];
@@ -98,17 +123,17 @@ public class Console {
                                 try {
                                     new Artwork(cmd.substring(cmd.indexOf(" ") + 1)).execute();
                                 } catch (IllegalArgumentException ile){
-                                    System.out.println(ile.getMessage() + "\nIllegal argument, please try again.");
+                                    consoleOut.println(ile.getMessage() + "\nIllegal argument, please try again.");
                                 }
                             }
                         });
                     }
-                    default -> System.out.println("Command not defined!");
+                    default -> consoleOut.println("Command not defined!");
                 }
             } catch (IllegalArgumentException ile){
-                System.out.println(ile.getMessage() + "\nIllegal argument, please try again.");
+                consoleOut.println(ile.getMessage() + "\nIllegal argument, please try again.");
             } catch (AccessDeniedException ae){
-                System.out.println(ae.getMessage() + "\nBad Access.");
+                consoleOut.println(ae.getMessage() + "\nBad Access.");
             }
         }
         return 0; // 正常執行指令
@@ -133,6 +158,6 @@ public class Console {
     public void cancel(){
         service.shutdownNow();
         service = Executors.newCachedThreadPool();
-        System.out.println("^C");
+        consoleOut.println("^C");
     }
 }

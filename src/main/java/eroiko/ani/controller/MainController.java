@@ -643,7 +643,7 @@ public class MainController implements Initializable {
                     console.setPath(currentPath);
                     console.restoreCommandTraverse();
                     try {
-                        if (console.readConsole(Terminal_in.getText()) == 1){
+                        if (console.readLine(Terminal_in.getText()) == 1){
                             killTerminal(); // exit!
                         }
                     } catch (ClearTerminalException cle){
