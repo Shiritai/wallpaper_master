@@ -1,4 +1,4 @@
-/** Created at 2021/06/05 */
+/** Created at 2021/06/05 by Eroiko */
 
 package eroiko.ani.model.CLI;
 
