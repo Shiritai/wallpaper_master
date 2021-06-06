@@ -15,6 +15,7 @@ import eroiko.ani.controller.PrimaryControllers.*;
 import eroiko.ani.model.CLI.Console;
 import eroiko.ani.model.CLI.CLIException.ClearConsoleException;
 import eroiko.ani.model.CLI.CLIException.ExitConsoleException;
+import eroiko.ani.model.CLI.CLIException.ShutdownSoftwareException;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
 import eroiko.ani.util.Method.DoubleToStringProperty;
 import eroiko.ani.util.Method.Dumper;
@@ -649,6 +650,8 @@ public class MainController implements Initializable {
                         Terminal_out.clear();
                     } catch (ExitConsoleException exit){
                         killTerminal(); // exit!
+                    } catch (ShutdownSoftwareException shutdown){
+                        Exit();
                     }
                     currentPath = console.getCurrentPath();
                     initTreeView();

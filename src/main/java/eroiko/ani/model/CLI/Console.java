@@ -74,10 +74,11 @@ public class Console {
     
     /**
      * @param cmd the command to execute
+     * @throws ShutdownSoftwareException when user try exit this console
      * @throws ClearConsoleException when need to clear terminal text space
      * @throws ExitConsoleException when user try exit this console
      */
-    public void readLine(String cmd){
+    public void readLine(String cmd) throws ShutdownSoftwareException{
         if (rq.checkNeedRequest()){
             rq.takeCommand(cmd);
         }
@@ -103,6 +104,7 @@ public class Console {
                     case "exit" -> throw new ExitConsoleException(); // 終止程式
                     case "history" -> new History().execute();
                     case "echo" -> consoleOut.println(cmd.substring(cmd.indexOf(' ') + 1)); // 若遇到無空白的情況, cmd.indexOf(' ') + 1 = 0, 表輸出 echo
+                    case "shutdown" -> throw new ShutdownSoftwareException();
                     /* Special */
                     case "meow" -> new Meow().execute();
                     case "cmd", "cmd.exe" -> service.submit(() -> new Cmd(cmd.substring(cmd.indexOf(' ') + 1)).execute());
