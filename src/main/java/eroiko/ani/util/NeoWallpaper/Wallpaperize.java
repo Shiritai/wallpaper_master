@@ -32,7 +32,6 @@ public class Wallpaperize {
 
     public Wallpaperize(){
         this.path = WallpaperPath.getWallpaperPath();
-        System.out.println("Ready to initialize wallpaper folder");
     }
     
     /** make wallpapers to "wallpaperXX" format */

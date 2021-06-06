@@ -156,7 +156,6 @@ public class CrawlerManager {
                     for (int mul = 0; mul < mulTimes; ++mul){
                         int m = mul;
                         calls.add(() -> {
-                            System.out.printf("Refresh progress : %f\n", progress.get());
                             container.add(cw.fetchImageLinks(thisPage * mulTimes + m - 3, service));
                             return true;
                         });
@@ -165,7 +164,6 @@ public class CrawlerManager {
                 /* 不支援多線程 */
                 else {
                     calls.add(() -> {
-                        System.out.printf("Refresh progress : %f\n", progress.get());
                         container.add(cw.fetchImageLinks(thisPage, service));
                         return true;
                     });
@@ -192,7 +190,8 @@ public class CrawlerManager {
                 }
                 container.clear();
             } catch (InterruptedException ie){
-                System.out.println(ie.toString());
+                // System.out.println(ie.toString());
+                service.shutdownNow();
             }
         }
         service.shutdown();
@@ -224,7 +223,8 @@ public class CrawlerManager {
         try {
             status = service.invokeAll(calls);
         } catch (InterruptedException e) {
-            System.out.println(e.toString());
+            service.shutdownNow();
+            // System.out.println(e.toString());
         }
         /* 等待結束 */
         int sizeOfStatus = status.size();
@@ -261,7 +261,8 @@ public class CrawlerManager {
         try {
             service.invokeAll(calls);
         } catch (InterruptedException e) {
-            System.out.println(e.toString());
+            service.shutdownNow();
+            // System.out.println(e.toString());
         }
         /* Do multi-thread-unsupported crawlers later */
         for (var wp : wpLinks){
@@ -278,12 +279,10 @@ public class CrawlerManager {
         }
         service.shutdown();
         while (!service.isShutdown()); // 等待關閉
-        System.out.println("Finish download stage (D)");
     }
 
     public void E_pushWallpaper(){
         progress.set(1.);
-        System.out.println("Change to view full!");
         System.out.println(Path.of(this.fullSavePath));
         try {
             Wallpaper.addNewWallpaper(new Wallpaper(Path.of(this.fullSavePath)));

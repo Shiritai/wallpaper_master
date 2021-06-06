@@ -40,9 +40,13 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 4. Terminal 新增與 File Explorer 的連動
 
-5. Terminal 新增終端機的當前狀態顯示
+5. Terminal 實現指令歷史查詢, 可使用方向鍵呼叫歷史指令, 或輸入 history 指令
 
-6. Add easter egg to GUI Terminal
+6. Terminal 新增終端機的當前狀態顯示
+
+7. Add easter egg to GUI Terminal
+
+8. 新增 Terminal 指令例外處理, 實現對談式 Terminal 基礎
 
 ## Program Change Note 內部變化紀錄
 

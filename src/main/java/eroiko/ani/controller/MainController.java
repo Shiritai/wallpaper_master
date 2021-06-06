@@ -13,6 +13,7 @@ import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.PrimaryControllers.*;
 import eroiko.ani.model.CLI.Console;
+import eroiko.ani.model.CLI.CLIException.ClearTerminalException;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
 import eroiko.ani.util.Method.DoubleToStringProperty;
 import eroiko.ani.util.Method.Dumper;
@@ -136,7 +137,7 @@ public class MainController implements Initializable {
         }
     }
     
-    void StartWalkingQueue(){
+    public void StartWalkingQueue(){
         ObservableList<myPair<String, String>> data = searchQueue.getItems();
         int size = data.size();
         MusicWithSyamiko.playProcessing();
@@ -323,11 +324,11 @@ public class MainController implements Initializable {
         }
         quit = false;
         new TerminalThread(pipIn, terminalThread, Terminal_out, quit);
-        System.out.println("Host name : " + MainApp.hostName + "\nCreate by Eroiko, terminal version 1.0 at 2021/06/05" +
+        System.out.println("Create by Eroiko, terminal version 1.0 at 2021/06/05" +
         "\nUse Ctrl + C to cancel the terminal, and Ctrl + L to clear the text." +
         "\nSupport several linux-based commands such as\n\"ls\", \"cd <../dir_path>\", \"mkdir/rm <dir_path>\", etc." +
-        "\ntry key in \"meow\" and see what will happen\n");
-        console = new Console(currentPath, MainApp.hostName, true);
+        "\ntry key in \"meow\" and see what will happen OwO\n");
+        console = new Console(currentPath, MainApp.hostName, MainApp.userName, true);
     }
 
     @FXML
@@ -392,7 +393,7 @@ public class MainController implements Initializable {
         } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
     }
     
-    void OpenWallpaper(Wallpaper wp) throws IOException{
+    public static void OpenWallpaper(Wallpaper wp) throws IOException{
         WallpaperController.quit = quit;
         int serialNumber = -1;
         if (wp != null){
@@ -641,8 +642,12 @@ public class MainController implements Initializable {
                 if (console != null){
                     console.setPath(currentPath);
                     console.restoreCommandTraverse();
-                    if (console.readConsole(Terminal_in.getText()) == 1){
-                        killTerminal(); // exit!
+                    try {
+                        if (console.readConsole(Terminal_in.getText()) == 1){
+                            killTerminal(); // exit!
+                        }
+                    } catch (ClearTerminalException cle){
+                        Terminal_out.clear();
                     }
                     currentPath = console.getCurrentPath();
                     initTreeView();
@@ -670,10 +675,19 @@ public class MainController implements Initializable {
                     if (tmp != null){
                         Terminal_in.setText(tmp);
                     }
+                    else {
+                        Terminal_in.clear();
+                    }
                 }
             }
             else if (new KeyCodeCombination(KeyCode.C, KeyCodeCombination.CONTROL_DOWN).match(e)){
-                System.out.println("GUI Terminal Quit : KeyBoard Interrupt");
+                if (console != null){
+                    console.cancel();
+                }
+                e.consume();
+            }
+            else if (new KeyCodeCombination(KeyCode.K, KeyCodeCombination.CONTROL_DOWN).match(e)){
+                System.out.println("GUI Terminal Quit : Kill Terminal");
                 killTerminal();
                 Terminal_in.clear();
                 e.consume();
@@ -684,18 +698,16 @@ public class MainController implements Initializable {
             }
         });
         Terminal_out.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-            if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
-                System.out.println(Terminal_in.getText());
-                if (!quit){
-                    System.err.println(Terminal_in.getText());
-                }
+            if (new KeyCodeCombination(KeyCode.K, KeyCodeCombination.CONTROL_DOWN).match(e)){
+                System.out.println("GUI Terminal Quit : KeyBoard Interrupt");
+                killTerminal();
                 Terminal_in.clear();
                 e.consume();
             }
             else if (new KeyCodeCombination(KeyCode.C, KeyCodeCombination.CONTROL_DOWN).match(e)){
-                System.out.println("GUI Terminal Quit : KeyBoard Interrupt");
-                killTerminal();
-                Terminal_in.clear();
+                if (console != null){
+                    console.cancel();
+                }
                 e.consume();
             }
             else if (new KeyCodeCombination(KeyCode.L, KeyCodeCombination.CONTROL_DOWN).match(e)){
@@ -812,7 +824,6 @@ public class MainController implements Initializable {
                     @Override
                     protected Void call(){
                         var str = (rootPath.toAbsolutePath().toString().length() < 30) ? rootPath.toString() : "~~/" + rootPath.getFileName().toString();
-                        System.err.println("loading directory : " + rootPath);
                         percentageMark.setText("loading directory : " + str);
                         initTreeDir(root);
                         return null;
@@ -824,7 +835,6 @@ public class MainController implements Initializable {
             root.setExpanded(true);
             treeFileExplorer.setRoot(root);
             var str = (rootPath.toAbsolutePath().toString().length() < 45) ? rootPath.toString() : "*/" + rootPath.getFileName().toString();
-            System.err.println("Finish loading " + rootPath);
             percentageMark.setText("Finish loading " + str);
         });
         doBFS.restart();
@@ -832,9 +842,9 @@ public class MainController implements Initializable {
 
     private void initTreeDir(TreeItem<myPair<String, Path>> root){
         try {
-            bfsSurface(root); // (2). 因此這裡為保險起見的遍歷影響其實不大
+            bfsSurface(root);
             for (var cur : root.getChildren()){
-                bfsSurface(cur); // (1). 通常情況下主要時間都在第二層遍歷
+                touchSurface(cur);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -848,6 +858,26 @@ public class MainController implements Initializable {
                 cur.getChildren().clear(); // 先淨空當前內容
                 dirStream.forEach(p -> cur.getChildren().add(new TreeItem<>(new myPair<>(p.getFileName().toString(), p), WallpaperUtil.fetchIconUsePath(p))));
                 cur.getChildren().sort((a, b) -> WallpaperUtil.pathDirAndNameCompare(a.getValue().value, b.getValue().value));
+            } catch (java.nio.file.AccessDeniedException ae){
+                return cur;
+            }
+        }
+        return cur;
+    }
+
+    /* 優化二層遍歷效率, 避免低效二層遍歷 */
+    private TreeItem<myPair<String, Path>> touchSurface(TreeItem<myPair<String, Path>> cur) throws IOException{
+        if (cur != null && Files.isDirectory(cur.getValue().value)){
+            try (var dirStream = Files.newDirectoryStream(cur.getValue().value)){
+                cur.getChildren().clear(); // 先淨空當前內容
+                for (var d : dirStream){
+                    if (d != null){
+                        cur.getChildren().add(new TreeItem<>(new myPair<>(d.getFileName().toString(), d), WallpaperUtil.fetchIconUsePath(d)));
+                        break; // 只取一個
+                    }
+                }
+            } catch (java.nio.file.AccessDeniedException ae){
+                return cur;
             }
         }
         return cur;
@@ -987,4 +1017,3 @@ public class MainController implements Initializable {
         }
     }
 }
-

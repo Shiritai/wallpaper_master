@@ -36,6 +36,7 @@ public class MainApp extends Application{
     public static final String date = "2021/06/05";
     public static Image icon;
     public static String hostName;
+    public static String userName;
     
     public static Stage mainStage;
     public static Scene mainScene;
@@ -53,6 +54,7 @@ public class MainApp extends Application{
     public static Font firaCode20;
     public static Font firaCodeBold24;
     public static Font bookAntiquaItalic25;
+    public static Font notoSansCJK15;
     public static Font notoSansCJK22;
 
     public static void main(String [] args){
@@ -64,7 +66,7 @@ public class MainApp extends Application{
         /* System settings */
         hostServices = getHostServices();
         hostName = getComputerName();
-        System.out.println("Computer name : " + hostName);
+        userName = System.getProperty("user.name");
         /* Load fonts */
         rainbow28 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/rainyhearts.ttf").toFile()), 28.);
         firaCode12 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 12.);
@@ -74,6 +76,7 @@ public class MainApp extends Application{
         firaCode20 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 20.);
         firaCodeBold24 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Bold.ttf").toFile()), 24.);
         bookAntiquaItalic25 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/Book Antiqua Italic.ttf").toFile()), 25.);
+        notoSansCJK15 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/NotoSansCJKtc-Regular.otf").toFile()), 15.);
         notoSansCJK22 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/NotoSansCJKtc-Regular.otf").toFile()), 22.);
 
         MainApp.mainStage = mainStage;
@@ -154,8 +157,6 @@ public class MainApp extends Application{
                 }
                 for (var f : cb){
                     Files.copy(new FileInputStream(f), Path.of(tmpFile + "\\" + f.getName()), StandardCopyOption.REPLACE_EXISTING);
-                    System.out.println(f.getName());
-                    System.out.println(Path.of(tmpFile + "\\" + f.getName()));
                 }
             } catch (IOException e1) {
                 System.out.println(e1.toString());

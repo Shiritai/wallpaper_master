@@ -4,18 +4,29 @@ import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import eroiko.ani.model.CLI.command.*;
+import eroiko.ani.model.CLI.CLIException.ClearTerminalException;
+import eroiko.ani.model.CLI.command.basic.*;
+import eroiko.ani.model.CLI.command.basic.fundamental.*;
+import eroiko.ani.model.CLI.command.special.*;
 
 public class Console {
     
     public final String computerName;
+    public final String userName;
+    ExecutorService service;
+    private RequestCommand rq;
     
-    public Console(Path root, String computerName, boolean printRelative){
+    public Console(Path root, String computerName, String userName, boolean printRelative){
         this.computerName = computerName;
+        this.userName = userName;
         Command.setDefaultPath(root);
         Command.setPrintBehavior(printRelative);
         System.out.println(toString());
+        service = Executors.newCachedThreadPool();
+        rq = new RequestCommand();
     }
     
     public void setPath(Path root){
@@ -31,40 +42,79 @@ public class Console {
     /** restore command traverse */
     public void restoreCommandTraverse(){ History.restoreCommandTraverse(); }
     
+    /**
+     * @param cmd the command to execute
+     * @throws ClearTerminalException when need to clear terminal space
+     */
     public int readConsole(String cmd){
-        if (!cmd.equals("")){
-            System.out.println(toString(cmd));
-            History.addHistory(cmd);
+        if (rq.checkNeedRequest()){
+            rq.takeCommand(cmd);
         }
         else {
-            System.out.println(toString());
-        }
-        String [] cmdLine = cmd.split(" ");
-        try {
-            switch (cmdLine[0]){
-                case "" -> {}
-                case "cd" -> new Cd(cmdLine[1]).execute();
-                case "mkdir" -> new Mkdir(cmdLine[1]).execute();
-                case "touch" -> new Touch(cmdLine[1], cmdLine[2]).execute();
-                case "rm" -> new Rm(cmdLine[1]).execute();
-                case "cat" -> new Cat(cmdLine[1]).execute();
-                case "ls" -> new Thread(() -> new Ls().execute()).start(); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
-                // case "ln" -> new Ln(cmdLine[1], cmdLine[2]).execute(); // 可用性未知
-                case "search" -> new Thread(() -> new Search(cmdLine[1]).execute()).start(); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
-                // case "clear" -> throw new RuntimeException(); // 之後可能會去實現
-                case "exit" -> { return 1; } // 終止程式
-                case "history" -> new History().execute();
-                case "meow" -> new Meow().execute();
-                default -> System.out.println("Error command!");
+            if (!cmd.equals("")){ //  when the user didn't press ENTER
+                System.out.println(toString(cmd));
+                History.addHistory(cmd);
             }
-        } catch (IllegalArgumentException ile){
-            System.out.println("Illegal command.");
-        } catch (AccessDeniedException ae){
-
+            String [] cmdLine = cmd.split(" ");
+            try {
+                switch (cmdLine[0]){
+                    /* Basic */
+                    case "" -> System.out.println(toString()); // this is when the user pressed ENTER
+                    case "cd" -> new Cd(cmdLine[1]).execute();
+                    case "mkdir" -> new Mkdir(cmdLine[1]).execute();
+                    case "touch" -> new Touch(cmdLine[1], cmdLine[2]).execute();
+                    case "rm" -> new Rm(rq, cmdLine[1]).execute();
+                    case "cat" -> new Cat(cmdLine[1]).execute();
+                    case "ls" -> service.submit(() -> new Ls().execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
+                    // case "ls" -> new Thread(() -> new Ls().execute()).start(); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
+                    // case "ln" -> new Ln(cmdLine[1], cmdLine[2]).execute(); // 可用性未知
+                    case "search" -> service.submit(() -> new Search(cmdLine[1]).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
+                    case "clear" -> throw new ClearTerminalException(); // 之後可能會去實現
+                    case "exit" -> { return 1; } // 終止程式
+                    case "history" -> new History().execute();
+                    case "echo" -> System.out.println(cmd.substring(cmd.indexOf(' ') + 1)); // 若遇到無空白的情況, cmd.indexOf(' ') + 1 = 0, 表輸出 echo
+                    /* Special */
+                    case "wallpaper" -> {
+                        var tmp = new String[cmdLine.length - 1];
+                        for (int i = 0; i < cmdLine.length - 1; ++i){
+                            tmp[i] = cmdLine[i + 1];
+                        }
+                        new Wallpaper(tmp).execute();
+                    }
+                    case "music" -> {
+                        var tmp = new String[cmdLine.length - 1];
+                        for (int i = 0; i < cmdLine.length - 1; ++i){
+                            tmp[i] = cmdLine[i + 1];
+                        }
+                        new Music(tmp).execute();
+                    }
+                    case "meow" -> new Meow().execute();
+                    case "artwork" -> {
+                        service.submit(() -> {
+                            try {
+                                int number = Integer.parseInt(cmdLine[1]);
+                                new Artwork(number, cmd.substring(cmd.indexOf(' ', cmd.indexOf(' ') + 1) + 1)).execute();
+                            } catch (NumberFormatException ne){
+                                try {
+                                    new Artwork(cmd.substring(cmd.indexOf(" ") + 1)).execute();
+                                } catch (IllegalArgumentException ile){
+                                    System.out.println(ile.getMessage() + "\nIllegal argument, please try again.");
+                                }
+                            }
+                        });
+                    }
+                    default -> System.out.println("Command not defined!");
+                }
+            } catch (IllegalArgumentException ile){
+                System.out.println(ile.getMessage() + "\nIllegal argument, please try again.");
+            } catch (AccessDeniedException ae){
+                System.out.println(ae.getMessage() + "\nBad Access.");
+            }
         }
-        return 0;
+        return 0; // 正常執行指令
     }
 
+    /** print current path with the user name, the device's name and time information */
     @Override
     public String toString(){
         return getInfo();
@@ -75,8 +125,14 @@ public class Console {
     }
     
     public String getInfo(){
-        return "# guiTerminal@" + computerName + " in " + 
+        return "# " + userName + " at " + computerName + " in " + 
             Command.getCurrentPath() + " [" + 
             DateFormat.getTimeInstance(DateFormat.MEDIUM).format(new Date()) + "]";
+    }
+
+    public void cancel(){
+        service.shutdownNow();
+        service = Executors.newCachedThreadPool();
+        System.out.println("^C");
     }
 }

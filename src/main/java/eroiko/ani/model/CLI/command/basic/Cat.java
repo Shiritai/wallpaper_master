@@ -1,4 +1,4 @@
-package eroiko.ani.model.CLI.command;
+package eroiko.ani.model.CLI.command.basic;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -7,12 +7,14 @@ import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import eroiko.ani.model.CLI.command.basic.fundamental.*;
 import eroiko.ani.util.Method.Dumper;
 
 public class Cat extends Command {
     private final String fileName;
 
     public Cat(String fileName){
+        super(Type.CAT);
         this.fileName = fileName;
     }
     
@@ -27,7 +29,13 @@ public class Cat extends Command {
             System.out.println(out);
         }
         else {
-            throw new IllegalArgumentException("cat failed, not a file!");
+            throw new IllegalArgumentException(id.getName() + " : Not a file!");
         }
+    }
+
+    @Override
+    public void exeAfterRequest(String cmd) {
+        
+        
     }
 }

@@ -1,13 +1,16 @@
-package eroiko.ani.model.CLI.command;
+package eroiko.ani.model.CLI.command.basic;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import eroiko.ani.model.CLI.command.basic.fundamental.*;
+
 public class Cd extends Command {
     private final Path target;
     
     public Cd(String target){
+        super(Type.CD);
         this.target = thisDir.resolve(target);
     }
 
@@ -27,7 +30,7 @@ public class Cd extends Command {
                         thisDir = unchecked;
                     }
                     else {
-                        throw new IllegalArgumentException("cd failed, link corrupt");
+                        throw new IllegalArgumentException(id.getName() + " : Link corrupt");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -37,8 +40,14 @@ public class Cd extends Command {
                 thisDir = target;
             }
             else {
-                throw new IllegalArgumentException("cd failed, file not exist or not a directory");
+                throw new IllegalArgumentException(id.getName() + " : File not exist or not a directory");
             }
         }
+    }
+
+    @Override
+    public void exeAfterRequest(String cmd) {
+        
+        
     }
 }

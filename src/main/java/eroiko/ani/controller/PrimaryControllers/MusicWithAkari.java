@@ -217,7 +217,6 @@ public class MusicWithAkari implements Initializable {
             }
         });
 
-        System.out.println(player.getStatus().equals(MediaPlayer.Status.PAUSED));
         playMusicButton.setImage((player.getStatus().equals(MediaPlayer.Status.PLAYING)) ? pauseImage : playImage);
         var chImage = new ChangeListener<Boolean>() {
             @Override

@@ -1,15 +1,18 @@
-package eroiko.ani.model.CLI.command;
+package eroiko.ani.model.CLI.command.basic;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.TreeSet;
 
+import eroiko.ani.model.CLI.command.basic.fundamental.*;
 import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
 
 public class Ls extends Command {
         
-    public Ls(){}
+    public Ls(){
+        super(Type.LS);
+    }
     
     @Override
     public void execute(){
@@ -22,5 +25,11 @@ public class Ls extends Command {
         } catch (IOException ie){
             ie.printStackTrace();
         }
+    }
+
+    @Override
+    public void exeAfterRequest(String cmd) {
+        
+        
     }
 }

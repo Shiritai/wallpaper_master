@@ -1,9 +1,14 @@
-package eroiko.ani.model.CLI.command;
+package eroiko.ani.model.CLI.command.special;
 
+import eroiko.ani.model.CLI.command.basic.fundamental.*;
 
 /** http://www.ascii-art.de/ascii/c/cat.txt */
 public class Meow extends Command {
 
+    public Meow(){
+        super(Type.MEOW);
+    }
+    
     public static final String [] meows = {
         "        .-.__.-.__.-.__.-._.-.\n        (  How the Hell do I   )\n         \"-\"(  draw paws in  )\"\n             \"-\"(  ASCII?   )\n                 '-..-\"-..-'\n                        O          _____________________\n                 ,_    o         _(  Hey, Dad, you got  )_\n           ____   \\\"\\___,-'7    (   the legs all wrong..  )\n   ____..-\"_.-\"|   )     (/      \"\"\"\"\"\"\"((\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\"\n  |   |====    |   a_ /@  E              \\\n  |## |====    | =: T ::= )      __       ))\n  |## |====    |   \\/\\   <,     {__\\      Y\n  |___|====____|    7\"\\_// \\       \\\\  |\\__,-7\n      _/____\\_     /( (@)   \\      )) _}; .  {\n     '.,____,.'-.,( \\_____ ) \\    //   \\^ = _/\n      ._ _        | (((__ ~   ) _//    /&~~\")     ,\n        Y       = |      '-,_    / T-cc_  // }   ((\n        | __,..--\"'          \"-,/_ | |  cc7_(     ))\n                                  \"+-,_ |  |\"|_,,;/\n                                       \"-, | |--\"  -Naughty",
         "                               __\n        _,-;''';`'-,.\n     _/',  `;  `;    `\\\n,        _..,-''    '   `  `      `\\\n| ;._.,,-' .| |,_        ,,          `\\\n| `;'      ;' ;, `,   ; |    '  '  .   \\\n`; __`  ,'__  ` ,  ` ;  |      ;        \\\n; (6_);  (6_) ; |   ,    \\        '      |       /\n;;   _,' ,.    ` `,   '    `-._           |   __//_________\n,;.=..`_..=.,' -'          ,''        _,--''------''''\n_pb__\\,`\"=,,,==\"',___,,,-----'''----'_'_'_''-;''\n-----------------------''''''\\ \\'''''   )   /'\n             `\\`,,,___/__/'_____,\n               `--,,,--,-,'''\\\n              __,,-' /'       `\n            /'_,,--''\n           | (\n            `'",
@@ -16,6 +21,12 @@ public class Meow extends Command {
     @Override
     public void execute(){
         System.out.println(meows[(int) (Math.random() * meows.length)]);
+    }
+
+    @Override
+    public void exeAfterRequest(String cmd) {
+        
+        
     }
     
 }

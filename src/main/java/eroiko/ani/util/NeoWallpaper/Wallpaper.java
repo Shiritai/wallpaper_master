@@ -52,7 +52,7 @@ public class Wallpaper {
                 resultList.value.add(wpTri.third);
             }
         }
-        System.out.println("Pushed result into resultList");
+        System.out.println("Pushed result into result list");
     }
     /** 執行 resultList 指定的複製, 刪除 */
     public static void executeResultAndCleanPreview(){
@@ -144,7 +144,6 @@ public class Wallpaper {
 
         this.path = path;
         var tmpTarget = new File(path.toAbsolutePath().toString() + "\\previews");
-        System.out.println(tmpTarget.toString());
 
         wallpapers = new ArrayList<>();
 

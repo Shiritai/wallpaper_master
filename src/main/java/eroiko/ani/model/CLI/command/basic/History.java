@@ -1,13 +1,17 @@
-package eroiko.ani.model.CLI.command;
+package eroiko.ani.model.CLI.command.basic;
 
 import java.util.Stack;
+
+import eroiko.ani.model.CLI.command.basic.fundamental.*;
 
 public class History extends Command {
 
     private static Stack<String> commandStack = new Stack<>();
     private static Stack<String> commandStackCatch = new Stack<>();
     
-    public History(){}
+    public History(){
+        super(Type.HISTORY);
+    }
     
     @Override
     public void execute(){
@@ -43,6 +47,12 @@ public class History extends Command {
         while (!commandStackCatch.isEmpty()){
             commandStack.add(commandStackCatch.pop());
         }
+    }
+
+    @Override
+    public void exeAfterRequest(String cmd) {
+        
+        
     }
     
 }

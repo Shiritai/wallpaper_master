@@ -1,13 +1,16 @@
-package eroiko.ani.model.CLI.command;
+package eroiko.ani.model.CLI.command.basic;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+import eroiko.ani.model.CLI.command.basic.fundamental.*;
+
 public class Search extends Command {
     private final String keyword;
 
     public Search(String keyword){
+        super(Type.SEARCH);
         this.keyword = keyword;
     }
     
@@ -32,5 +35,11 @@ public class Search extends Command {
                 }
             }
         }
+    }
+
+    @Override
+    public void exeAfterRequest(String cmd) {
+        
+        
     }
 }
