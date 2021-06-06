@@ -1,6 +1,6 @@
 package eroiko.ani.model.CLI.command.special;
 
-import eroiko.ani.model.CLI.command.basic.fundamental.*;
+import eroiko.ani.model.CLI.command.fundamental.*;
 
 /** http://www.ascii-art.de/ascii/c/cat.txt */
 public class Meow extends Command {
@@ -20,7 +20,7 @@ public class Meow extends Command {
     
     @Override
     public void execute(){
-        System.out.println(meows[(int) (Math.random() * meows.length)]);
+        out.println(meows[(int) (Math.random() * meows.length)]);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package eroiko.ani.model.CLI.command.basic.fundamental;
+package eroiko.ani.model.CLI.command.fundamental;
 
 public enum Type {
     /* Basic */
@@ -12,13 +12,17 @@ public enum Type {
     SEARCH(8, "search"),
     TOUCH(9, "touch"),
     LN(10, "ln"),
-    CLEAR(11, "ln"),
     /* Special */
-    ARTWORK(101, "artwork"),
+    CRAWLER(101, "crawler"),
     MEOW(102, "meow"),
     MUSIC(103, "music"),
-    WALLPAPER(104, "wallpaper");
-
+    WALLPAPER(104, "wallpaper"),
+    CMD(105, "cmd"),
+    POWERSHELL(106, "powershell"),
+    WINDOWS_TERMINAL(107, "windows terminal"),
+    BASH(108, "bash"),
+    ;
+    
     final int code;
     final String name;
 

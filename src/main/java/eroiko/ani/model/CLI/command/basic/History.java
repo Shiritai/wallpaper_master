@@ -2,7 +2,7 @@ package eroiko.ani.model.CLI.command.basic;
 
 import java.util.Stack;
 
-import eroiko.ani.model.CLI.command.basic.fundamental.*;
+import eroiko.ani.model.CLI.command.fundamental.*;
 
 public class History extends Command {
 
@@ -17,7 +17,7 @@ public class History extends Command {
     public void execute(){
         int lineCnt = 1;
         for (var c : commandStack){
-            System.out.println("No. " + (lineCnt++) + "\t" + c);
+            out.println("No. " + (lineCnt++) + "\t" + c);
         }
     }
 

@@ -5,7 +5,7 @@ import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import eroiko.ani.model.CLI.command.basic.fundamental.*;
+import eroiko.ani.model.CLI.command.fundamental.*;
 
 /** 有待在 Windows 上更好的實作, 目前這個指令只能在 Linux 下順利運行 
  * <p>

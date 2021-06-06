@@ -13,7 +13,8 @@ import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.PrimaryControllers.*;
 import eroiko.ani.model.CLI.Console;
-import eroiko.ani.model.CLI.CLIException.ClearTerminalException;
+import eroiko.ani.model.CLI.CLIException.ClearConsoleException;
+import eroiko.ani.model.CLI.CLIException.ExitConsoleException;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
 import eroiko.ani.util.Method.DoubleToStringProperty;
 import eroiko.ani.util.Method.Dumper;
@@ -643,11 +644,11 @@ public class MainController implements Initializable {
                     console.setPath(currentPath);
                     console.restoreCommandTraverse();
                     try {
-                        if (console.readLine(Terminal_in.getText()) == 1){
-                            killTerminal(); // exit!
-                        }
-                    } catch (ClearTerminalException cle){
+                        console.readLine(Terminal_in.getText());
+                    } catch (ClearConsoleException cle){
                         Terminal_out.clear();
+                    } catch (ExitConsoleException exit){
+                        killTerminal(); // exit!
                     }
                     currentPath = console.getCurrentPath();
                     initTreeView();
@@ -986,34 +987,9 @@ public class MainController implements Initializable {
         try {
             Desktop.getDesktop().open(path.toFile());
         } catch (IOException ie){
-            var openFileThread = new Thread(() -> cmdOpenPath(path));
+            var openFileThread = new Thread(() -> Dumper.cmdOpenPath(path));
             openFileThread.setDaemon(true);
             openFileThread.start();
-        }
-    } 
-
-    public static void cmdOpenPath(Path path){
-        try {
-            var process = Runtime.getRuntime().exec("cmd /C " + "\"" + path.toAbsolutePath() + "\"");
-            var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            var output = new StringBuilder();
-            String tmpStr;
-            while ((tmpStr = reader.readLine()) != null){
-                output.append(tmpStr);
-            }
-            int exitVal = process.waitFor();
-            if (exitVal == 0){
-                System.out.println("execute successfully");
-                System.out.println(output);
-                if (!quit){
-                    System.err.println(output);
-                }
-            }
-            else {
-                System.out.println("execute failed with exit code : " + exitVal);
-            }
-        } catch (Exception ex){
-            ex.printStackTrace();
         }
     }
 }

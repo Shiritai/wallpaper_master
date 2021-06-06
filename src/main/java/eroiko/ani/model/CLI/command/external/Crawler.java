@@ -1,26 +1,26 @@
-package eroiko.ani.model.CLI.command.special;
+package eroiko.ani.model.CLI.command.external;
 
 import java.io.IOException;
 
 import eroiko.ani.controller.MainController;
-import eroiko.ani.model.CLI.command.basic.fundamental.*;
+import eroiko.ani.model.CLI.command.fundamental.*;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
 import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 
-public class Artwork extends Command {
+public class Crawler extends Command {
 
     private final String keywords;
     private final int number;
     
-    public Artwork(String keywords){
-        super(Type.ARTWORK);
+    public Crawler(String keywords){
+        super(Type.CRAWLER);
         this.keywords = keywords;
         number = 1;
     }
 
-    public Artwork(int number, String keywords){
-        super(Type.ARTWORK);
+    public Crawler(int number, String keywords){
+        super(Type.CRAWLER);
         this.keywords = keywords;
         this.number = number;
     }
@@ -30,16 +30,16 @@ public class Artwork extends Command {
         var check = CrawlerManager.checkValidation(keywords);
         if (check){
             var cw = new CrawlerManager(WallpaperPath.DEFAULT_TMP_WALLPAPER_PATH.toString(), keywords.split(" "), number);
-            System.out.println("[Crawler Manager]  Fetch links...");
+            out.println("[Crawler Manager]  Fetch links...");
             cw.A_getLinks();
             cw.print();
-            System.out.println("[Crawler Manager]  Peek links and Download Previews...");
+            out.println("[Crawler Manager]  Peek links and Download Previews...");
             cw.B_download();
-            System.out.println("[Crawler Manager]  Download Full Image...");
+            out.println("[Crawler Manager]  Download Full Image...");
             cw.D_lastDownloadStage();
-            System.out.println("[Crawler Manager]  Pushing result...");
+            out.println("[Crawler Manager]  Pushing result...");
             cw.E_pushWallpaper();
-            System.out.println("[Crawler Manager]  Close...");
+            out.println("[Crawler Manager]  Close...");
             try {
                 MainController.OpenWallpaper(Wallpaper.getWallpaper(Wallpaper.getWallpaperSerialNumberImmediately()));
             } catch (IOException e) {

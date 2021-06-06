@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import eroiko.ani.model.CLI.RequestCommand;
-import eroiko.ani.model.CLI.command.basic.fundamental.*;
+import eroiko.ani.model.CLI.command.fundamental.*;
 
 public class Rm extends Command{
     private final String fileName;
@@ -31,7 +31,8 @@ public class Rm extends Command{
                 try (var dirStream = Files.newDirectoryStream(target)){
                     if (dirStream.iterator().hasNext()){
                         state = QUERY_DELETE;
-                        rq.pushRequest(this, reqMsg);
+                        out.println(reqMsg);
+                        rq.pushRequest(this);
                         return;
                     }
                     else {
@@ -65,7 +66,7 @@ public class Rm extends Command{
             switch (state){
                 case NONE -> throw new IllegalArgumentException(id.getName() + " : NONE, some error happens!");
                 case QUERY_DELETE -> {
-                    System.out.println(id.getName() + " : executed.");
+                    out.println(id.getName() + " : executed.");
                     Path target = thisDir.resolve(fileName);
                     if (target.toFile().exists()){ // traverse and delete
                         try {

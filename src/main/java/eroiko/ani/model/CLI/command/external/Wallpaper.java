@@ -1,11 +1,11 @@
-package eroiko.ani.model.CLI.command.special;
+package eroiko.ani.model.CLI.command.external;
 
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 
 import eroiko.ani.controller.MainController;
-import eroiko.ani.model.CLI.command.basic.fundamental.*;
+import eroiko.ani.model.CLI.command.fundamental.*;
 import eroiko.ani.util.Method.Dumper;
 
 public class Wallpaper extends Command {

@@ -36,18 +36,6 @@ public class Dumper {
         }
     }
 
-    public static void dump(Reader in, Writer out){
-        try (in; out){
-            var data = new char[1024];
-            int length = 0;
-            while ((length = in.read(data)) != 0){
-                out.write(data, 0, length);
-            }
-        } catch (IOException ie){
-            ie.printStackTrace();
-        }
-    }
-
     /**
      * @param cm : Crawler Manager
      * @param serialNumber : Wallpaper serial number in Wallpaper.class
@@ -105,5 +93,27 @@ public class Dumper {
 
     public static boolean isMusic(Path filePath){
         return musicPattern.matcher(filePath.getFileName().toString()).find();
+    }
+
+    public static void cmdOpenPath(Path path){
+        try {
+            var process = Runtime.getRuntime().exec("cmd /C " + "\"" + path.toAbsolutePath() + "\"");
+            var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            var output = new StringBuilder();
+            String tmpStr;
+            while ((tmpStr = reader.readLine()) != null){
+                output.append(tmpStr);
+            }
+            int exitVal = process.waitFor();
+            if (exitVal == 0){
+                System.out.println("execute successfully");
+                System.out.println(output);
+            }
+            else {
+                System.out.println("execute failed with exit code : " + exitVal);
+            }
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
     }
 }

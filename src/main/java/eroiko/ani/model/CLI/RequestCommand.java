@@ -1,6 +1,6 @@
 package eroiko.ani.model.CLI;
 
-import eroiko.ani.model.CLI.command.basic.fundamental.*;
+import eroiko.ani.model.CLI.command.fundamental.*;
 
 public class RequestCommand {
     private boolean needReq;
@@ -16,11 +16,10 @@ public class RequestCommand {
 
     public boolean checkNeedRequest(){ return needReq; }
     
-    public void pushRequest(Command queryCommand, String requestMsg){
+    public void pushRequest(Command queryCommand){
         // this.cmd = cmd;
         // hasCmd = true;
         this.queryCommand = queryCommand;
-        System.out.println(requestMsg);
         needReq = true;
     }
 

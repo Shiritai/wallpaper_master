@@ -48,13 +48,15 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 8. 新增 Terminal 指令例外處理, 實現對談式 Terminal 基礎
 
+9. 新增可呼叫外部終端機, 支援 cmd (`cmd`, `cmd.exe`), powershell (`pwsh`, `powershell`, `powershell.exe`), windows terminal (`wt`, `wt.exe`), bash (`bash`)
+
 ## Program Change Note 內部變化紀錄
 
 1. 加強函式參考的應用
 
 2. Terminal 為 OCP 與 java.nio 的練習成果
 
-3. 當前使用程式碼行數 (不包含 deprecated 類) 約 : 4900 行
+3. 當前使用程式碼行數 (Exclude deprecated classes) 約 : 5400 行
 
 ## Known issue 已知問題
 

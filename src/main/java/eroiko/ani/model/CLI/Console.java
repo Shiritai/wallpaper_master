@@ -10,9 +10,10 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import eroiko.ani.model.CLI.CLIException.ClearTerminalException;
+import eroiko.ani.model.CLI.CLIException.*;
 import eroiko.ani.model.CLI.command.basic.*;
-import eroiko.ani.model.CLI.command.basic.fundamental.*;
+import eroiko.ani.model.CLI.command.external.*;
+import eroiko.ani.model.CLI.command.fundamental.*;
 import eroiko.ani.model.CLI.command.special.*;
 
 public class Console {
@@ -71,9 +72,10 @@ public class Console {
     
     /**
      * @param cmd the command to execute
-     * @throws ClearTerminalException when need to clear terminal text space
+     * @throws ClearConsoleException when need to clear terminal text space
+     * @throws ExitConsoleException when user try exit this console
      */
-    public int readLine(String cmd){
+    public void readLine(String cmd){
         if (rq.checkNeedRequest()){
             rq.takeCommand(cmd);
         }
@@ -93,14 +95,19 @@ public class Console {
                     case "rm" -> new Rm(rq, cmdLine[1]).execute();
                     case "cat" -> new Cat(cmdLine[1]).execute();
                     case "ls" -> service.submit(() -> new Ls().execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
-                    // case "ls" -> new Thread(() -> new Ls().execute()).start(); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
                     // case "ln" -> new Ln(cmdLine[1], cmdLine[2]).execute(); // 可用性未知
                     case "search" -> service.submit(() -> new Search(cmdLine[1]).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
-                    case "clear" -> throw new ClearTerminalException(); // 之後可能會去實現
-                    case "exit" -> { return 1; } // 終止程式
+                    case "clear" -> throw new ClearConsoleException(); // 之後可能會去實現
+                    case "exit" -> throw new ExitConsoleException(); // 終止程式
                     case "history" -> new History().execute();
                     case "echo" -> consoleOut.println(cmd.substring(cmd.indexOf(' ') + 1)); // 若遇到無空白的情況, cmd.indexOf(' ') + 1 = 0, 表輸出 echo
                     /* Special */
+                    case "meow" -> new Meow().execute();
+                    case "cmd", "cmd.exe" -> service.submit(() -> new Cmd(cmd.substring(cmd.indexOf(' ') + 1)).execute());
+                    case "powershell.exe", "powershell", "pwsh" -> service.submit(() -> new PowerShell(cmd.substring(cmd.indexOf(' ') + 1)).execute());
+                    case "wt", "wt.exe" -> service.submit(() -> new WindowsTerminal(cmd.substring(cmd.indexOf(' ') + 1)).execute());
+                    case "bash" -> service.submit(() -> new Bash(cmd.substring(cmd.indexOf(' ') + 1)).execute());
+                    /* External */
                     case "wallpaper" -> {
                         var tmp = new String[cmdLine.length - 1];
                         for (int i = 0; i < cmdLine.length - 1; ++i){
@@ -115,15 +122,14 @@ public class Console {
                         }
                         new Music(tmp).execute();
                     }
-                    case "meow" -> new Meow().execute();
-                    case "artwork" -> {
+                    case "crawler" -> {
                         service.submit(() -> {
                             try {
                                 int number = Integer.parseInt(cmdLine[1]);
-                                new Artwork(number, cmd.substring(cmd.indexOf(' ', cmd.indexOf(' ') + 1) + 1)).execute();
+                                new Crawler(number, cmd.substring(cmd.indexOf(' ', cmd.indexOf(' ') + 1) + 1)).execute();
                             } catch (NumberFormatException ne){
                                 try {
-                                    new Artwork(cmd.substring(cmd.indexOf(" ") + 1)).execute();
+                                    new Crawler(cmd.substring(cmd.indexOf(" ") + 1)).execute();
                                 } catch (IllegalArgumentException ile){
                                     consoleOut.println(ile.getMessage() + "\nIllegal argument, please try again.");
                                 }
@@ -138,7 +144,6 @@ public class Console {
                 consoleOut.println(ae.getMessage() + "\nBad Access.");
             }
         }
-        return 0; // 正常執行指令
     }
 
     /** print current path with the user name, the device's name and time information */

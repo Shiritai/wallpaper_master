@@ -1,6 +1,6 @@
 package eroiko.ani.model.CLI.command.basic;
 
-import eroiko.ani.model.CLI.command.basic.fundamental.*;
+import eroiko.ani.model.CLI.command.fundamental.*;
 
 public class Mkdir extends Command {
     private final String fileName;

@@ -1,4 +1,5 @@
-package eroiko.ani.model.CLI.command.basic.fundamental;
+package eroiko.ani.model.CLI.command.fundamental;
+import java.io.PrintStream;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 
@@ -12,15 +13,21 @@ public abstract class Command {
     protected static Path defaultDir;
     protected static boolean printRelative = false;
     protected static RequestCommand rq = new RequestCommand();
-
+    protected static PrintStream defaultOut;
+    protected final PrintStream out;
     protected final Type id;
 
     protected Command(){
-        id = Type.COMMAND;
+        this(Type.COMMAND);
+    }
+    
+    protected Command(Type id){
+        out = (defaultOut == null) ? System.out : defaultOut;
+        this.id = id;
     }
 
-    protected Command(Type id){
-        this.id = id;
+    public static void setAllCommandPrintStream(PrintStream defaultOut){
+        Command.defaultOut = defaultOut;
     }
 
     /** 
@@ -44,6 +51,6 @@ public abstract class Command {
     public static void setPrintBehavior(boolean printRelative){ Command.printRelative = printRelative; }
     
     public static void printRelativePath(Path path){
-        System.out.println((printRelative) ? thisDir.relativize(path) : path.getFileName());
+        defaultOut.println((printRelative) ? thisDir.relativize(path) : path.getFileName());
     }
 }

@@ -1,10 +1,10 @@
-package eroiko.ani.model.CLI.command.special;
+package eroiko.ani.model.CLI.command.external;
 
 import java.nio.file.AccessDeniedException;
 
 import eroiko.ani.controller.PrimaryControllers.MusicWithAkari;
 import eroiko.ani.controller.PrimaryControllers.MusicWithSyamiko;
-import eroiko.ani.model.CLI.command.basic.fundamental.*;
+import eroiko.ani.model.CLI.command.fundamental.*;
 import eroiko.ani.util.Method.Dumper;
 
 public class Music extends Command {

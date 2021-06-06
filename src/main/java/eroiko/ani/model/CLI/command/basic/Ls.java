@@ -5,7 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.TreeSet;
 
-import eroiko.ani.model.CLI.command.basic.fundamental.*;
+import eroiko.ani.model.CLI.command.fundamental.*;
 import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
 
 public class Ls extends Command {

@@ -5,8 +5,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 
-import eroiko.ani.model.CLI.command.basic.fundamental.*;
-import eroiko.ani.util.Method.Dumper;
+import eroiko.ani.model.CLI.command.fundamental.*;
+import eroiko.ani.model.CLI.util.Dumper;
 
 
 public class Touch extends Command {
