@@ -24,10 +24,10 @@ public class Console {
     /**
      * Create a new Console
      * <p> The console is based on java.nio so it can go to files which are over the assigned root
-     * @param consoleOut  PrintStream of this console
-     * @param root  assign the initial root path of this console
+     * @param consoleOut    PrintStream of this console
+     * @param root          assign the initial root path of this console
      * @param computerName  assign this device's name
-     * @param userName  assign the user name
+     * @param userName      assign the user name
      * @param printRelative {@code true} to print file path by its relative path or {@code false} to print by only its file name 
      */
     public Console(PrintStream consoleOut, Path root, String computerName, String userName, boolean printRelative){
@@ -45,9 +45,9 @@ public class Console {
      * Create a new Console
      * <p> The console is based on java.nio so it can go to files which are over the assigned root
      * <p> Use default PrintStream : {@code System.out}
-     * @param root  assign initial the root path of this console
+     * @param root          assign initial the root path of this console
      * @param computerName  assign this device's name
-     * @param userName  assign the user name
+     * @param userName      assign the user name
      * @param printRelative {@code true} to print file path by its relative path or {@code false} to print by only its file name 
      */
     public Console(Path root, String computerName, String userName, boolean printRelative){
