@@ -32,7 +32,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 ## Release note
 
-1. File Explorer 中圖片錯誤修正, 更改點擊邏輯
+1. 修正 Bug
 
 2. 改變主視窗大小與比例, 鎖定不必要的大小調整
 
@@ -62,7 +62,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 ## Known issue 已知問題
 
-1. <待發現, wait to be found>
+1. 大量 Bug 有待消除...QQ
 
 ## Environment
 

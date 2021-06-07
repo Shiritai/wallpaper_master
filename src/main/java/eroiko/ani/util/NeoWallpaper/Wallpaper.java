@@ -7,9 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
-import java.util.TreeMap;
+import java.util.HashMap;
 import java.util.TreeSet;
 
+import eroiko.ani.util.Method.Dumper;
 import eroiko.ani.util.MyDS.myPair;
 import eroiko.ani.util.MyDS.myTriple;
 import javafx.beans.property.BooleanProperty;
@@ -19,7 +20,7 @@ import javafx.scene.image.Image;
 public class Wallpaper {
     /* New wallpaper viewer, for outside classes! */
     /* 開放對外存取 Wallpaper 途徑 */
-    private static TreeMap<Integer, Wallpaper> wallpapersToFile = new TreeMap<>();
+    private static HashMap<Integer, Wallpaper> wallpapersToFile = new HashMap<>(); // 不必排序, 僅要快速訪問 (O(1))
     private static int lastWallpaperNumber = 0;
     public static int getWallpaperSerialNumberImmediately(){ return lastWallpaperNumber; }
     public static Wallpaper getWallpaper(int serialNumber){ return wallpapersToFile.get(serialNumber); }
@@ -135,13 +136,23 @@ public class Wallpaper {
 
     /** 
      * 實作類似 Iterator 的資料結構, 統一管理 preview & full, 所有 get functions (除了 Current) 都會移動 Index
-     * @param path : the directory of the images
-     * @param initPath : the path of the first image
+     * @param path : the directory of the images or  the path of the first image
      * @throws IOException
+     * @throws IllegalArgumentException
      */
-    public Wallpaper(Path path, Path initPath) throws IOException{
+    public Wallpaper(Path path) throws IllegalArgumentException, IOException{
+        if (!path.toFile().exists()){
+            throw new IllegalArgumentException("File not exist!");
+        }
         isChanged = new SimpleBooleanProperty(false);
-
+        Path initPath = null;
+        if (!Files.isDirectory(path)){
+            if (!Dumper.isImage(path)){
+                throw new IllegalArgumentException("Not a image file!");
+            }
+            initPath = path;
+            path = path.getParent();
+        }
         this.path = path;
         var tmpTarget = new File(path.toAbsolutePath().toString() + "\\previews");
 
@@ -152,6 +163,10 @@ public class Wallpaper {
             dirStream.forEach(p -> fullArr.add(p));
         }
         fullArr.sort(WallpaperUtil::pathNameCompare); // OwO
+
+        if (fullArr.size() == 0){
+            throw new IllegalArgumentException("Not a wallpaper folder!");
+        }
 
         if (!tmpTarget.exists()){ // 確認理想極端狀況 (只有 full)
             fullArr.forEach(p -> wallpapers.add(new myTriple<>(0, null, p)));
@@ -191,21 +206,13 @@ public class Wallpaper {
         }
         current = initIndex;
     }
-    
-    /** 
-     * 實作類似 Iterator 的資料結構, 統一管理 preview & full, 所有 get functions (除了 Current) 都會移動 Index
-     * @param path : the directory of the images
-     * @throws IOException
-     */
-    public Wallpaper(Path path) throws IOException{
-        this(path, null);
-    }
+
     /** 
      * 建立預設圖庫的 Wallpaper, 實作類似 Iterator 的資料結構, 統一管理 preview & full, 所有 get functions (除了 Current) 都會移動 Index 
      * @throws IOException
      */
     public Wallpaper() throws IOException{
-        this(WallpaperPath.DEFAULT_IMAGE_PATH, null);
+        this(WallpaperPath.DEFAULT_IMAGE_PATH);
     }
 
     public void resetBooleanBind(){

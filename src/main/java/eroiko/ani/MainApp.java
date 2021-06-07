@@ -125,13 +125,17 @@ public class MainApp extends Application{
         mainStage.show();
 
         mainStage.setOnCloseRequest(e -> {
-            MediaOperator.playBox.clean();
-            Wallpaper.executeResultAndCleanPreview(); // 執行所有 Wallpaper 檔案操作!
-            new Wallpaperize().execute();
-            mainStage.close();
-            Platform.exit();
-            System.exit(0);
+            closeMainStage();
         });
+    }
+    
+    public static void closeMainStage(){
+        MediaOperator.playBox.clean();
+        Wallpaper.executeResultAndCleanPreview(); // 執行所有 Wallpaper 檔案操作!
+        new Wallpaperize().execute();
+        mainStage.close();
+        Platform.exit();
+        System.exit(0);
     }
 
     private static final int menuSize = 7;

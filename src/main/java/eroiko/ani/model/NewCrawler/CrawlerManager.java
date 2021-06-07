@@ -285,7 +285,8 @@ public class CrawlerManager {
         progress.set(1.);
         System.out.println(Path.of(this.fullSavePath));
         try {
-            Wallpaper.addNewWallpaper(new Wallpaper(Path.of(this.fullSavePath)));
+            var tmp = new Wallpaper(Path.of(this.fullSavePath));
+            Wallpaper.addNewWallpaper(tmp);
         } catch (Exception e){
             e.printStackTrace();
             System.out.println(e.toString());

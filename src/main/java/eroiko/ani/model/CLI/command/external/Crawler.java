@@ -1,11 +1,7 @@
 package eroiko.ani.model.CLI.command.external;
 
-import java.io.IOException;
-
-import eroiko.ani.controller.MainController;
 import eroiko.ani.model.CLI.command.fundamental.*;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
-import eroiko.ani.util.NeoWallpaper.Wallpaper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 
 public class Crawler extends Command {
@@ -40,11 +36,6 @@ public class Crawler extends Command {
             out.println("[Crawler Manager]  Pushing result...");
             cw.E_pushWallpaper();
             out.println("[Crawler Manager]  Close...");
-            try {
-                MainController.OpenWallpaper(Wallpaper.getWallpaper(Wallpaper.getWallpaperSerialNumberImmediately()));
-            } catch (IOException e) {
-                throw new IllegalArgumentException(id.getName() + " : Failed to open WallpaperViewer.");
-            }
         }
         else {
             throw new IllegalArgumentException(id.getName() + " : Invalid keywords.");

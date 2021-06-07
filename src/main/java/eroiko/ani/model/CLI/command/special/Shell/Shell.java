@@ -7,7 +7,6 @@ import eroiko.ani.model.CLI.command.fundamental.*;
 
 public abstract class Shell extends Command {
 
-    protected String [] shell_keywords;
     protected final String parameter;
     
     protected Shell(String parameter, Type type){

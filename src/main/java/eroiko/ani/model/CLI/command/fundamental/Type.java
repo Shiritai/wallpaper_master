@@ -206,9 +206,24 @@ public enum Type {
     WALLPAPER(259, new Document(
         new Synopsis(new Name("wallpaper", "Open Wallpaper Viewer"), new Name [] {
             new Name("<NO_PARAMETER>", "Open Wallpaper View with default wallpaper path."),
+            new Name("KEYWORD", "Open Wallpaper View w.r.t KEYWORD, see description below."),
             new Name("IMAGE_DIRECTORY", "Open Wallpaper View from IMAGE_DIRECTORY."),
             new Name("IMAGE_FILE", "Open Wallpaper View from IMAGE_FILE."),
-        })
+        }), new Descriptions(
+            new String [] {
+                "Below are KEYWORD functions",
+            },
+            new Description [] {
+                new Description(
+                    "--this".split(" "), 
+                    "Open Wallpaper Viewer from this folder."
+                ),
+                new Description(
+                    "--new".split(" "), 
+                    "Open Wallpaper View w.r.t this newest Wallpapers from Crawler or the last opened Wallpaper Viewer."
+                ),
+            }
+        )
     )),
     ;
     

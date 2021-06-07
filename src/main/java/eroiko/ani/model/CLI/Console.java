@@ -111,56 +111,32 @@ public class Console {
                 switch (cmdLine[0]){
                     /* Fundamental */
                     case "" -> consoleOut.println(toString()); // this is when the user pressed ENTER
-                    case "man" -> new Man((cmd.length() != 3) ? cmd.substring(cmd.indexOf(' ') + 1) : "").execute(); // this is when the user pressed ENTER
+                    case "man" -> new Man(stripHeadingCommand(cmd)).execute(); // this is when the user pressed ENTER
 
                     /* Basic */
-                    case "cd" -> new Cd(cmdLine[1]).execute();
+                    case "cd" -> new Cd(stripHeadingCommand(cmd)).execute();
                     case "mkdir" -> new Mkdir(cmdLine[1]).execute();
                     case "touch" -> new Touch(cmdLine[1], cmdLine[2]).execute();
                     case "rm" -> new Rm(rq, cmdLine[1]).execute();
                     case "cat" -> new Cat(cmdLine[1]).execute();
-                    case "ls" -> service.submit(() -> new Ls(compPath, cmdLine).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
+                    case "ls" -> service.submit(() -> new Ls(compPath, stripHeadingCommand(cmd)).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
                     case "ln" -> new Ln(cmdLine[1], cmdLine[2]).execute(); // 可用性未知
                     case "search" -> service.submit(() -> new Search(cmdLine[1]).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
                     case "clear" -> new Clear().callHost(); // 之後可能會去實現
                     case "exit" -> new Exit().callHost(); // 終止程式
                     case "history" -> new History().execute();
-                    case "echo" -> consoleOut.println(cmd.substring(cmd.indexOf(' ') + 1)); // 若遇到無空白的情況, cmd.indexOf(' ') + 1 = 0, 表輸出 echo
-                    case "shutdown" -> {
-                        new Shutdown().callHost();
-                        // if (cmdLine.length == 1){
-                        //     new Shutdown(service, consoleOut).callHost();
-                        // }
-                        // else {
-                        //     try {
-                        //         new Shutdown(service, consoleOut, Integer.parseInt(cmdLine[1])).callHost();
-                        //     } catch (NumberFormatException ne){
-                        //         consoleOut.println(ne.getMessage() + "\nIllegal argument, please try again.");
-                        //     }
-                        // }
-                    }
+                    case "echo" -> consoleOut.println(stripHeadingCommand(cmd)); // 若遇到無空白的情況, cmd.indexOf(' ') + 1 = 0, 表輸出 echo
+                    case "shutdown" -> new Shutdown().callHost();
 
                     /* Special */
                     case "meow" -> new Meow().execute();
-                    case "cmd", "cmd.exe" -> service.submit(() -> new Cmd(cmd.substring(cmd.indexOf(' ') + 1)).execute());
-                    case "powershell.exe", "powershell", "pwsh" -> service.submit(() -> new PowerShell(cmd.substring(cmd.indexOf(' ') + 1)).execute());
-                    case "wt", "wt.exe" -> service.submit(() -> new WindowsTerminal(cmd.substring(cmd.indexOf(' ') + 1)).execute());
-                    case "bash" -> service.submit(() -> new Bash(cmd.substring(cmd.indexOf(' ') + 1)).execute());
+                    case "cmd", "cmd.exe" -> service.submit(() -> new Cmd(stripHeadingCommand(cmd)).execute());
+                    case "powershell.exe", "powershell", "pwsh" -> service.submit(() -> new PowerShell(stripHeadingCommand(cmd)).execute());
+                    case "wt", "wt.exe" -> service.submit(() -> new WindowsTerminal(stripHeadingCommand(cmd)).execute());
+                    case "bash" -> service.submit(() -> new Bash(stripHeadingCommand(cmd)).execute());
                     /* External */
-                    case "wallpaper" -> {
-                        var tmp = new String[cmdLine.length - 1];
-                        for (int i = 0; i < cmdLine.length - 1; ++i){
-                            tmp[i] = cmdLine[i + 1];
-                        }
-                        new Wallpaper(tmp).execute();
-                    }
-                    case "music" -> {
-                        var tmp = new String[cmdLine.length - 1];
-                        for (int i = 0; i < cmdLine.length - 1; ++i){
-                            tmp[i] = cmdLine[i + 1];
-                        }
-                        new Music(tmp).execute();
-                    }
+                    case "wallpaper" -> new Wallpaper(stripHeadingCommand(cmd)).execute();
+                    case "music" -> new Music(stripHeadingCommand(cmd)).execute();
                     case "crawler" -> {
                         service.submit(() -> {
                             try {
@@ -168,7 +144,7 @@ public class Console {
                                 new Crawler(number, cmd.substring(cmd.indexOf(' ', cmd.indexOf(' ') + 1) + 1)).execute();
                             } catch (NumberFormatException ne){
                                 try {
-                                    new Crawler(cmd.substring(cmd.indexOf(" ") + 1)).execute();
+                                    new Crawler(stripHeadingCommand(cmd)).execute();
                                 } catch (IllegalArgumentException ile){
                                     consoleOut.println(ile.getMessage() + "\nIllegal argument, please try again.");
                                 }
@@ -180,10 +156,15 @@ public class Console {
             } catch (IllegalArgumentException ile){
                 consoleOut.println(ile.getMessage() + "\nIllegal argument, please try again.");
             }
-            // catch (AccessDeniedException ae){
-            //     consoleOut.println(ae.getMessage() + "\nBad Access.");
-            // }
         }
+    }
+
+    /** Strip heading command, return {@code null} if the input a pure command with no parameter */
+    public String stripHeadingCommand(String str){
+        if (str.indexOf(' ') == -1){
+            return null;
+        }
+        return str.substring(str.indexOf(' ') + 1);
     }
 
     /** print current path with the user name, the device's name and time information */

@@ -1,49 +1,48 @@
 package eroiko.ani.model.CLI.command.external;
 
 import java.io.IOException;
-import java.nio.file.Files;
 
 import eroiko.ani.controller.MainController;
 import eroiko.ani.model.CLI.command.fundamental.*;
-import eroiko.ani.util.Method.Dumper;
 
 public class Wallpaper extends Command {
-    private final String [] fileInfo;
+    private final String fileInfo;
     
-    public Wallpaper(String... fileInfo){
+    public Wallpaper(String fileInfo){
         super(Type.WALLPAPER);
         this.fileInfo = fileInfo;
     }
     
     @Override
     public void execute() throws IllegalArgumentException {
-        if (fileInfo.length == 0){
+        if (fileInfo == null){
             try {
                 MainController.OpenWallpaper(new eroiko.ani.util.NeoWallpaper.Wallpaper());
             } catch (IOException e) {
                 throw new IllegalArgumentException(id.getName() + " : Unknown error");
             }
         }
-        else if (fileInfo.length == 1){
-            var tmp = thisDir.resolve(fileInfo[0]);
+        else {
             try {
-                if (tmp.toFile().exists() && Dumper.isImage(tmp)){
-                    MainController.OpenWallpaper(new eroiko.ani.util.NeoWallpaper.Wallpaper(tmp.getParent(), tmp));
+                if (fileInfo.equals("--this")){ // 以當前資料夾為基礎開啟 wallpaper
+                    var wp = new eroiko.ani.util.NeoWallpaper.Wallpaper(thisDir);
+                    MainController.OpenWallpaper(wp);
                 }
-                else if (Files.isDirectory(tmp)){
-                    MainController.OpenWallpaper(new eroiko.ani.util.NeoWallpaper.Wallpaper(tmp));
+                else if (fileInfo.equals("--new")){
+                    var wp = eroiko.ani.util.NeoWallpaper.Wallpaper.getWallpaper(
+                        eroiko.ani.util.NeoWallpaper.Wallpaper.getWallpaperSerialNumberImmediately()
+                    );
+                    if (wp != null){
+                        MainController.OpenWallpaper(wp);
+                    }
                 }
                 else {
-                    throw new IllegalArgumentException(id.getName() + " : Wallpaper not exist.");
+                    var wp = new eroiko.ani.util.NeoWallpaper.Wallpaper(thisDir.resolve(fileInfo));
+                    MainController.OpenWallpaper(wp);
                 }
-            } catch (IOException e) { e.printStackTrace(); }
-        }
-        else {
-            throw new IllegalArgumentException(id.getName() +
-                " : Wrong Parameter, except:\n\n\"wallpaper <NO_PARAMETER>\" to open default wallpapers  or\n" + 
-                "\"wallpaper <DIRECTORY>\" to open wallpapers with DIRECTORY  or\n" + 
-                "\"wallpaper <IMAGE_PATH>\" to open wallpapers with IMAGE_PATH\n"
-            );
+            } catch (IllegalArgumentException ile) {
+                throw new IllegalArgumentException(ile.getMessage() + "\n" + id.getName() + " : Wallpaper not exist.");    
+            } catch (IOException e){ e.printStackTrace(); }
         }
     }
 }

@@ -11,7 +11,7 @@ public class Man extends Command {
     
     @Override
     public void execute(){
-        if (cmdName.equals("")){
+        if (cmdName == null || cmdName.equals("")){
             out.println("What command manual do you want to see?\nFor example, try 'man man'.");
         }
         else if (cmdName.equals("-a") || cmdName.equals("--all")){ // print all commands

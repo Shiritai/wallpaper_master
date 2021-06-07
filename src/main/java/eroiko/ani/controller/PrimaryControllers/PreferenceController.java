@@ -6,8 +6,8 @@ import java.util.ResourceBundle;
 
 import eroiko.ani.util.MediaClass.MediaOperator;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+// import javafx.beans.property.BooleanProperty;
+// import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -22,7 +22,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class PreferenceController implements Initializable {
 
     public static boolean quit;
-    public static BooleanProperty showWallpapersAfterCrawling = new SimpleBooleanProperty(true);
+    // public static BooleanProperty showWallpapersAfterCrawling = new SimpleBooleanProperty(true);
     // public static BooleanProperty minimizedMsg = new SimpleBooleanProperty(true);
     public static boolean keepMusic = false;
     public static boolean randomMusic = false;
@@ -97,11 +97,11 @@ public class PreferenceController implements Initializable {
                 savingDir.setText(WallpaperPath.getWallpaperPath().toString());
             }
         });
-        showWallpapers.setSelected(showWallpapersAfterCrawling.get());
-        showWallpapers.selectedProperty().addListener((ov, old_val, new_val) -> {
-            WallpaperController.showWallpapersAfterCrawling = new_val;
-            PreferenceController.showWallpapersAfterCrawling.set(new_val);
-        });
+        // showWallpapers.setSelected(showWallpapersAfterCrawling.get());
+        // showWallpapers.selectedProperty().addListener((ov, old_val, new_val) -> {
+        //     WallpaperController.showWallpapersAfterCrawling = new_val;
+        //     PreferenceController.showWallpapersAfterCrawling.set(new_val);
+        // });
 
         keepPlayingMusic.setSelected(keepMusic);
         keepPlayingMusic.selectedProperty().addListener(e -> keepMusic = keepPlayingMusic.isSelected());

@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 import eroiko.ani.MainApp;
 import eroiko.ani.util.MediaClass.MediaOperator;
 import eroiko.ani.util.Method.CarryReturn;
+import eroiko.ani.util.Method.Dumper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -111,7 +112,10 @@ public class MusicWithAkari implements Initializable {
     private static Image pauseImage = null;
     private static final int lengthOfMusicName = 30;
 
-    public static void openMusicWithAkari(Path musicPath){
+    public static void openMusicWithAkari(Path musicPath) throws IllegalArgumentException {
+        if (!musicPath.toFile().exists() || !Dumper.isMusic(musicPath)){
+            throw new IllegalArgumentException("File not exist!");
+        }
         temporaryPath = musicPath;
         try {
             var stage = new Stage();

@@ -11,30 +11,34 @@ import eroiko.ani.model.CLI.command.fundamental.*;
 public class Ls extends Command {
         
     private final Comparator<Path> comparator;
-    private final String [] cmdLine;
+    private final String cmdLine;
 
-    public Ls(Comparator<Path> comparator, String [] cmdLine){
+    /** 
+     * 會直接列印例外
+     * <p> 如果可以, 請調用其他執行續來執行 
+     */
+    public Ls(Comparator<Path> comparator, String cmdLine){
         super(Type.LS);
         this.comparator = comparator;
         this.cmdLine = cmdLine;
     }
     
     @Override
-    public void execute(){
-        if (cmdLine.length == 1){
+    public void execute() throws IllegalArgumentException{
+        if (cmdLine == null){
             printList(comparator);
         }
-        else if (cmdLine.length == 2){
-            if (cmdLine[1].equals("-s") || cmdLine[1].equals("--sorted")){ // 照 WallpaperUtil.pathDirAndNameCompare 排序
-                printList(comparator);
-            }
-            else if (cmdLine[1].equals("-n") || cmdLine[1].equals("--normal")){
-                printList((a, b) -> a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
-            }
-            else if (cmdLine[1].equals("-p") || cmdLine[1].equals("--path")){
-                printList(Path::compareTo);
-            }
-
+        else if (cmdLine.equals("-s") || cmdLine.equals("--sorted")){ // 照 WallpaperUtil.pathDirAndNameCompare 排序
+            printList(comparator);
+        }
+        else if (cmdLine.equals("-n") || cmdLine.equals("--normal")){
+            printList((a, b) -> a.toString().toLowerCase().compareTo(b.toString().toLowerCase()));
+        }
+        else if (cmdLine.equals("-p") || cmdLine.equals("--path")){
+            printList(Path::compareTo);
+        }
+        else {
+            out.println(id.getName() + " : Illegal parameter!");
         }
     }
     

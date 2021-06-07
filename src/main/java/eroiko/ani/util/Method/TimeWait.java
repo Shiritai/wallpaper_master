@@ -13,7 +13,7 @@ public class TimeWait {
         var timer = new Timer();
         timer.schedule(new TimeWaiter(), miniSecond);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(miniSecond);
         }
         catch(InterruptedException e) {}
         timer.cancel(); 
