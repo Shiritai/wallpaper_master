@@ -139,7 +139,7 @@ public enum Type {
 
     /* Special */
     MEOW(129, new Document(
-        new Synopsis(new Name("meow", "Just try it!"))
+        new Synopsis(new Name("meow", "Just try it!"), new Name [] {new Name("Just try it!", null)})
     )),
 
     /* Shell */

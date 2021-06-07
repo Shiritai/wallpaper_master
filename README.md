@@ -1,6 +1,6 @@
 # Wallpaper Master
 
-`version 0.1.3 (2021/06/06)`
+`version 0.1.4 (2021/06/07)`
 
 ## Introduction 簡介
 
@@ -30,7 +30,7 @@ Double click `run.vbs`, and the application should run properly.
 
 If you'd like to see the command window while running, run `start.bat` alternatively.
 
-## Release note (version 0.1.3)
+## Release note
 
 1. File Explorer 中圖片錯誤修正, 更改點擊邏輯
 

@@ -326,7 +326,7 @@ public class MainController implements Initializable {
         }
         quit = false;
         new TerminalThread(pipIn, terminalThread, Terminal_out, quit);
-        System.out.println("Create by Eroiko, terminal version 1.1 at 2021/06/07" +
+        System.out.println("Create by Eroiko, terminal version 1.2 at 2021/06/07" +
         "\nUse Ctrl + C to cancel executing command, and Ctrl + L to clear the text." +
         "\n\nSupport several linux-based commands." +
         "\nCheck commands with \"man COMMAND_NAME\" or \"COMMAND_NAME --help\"" +
