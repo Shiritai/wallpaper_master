@@ -50,11 +50,4 @@ public class Crawler extends Command {
             throw new IllegalArgumentException(id.getName() + " : Invalid keywords.");
         }
     }
-
-    @Override
-    public void exeAfterRequest(String cmd) {
-        
-        
-    }
-    
 }

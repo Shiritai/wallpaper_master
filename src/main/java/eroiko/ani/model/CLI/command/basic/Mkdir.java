@@ -11,18 +11,12 @@ public class Mkdir extends Command {
     }
 
     @Override
-    public void execute() throws IllegalArgumentException{
+    public void execute() throws IllegalArgumentException {
         if (thisDir.resolve(fileName).toFile().exists()){
             throw new IllegalArgumentException(id.getName() + " : File exist and thus cannot create it!");
         }
         else {
             thisDir.resolve(fileName).toFile().mkdir();
         }
-    }
-
-    @Override
-    public void exeAfterRequest(String cmd) {
-        
-        
     }
 }

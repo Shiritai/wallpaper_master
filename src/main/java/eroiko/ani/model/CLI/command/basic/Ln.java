@@ -1,7 +1,6 @@
 package eroiko.ani.model.CLI.command.basic;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -22,7 +21,7 @@ public class Ln extends Command {
     }
 
     @Override
-    public void execute() throws IllegalArgumentException, AccessDeniedException {
+    public void execute() throws IllegalArgumentException {
         if (dirName.toFile().exists() && !linkName.toFile().exists()){
             try {
                 Files.createSymbolicLink(linkName, dirName);
@@ -33,11 +32,5 @@ public class Ln extends Command {
         else {
             throw new IllegalArgumentException(id.getName() + " : Bad directory or link name conflict.");
         }
-    }
-
-    @Override
-    public void exeAfterRequest(String cmd) {
-        
-        
     }
 }

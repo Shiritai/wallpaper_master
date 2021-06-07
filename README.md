@@ -50,9 +50,11 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 9. 新增可呼叫外部終端機, 支援 cmd (`cmd`, `cmd.exe`), powershell (`pwsh`, `powershell`, `powershell.exe`), windows terminal (`wt`, `wt.exe`), bash (`bash`)
 
+10. 可呼叫 `man COMMAND_NAME` 或 `COMMAND_NAME --help` 來查詢各個指令的使用方式, 亦可呼叫 `man -a` 或 `man --all` 來查詢所有可用指令
+
 ## Program Change Note 內部變化紀錄
 
-1. 加強函式參考的應用
+1. 強化 Terminal 模組的文件與查詢功能
 
 2. Terminal 為 OCP 與 java.nio 的練習成果
 

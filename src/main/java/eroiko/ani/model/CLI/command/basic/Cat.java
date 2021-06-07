@@ -3,7 +3,6 @@ package eroiko.ani.model.CLI.command.basic;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.StringWriter;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -19,7 +18,7 @@ public class Cat extends Command {
     }
     
     @Override
-    public void execute() throws IllegalArgumentException, AccessDeniedException {
+    public void execute() throws IllegalArgumentException {
         Path target = thisDir.resolve(fileName);
         if (!Files.isDirectory(target) && target.toFile().exists()){ // is a file
             StringWriter outWriter = new StringWriter();
@@ -31,11 +30,5 @@ public class Cat extends Command {
         else {
             throw new IllegalArgumentException(id.getName() + " : Not a file!");
         }
-    }
-
-    @Override
-    public void exeAfterRequest(String cmd) {
-        
-        
     }
 }

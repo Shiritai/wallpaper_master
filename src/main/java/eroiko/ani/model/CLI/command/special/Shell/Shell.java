@@ -1,24 +1,27 @@
-package eroiko.ani.model.CLI.command.special;
+package eroiko.ani.model.CLI.command.special.Shell;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import eroiko.ani.model.CLI.command.fundamental.Command;
-import eroiko.ani.model.CLI.command.fundamental.Type;
+import eroiko.ani.model.CLI.command.fundamental.*;
 
-public class Cmd extends Command {
+public abstract class Shell extends Command {
 
-    private final String parameter;
+    protected String [] shell_keywords;
+    protected final String parameter;
     
-    public Cmd(String parameter){
-        super(Type.CMD);
-        this.parameter = (!parameter.equals("cmd") && !parameter.equals("cmd.exe")) ? parameter : "";
+    protected Shell(String parameter, Type type){
+        super(type);
+        this.parameter = parameter;
     }
-    
-    @Override
-    public void execute() throws IllegalArgumentException {
+
+    protected Shell(String parameter){
+        this(parameter, Type.SHELL);
+    }
+
+    protected void openShell(String invokePrefix){
         try {
-            var process = Runtime.getRuntime().exec("cmd /C " + "\"" + parameter + "\"");
+            var process = Runtime.getRuntime().exec(invokePrefix + " " + "\"" + parameter + "\"");
             var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             var output = new StringBuilder();
             String tmpStr;
@@ -37,9 +40,5 @@ public class Cmd extends Command {
             ex.printStackTrace();
         }
     }
-
-    @Override
-    public void exeAfterRequest(String cmd) {
-        
-    }
+    
 }

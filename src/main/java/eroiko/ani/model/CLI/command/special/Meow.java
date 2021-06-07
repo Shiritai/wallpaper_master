@@ -22,11 +22,4 @@ public class Meow extends Command {
     public void execute(){
         out.println(meows[(int) (Math.random() * meows.length)]);
     }
-
-    @Override
-    public void exeAfterRequest(String cmd) {
-        
-        
-    }
-    
 }

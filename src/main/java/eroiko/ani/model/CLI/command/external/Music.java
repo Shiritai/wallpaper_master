@@ -1,7 +1,5 @@
 package eroiko.ani.model.CLI.command.external;
 
-import java.nio.file.AccessDeniedException;
-
 import eroiko.ani.controller.PrimaryControllers.MusicWithAkari;
 import eroiko.ani.controller.PrimaryControllers.MusicWithSyamiko;
 import eroiko.ani.model.CLI.command.fundamental.*;
@@ -16,7 +14,7 @@ public class Music extends Command {
     }
     
     @Override
-    public void execute() throws IllegalArgumentException, AccessDeniedException {
+    public void execute() throws IllegalArgumentException {
         if (musicToOpen.length == 0){
             MusicWithSyamiko.openMusicWithSyamiko();
         }
@@ -36,11 +34,4 @@ public class Music extends Command {
             );
         }
     }
-
-    @Override
-    public void exeAfterRequest(String cmd) {
-        
-        
-    }
-    
 }

@@ -3,38 +3,49 @@
 package eroiko.ani.model.CLI;
 
 import java.io.PrintStream;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Path;
 import java.text.DateFormat;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
-import eroiko.ani.model.CLI.CLIException.*;
 import eroiko.ani.model.CLI.command.basic.*;
+import eroiko.ani.model.CLI.command.critical.Clear;
+import eroiko.ani.model.CLI.command.critical.Exit;
+import eroiko.ani.model.CLI.command.critical.Shutdown;
 import eroiko.ani.model.CLI.command.external.*;
 import eroiko.ani.model.CLI.command.fundamental.*;
 import eroiko.ani.model.CLI.command.special.*;
-import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
+import eroiko.ani.model.CLI.command.special.Shell.*;
+import eroiko.ani.model.CLI.conversation.Consulter;
+import eroiko.ani.model.CLI.exception.*;
 
+/**
+ * <h2>Console</h2>
+ * <h3>The module for a consultative terminal</h3>
+ * Created by Eroiko at 2021/06/06
+ */
 public class Console {
     
     private PrintStream consoleOut;
     public final String computerName;
     public final String userName;
-    ExecutorService service;
-    private RequestCommand rq;
+    ScheduledExecutorService service;
+    private Consulter rq;
+    private Comparator<Path> compPath;
     
     /**
      * Create a new Console
      * <p> The console is based on java.nio so it can go to files which are over the assigned root
      * @param consoleOut    PrintStream of this console
      * @param root          assign the initial root path of this console
+     * @param compPath      Path comparator for the commands which needs to print paths
      * @param computerName  assign this device's name
      * @param userName      assign the user name
      * @param printRelative {@code true} to print file path by its relative path or {@code false} to print by only its file name 
      */
-    public Console(PrintStream consoleOut, Path root, String computerName, String userName, boolean printRelative){
+    public Console(PrintStream consoleOut, Path root, Comparator<Path> compPath, String computerName, String userName, boolean printRelative){
         this.consoleOut = consoleOut;
         this.computerName = computerName;
         this.userName = userName;
@@ -42,8 +53,10 @@ public class Console {
         Command.setPrintBehavior(printRelative);
         Command.setAllCommandPrintStream(consoleOut);
         consoleOut.println(toString());
-        service = Executors.newCachedThreadPool();
-        rq = new RequestCommand();
+        service = Executors.newSingleThreadScheduledExecutor();
+        service = Executors.newScheduledThreadPool(4);
+        rq = new Consulter(consoleOut);
+        this.compPath = compPath;
     }
     
     /**
@@ -51,12 +64,13 @@ public class Console {
      * <p> The console is based on java.nio so it can go to files which are over the assigned root
      * <p> Use default PrintStream : {@code System.out}
      * @param root          assign initial the root path of this console
+     * @param compPath      Path comparator for the commands which needs to print paths
      * @param computerName  assign this device's name
      * @param userName      assign the user name
      * @param printRelative {@code true} to print file path by its relative path or {@code false} to print by only its file name 
      */
-    public Console(Path root, String computerName, String userName, boolean printRelative){
-        this(System.out, root, computerName, userName, printRelative);
+    public Console(Path root, Comparator<Path> compPath, String computerName, String userName, boolean printRelative){
+        this(System.out, root, compPath, computerName, userName, printRelative);
     }
     
     public void setPath(Path root){
@@ -74,11 +88,11 @@ public class Console {
     
     /**
      * @param cmd the command to execute
-     * @throws ShutdownSoftwareException when user try exit this console
+     * @throws ShutdownSoftwareException when user try shutdown this software
      * @throws ClearConsoleException when need to clear terminal text space
      * @throws ExitConsoleException when user try exit this console
      */
-    public void readLine(String cmd) throws ShutdownSoftwareException{
+    public void readLine(String cmd) throws Exception{
         if (rq.checkNeedRequest()){
             rq.takeCommand(cmd);
         }
@@ -88,23 +102,44 @@ public class Console {
                 consoleOut.println(toString(cmd));
             }
             String [] cmdLine = cmd.split(" ");
+            /* call COMMAND --help --> i.e. man COMMAND */
+            if (cmdLine.length == 2 && cmdLine[1].equals("--help")){
+                new Man(cmdLine[0]).execute();
+                return;
+            }
             try {
                 switch (cmdLine[0]){
-                    /* Basic */
+                    /* Fundamental */
                     case "" -> consoleOut.println(toString()); // this is when the user pressed ENTER
+                    case "man" -> new Man((cmd.length() != 3) ? cmd.substring(cmd.indexOf(' ') + 1) : "").execute(); // this is when the user pressed ENTER
+
+                    /* Basic */
                     case "cd" -> new Cd(cmdLine[1]).execute();
                     case "mkdir" -> new Mkdir(cmdLine[1]).execute();
                     case "touch" -> new Touch(cmdLine[1], cmdLine[2]).execute();
                     case "rm" -> new Rm(rq, cmdLine[1]).execute();
                     case "cat" -> new Cat(cmdLine[1]).execute();
-                    case "ls" -> service.submit(() -> new Ls(WallpaperUtil::pathDirAndNameCompare).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
-                    // case "ln" -> new Ln(cmdLine[1], cmdLine[2]).execute(); // 可用性未知
+                    case "ls" -> service.submit(() -> new Ls(compPath, cmdLine).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
+                    case "ln" -> new Ln(cmdLine[1], cmdLine[2]).execute(); // 可用性未知
                     case "search" -> service.submit(() -> new Search(cmdLine[1]).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
-                    case "clear" -> throw new ClearConsoleException(); // 之後可能會去實現
-                    case "exit" -> throw new ExitConsoleException(); // 終止程式
+                    case "clear" -> new Clear().callHost(); // 之後可能會去實現
+                    case "exit" -> new Exit().callHost(); // 終止程式
                     case "history" -> new History().execute();
                     case "echo" -> consoleOut.println(cmd.substring(cmd.indexOf(' ') + 1)); // 若遇到無空白的情況, cmd.indexOf(' ') + 1 = 0, 表輸出 echo
-                    case "shutdown" -> throw new ShutdownSoftwareException();
+                    case "shutdown" -> {
+                        new Shutdown().callHost();
+                        // if (cmdLine.length == 1){
+                        //     new Shutdown(service, consoleOut).callHost();
+                        // }
+                        // else {
+                        //     try {
+                        //         new Shutdown(service, consoleOut, Integer.parseInt(cmdLine[1])).callHost();
+                        //     } catch (NumberFormatException ne){
+                        //         consoleOut.println(ne.getMessage() + "\nIllegal argument, please try again.");
+                        //     }
+                        // }
+                    }
+
                     /* Special */
                     case "meow" -> new Meow().execute();
                     case "cmd", "cmd.exe" -> service.submit(() -> new Cmd(cmd.substring(cmd.indexOf(' ') + 1)).execute());
@@ -144,9 +179,10 @@ public class Console {
                 }
             } catch (IllegalArgumentException ile){
                 consoleOut.println(ile.getMessage() + "\nIllegal argument, please try again.");
-            } catch (AccessDeniedException ae){
-                consoleOut.println(ae.getMessage() + "\nBad Access.");
             }
+            // catch (AccessDeniedException ae){
+            //     consoleOut.println(ae.getMessage() + "\nBad Access.");
+            // }
         }
     }
 
@@ -168,7 +204,7 @@ public class Console {
 
     public void cancel(){
         service.shutdownNow();
-        service = Executors.newCachedThreadPool();
+        service = Executors.newSingleThreadScheduledExecutor();
         consoleOut.println("^C");
     }
 }

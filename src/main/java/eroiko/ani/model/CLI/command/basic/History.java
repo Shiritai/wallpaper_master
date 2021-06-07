@@ -1,13 +1,14 @@
 package eroiko.ani.model.CLI.command.basic;
 
-import java.util.Stack;
+import java.util.ArrayList;
 
 import eroiko.ani.model.CLI.command.fundamental.*;
 
+/** 以 ArrayList 實作 */
 public class History extends Command {
 
-    private static Stack<String> commandStack = new Stack<>();
-    private static Stack<String> commandStackCatch = new Stack<>();
+    private static ArrayList<String> commands = new ArrayList<>();
+    private static int currentIndex = 0;
     
     public History(){
         super(Type.HISTORY);
@@ -16,43 +17,37 @@ public class History extends Command {
     @Override
     public void execute(){
         int lineCnt = 1;
-        for (var c : commandStack){
+        for (var c : commands){
             out.println("No. " + (lineCnt++) + "\t" + c);
         }
     }
 
     public static void addHistory(String command){
-        commandStack.add(command);
+        commands.add(command);
+        ++currentIndex;
     }
 
     public static String getPreviousCommand(){
-        if (commandStack.isEmpty()){
+        if (commands.isEmpty() || currentIndex == -1){
             return null;
         }
-        var res = commandStack.pop();
-        commandStackCatch.add(res);
-        return res;
+        else if (currentIndex == commands.size()){
+            return commands.get(--currentIndex);
+        }
+        return commands.get(currentIndex--);
     }
     
     public static String getNextCommand(){
-        if (commandStackCatch.isEmpty()){
+        if (commands.isEmpty() || currentIndex == commands.size()){
             return null;
         }
-        var res = commandStackCatch.pop();
-        commandStack.add(res);
-        return res;
+        else if (currentIndex == -1){
+            return commands.get(++currentIndex);
+        }
+        return commands.get(currentIndex++);
     }
 
     public static void restoreCommandTraverse(){
-        while (!commandStackCatch.isEmpty()){
-            commandStack.add(commandStackCatch.pop());
-        }
+        currentIndex = commands.size() - 1;
     }
-
-    @Override
-    public void exeAfterRequest(String cmd) {
-        
-        
-    }
-    
 }

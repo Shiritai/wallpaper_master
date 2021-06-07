@@ -36,10 +36,4 @@ public class Search extends Command {
             }
         }
     }
-
-    @Override
-    public void exeAfterRequest(String cmd) {
-        
-        
-    }
 }

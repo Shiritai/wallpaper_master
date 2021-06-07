@@ -13,9 +13,9 @@ import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
 import eroiko.ani.controller.PrimaryControllers.*;
 import eroiko.ani.model.CLI.Console;
-import eroiko.ani.model.CLI.CLIException.ClearConsoleException;
-import eroiko.ani.model.CLI.CLIException.ExitConsoleException;
-import eroiko.ani.model.CLI.CLIException.ShutdownSoftwareException;
+import eroiko.ani.model.CLI.exception.ClearConsoleException;
+import eroiko.ani.model.CLI.exception.ExitConsoleException;
+import eroiko.ani.model.CLI.exception.ShutdownSoftwareException;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
 import eroiko.ani.util.Method.DoubleToStringProperty;
 import eroiko.ani.util.Method.Dumper;
@@ -326,11 +326,13 @@ public class MainController implements Initializable {
         }
         quit = false;
         new TerminalThread(pipIn, terminalThread, Terminal_out, quit);
-        System.out.println("Create by Eroiko, terminal version 1.0 at 2021/06/05" +
-        "\nUse Ctrl + C to cancel the terminal, and Ctrl + L to clear the text." +
-        "\nSupport several linux-based commands such as\n\"ls\", \"cd <../dir_path>\", \"mkdir/rm <dir_path>\", etc." +
-        "\ntry key in \"meow\" and see what will happen OwO\n");
-        console = new Console(currentPath, MainApp.hostName, MainApp.userName, true);
+        System.out.println("Create by Eroiko, terminal version 1.1 at 2021/06/07" +
+        "\nUse Ctrl + C to cancel executing command, and Ctrl + L to clear the text." +
+        "\n\nSupport several linux-based commands." +
+        "\nCheck commands with \"man COMMAND_NAME\" or \"COMMAND_NAME --help\"" +
+        "\nList all available commands with \"man -a\" or \"man --all\"" + 
+        "\nTry key in \"meow\" and see what will happen OwO\n");
+        console = new Console(currentPath, WallpaperUtil::pathDirAndNameCompare, MainApp.hostName, MainApp.userName, true);
     }
 
     @FXML
@@ -407,10 +409,10 @@ public class MainController implements Initializable {
         }
         var fixedWp = wp;
         boolean isPreview = wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_IMAGE_PATH);
-        System.out.println("Is preview ? " + isPreview);
+        System.out.println("[MainController]  Is preview ? " + isPreview);
         final int fixedSerialNumber = serialNumber;
         var stage = new Stage();
-        System.out.println("Open Neo Wallpaper Viewer...");
+        System.out.println("[MainController]  Open Neo Wallpaper Viewer...");
         stage.setTitle("Neo Wallpaper Viewer");
         var wallpaperScene = new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("WallpaperWindow.fxml").toUri().toURL()));
         wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
@@ -652,9 +654,13 @@ public class MainController implements Initializable {
                         killTerminal(); // exit!
                     } catch (ShutdownSoftwareException shutdown){
                         Exit();
+                    } catch (Exception ex){
+                        ex.printStackTrace();
                     }
-                    currentPath = console.getCurrentPath();
-                    initTreeView();
+                    if (console != null){ // 可能已經 exit 或 shutdown
+                        currentPath = console.getCurrentPath();
+                        initTreeView();
+                    }
                 }
                 else {
                     System.out.println(Terminal_in.getText());
@@ -691,7 +697,7 @@ public class MainController implements Initializable {
                 e.consume();
             }
             else if (new KeyCodeCombination(KeyCode.K, KeyCodeCombination.CONTROL_DOWN).match(e)){
-                System.out.println("GUI Terminal Quit : Kill Terminal");
+                System.out.println("[GUI Terminal]  Quit : Kill Terminal");
                 killTerminal();
                 Terminal_in.clear();
                 e.consume();
@@ -703,7 +709,7 @@ public class MainController implements Initializable {
         });
         Terminal_out.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (new KeyCodeCombination(KeyCode.K, KeyCodeCombination.CONTROL_DOWN).match(e)){
-                System.out.println("GUI Terminal Quit : KeyBoard Interrupt");
+                System.out.println("[GUI Terminal]  Quit : KeyBoard Interrupt");
                 killTerminal();
                 Terminal_in.clear();
                 e.consume();
@@ -790,7 +796,7 @@ public class MainController implements Initializable {
                     var tmpData = new myPair<String, String>(
                         WallpaperUtil.capitalize(keyword), downloadAmountChoice.getValue()
                     );
-                    System.out.println("Add " + tmpData.key + " : " + tmpData.value + " to Search Queue");
+                    System.out.println("[Crawler Queue]  Add " + tmpData.key + " : " + tmpData.value + " to Search Queue");
                     searchQueue.getItems().add(tmpData);
                     searchBar.setStyle("-fx-background-color: #ffffff;");
                 }
@@ -894,10 +900,10 @@ public class MainController implements Initializable {
             dir = treeFileExplorer.getSelectionModel().getSelectedItem();
             path = dir.getValue().value.toAbsolutePath();
         } catch (java.lang.NullPointerException ne){
-            System.out.println("No selected item.");
+            System.out.println("[File Explorer (tree)]  No selected item.");
             return;
         }
-        System.out.println(path);
+        System.out.println("[File Explorer (Path)]  " + path);
         if (Files.isDirectory(path.toRealPath().toAbsolutePath())){
             if (me.getClickCount() == 1){
                 var tmp = treeFileExplorer.getSelectionModel().getSelectedItem();

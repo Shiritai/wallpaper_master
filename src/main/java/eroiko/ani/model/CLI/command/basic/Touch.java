@@ -20,7 +20,7 @@ public class Touch extends Command {
     }
 
     @Override
-    public void execute() throws IllegalArgumentException{
+    public void execute() throws IllegalArgumentException {
         if (thisDir.resolve(fileName).toFile().exists()){
             throw new IllegalArgumentException(id.getName() + " : File exist and thus cannot create it!");
         }
@@ -31,11 +31,5 @@ public class Touch extends Command {
                 throw new IllegalArgumentException(id.getName() + " : Failed to write file.");
             }
         }
-    }
-
-    @Override
-    public void exeAfterRequest(String cmd) {
-        
-        
     }
 }

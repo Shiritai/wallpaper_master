@@ -1,6 +1,5 @@
 package eroiko.ani.model.CLI.command.basic;
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -15,7 +14,7 @@ public class Cd extends Command {
     }
 
     @Override
-    public void execute() throws IllegalArgumentException, AccessDeniedException {
+    public void execute() throws IllegalArgumentException {
         if (target.toString().equals("..")){
             thisDir = thisDir.getParent();
             if (thisDir.getNameCount() == 0){
@@ -44,11 +43,5 @@ public class Cd extends Command {
                 throw new IllegalArgumentException(id.getName() + " : File not exist or not a directory");
             }
         }
-    }
-
-    @Override
-    public void exeAfterRequest(String cmd) {
-        
-        
     }
 }

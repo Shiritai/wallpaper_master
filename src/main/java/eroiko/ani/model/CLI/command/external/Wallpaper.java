@@ -1,7 +1,6 @@
 package eroiko.ani.model.CLI.command.external;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 
 import eroiko.ani.controller.MainController;
@@ -17,7 +16,7 @@ public class Wallpaper extends Command {
     }
     
     @Override
-    public void execute() throws IllegalArgumentException, AccessDeniedException {
+    public void execute() throws IllegalArgumentException {
         if (fileInfo.length == 0){
             try {
                 MainController.OpenWallpaper(new eroiko.ani.util.NeoWallpaper.Wallpaper());
@@ -47,11 +46,4 @@ public class Wallpaper extends Command {
             );
         }
     }
-
-    @Override
-    public void exeAfterRequest(String cmd) {
-        
-        
-    }
-
 }

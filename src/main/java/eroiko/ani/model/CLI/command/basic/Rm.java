@@ -1,22 +1,22 @@
 package eroiko.ani.model.CLI.command.basic;
 
 import java.io.IOException;
-import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import eroiko.ani.model.CLI.RequestCommand;
 import eroiko.ani.model.CLI.command.fundamental.*;
+import eroiko.ani.model.CLI.conversation.Consultable;
+import eroiko.ani.model.CLI.conversation.Consulter;
 
-public class Rm extends Command{
+public class Rm extends Command implements Consultable{
     private final String fileName;
     private final int NONE = 0;
     private final int QUERY_DELETE = 1;
     private final String reqMsg = "This directory has child files.\nDo you want to continue? [Y/n]";
-    private RequestCommand rq;
+    private Consulter rq;
     private int state;
 
-    public Rm(RequestCommand rq, String fileName){
+    public Rm(Consulter rq, String fileName){
         super(Type.RM);
         this.rq = rq;
         state = 0;
@@ -24,14 +24,13 @@ public class Rm extends Command{
     }
 
     @Override
-    public void execute() throws IllegalArgumentException, AccessDeniedException{
+    public void execute() throws IllegalArgumentException{
         Path target = thisDir.resolve(fileName);
         if (target.toFile().exists()){ // traverse and delete
             try {
                 try (var dirStream = Files.newDirectoryStream(target)){
                     if (dirStream.iterator().hasNext()){
                         state = QUERY_DELETE;
-                        out.println(reqMsg);
                         rq.pushRequest(this);
                         return;
                     }
@@ -84,5 +83,10 @@ public class Rm extends Command{
         else {
             throw new IllegalArgumentException(id.getName() + " : Canceled!");
         }
+    }
+
+    @Override
+    public String getPushingMessage() {
+        return reqMsg;
     }
 }
