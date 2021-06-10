@@ -349,6 +349,7 @@ public class MusicWithSyamiko implements Initializable {
                 case I -> activateImport();
                 default -> {}
             }
+            e.consume();
         });
         /* 把控制器與撥放器整合才可以實現關閉 binds 以及 listeners */
         stage.setOnCloseRequest(e -> {
@@ -363,15 +364,25 @@ public class MusicWithSyamiko implements Initializable {
             progressBar.valueProperty().unbindBidirectional(progress);
         });
         setPromptLabel();
-        refresh();
+        refreshWithPlayingCheck();
         playMusicButton.setImage(playImage);
     }
     
-    private void refresh(){
+    private void refreshWithPlayingCheck(){
+        /* 測試是否正在撥放 */
+        var tmp = refresh();
+        System.out.println(tmp);
+        new TimeWait(2000);
+        playMusicButton.setImage(tmp == progress.get() ? pauseImage : playImage);
+        System.out.println(progress.get());
+    }
+    
+    private double refresh(){
         playMusicButton.setImage(pauseImage);
         nameOfMusic.set(box.getCurrentMediaName());
         processingHeart.setImage((box.isProcessingMusic()) ? fullHeartImage : emptyHeartImage);
         completeHeart.setImage((box.isCompleteMusic()) ? fullHeartImage : emptyHeartImage);
+        return progress.get();
     }
 
     private void setPromptLabel() {

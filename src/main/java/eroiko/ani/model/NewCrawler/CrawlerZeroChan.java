@@ -131,7 +131,7 @@ public class CrawlerZeroChan extends CrawlerBase{
         try {
             ++timeDelate;
             if (timeDelate > 6){
-                new TimeWait(2000 * (timeDelate + 1));
+                new TimeWait(1000 * (timeDelate + 1));
                 timeDelate--;
             }
             new TimeWait(1000); // 限制性等待
@@ -150,7 +150,7 @@ public class CrawlerZeroChan extends CrawlerBase{
             System.out.println(e.toString());
             System.out.println("Try re-request...");
             timeDelate += 2;
-            new TimeWait(4000); // 限制性等待
+            new TimeWait(2000); // 限制性等待
             return fetchFullLink(url);
         }
     }

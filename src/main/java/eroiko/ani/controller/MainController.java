@@ -256,10 +256,10 @@ public class MainController implements Initializable {
         var file = files.get(0).toPath();
         try {
             if (WallpaperUtil.isImage(file)){ // image
-                OpenWallpaper(new Wallpaper(file));
+                OpenWallpaper(new Wallpaper(file), false);
             }
             else { // directory
-                OpenWallpaper(new Wallpaper(file));
+                OpenWallpaper(new Wallpaper(file), false);
             }
         } catch (IOException e) {
             System.out.println(e.toString());
@@ -390,8 +390,13 @@ public class MainController implements Initializable {
             MusicWithAkari.openMusicWithAkari(tmp.showOpenDialog(null).toPath());
         } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
     }
-
-    public static void OpenWallpaper(Wallpaper wp) throws IOException{
+    
+    /**
+     * @param wp            the Wallpaper to open
+     * @param isPreview     whether to use file choosing functions or not
+     * @throws IOException
+     */
+    public static void OpenWallpaper(Wallpaper wp, boolean isPreview) throws IOException{
         WallpaperController.quit = quit;
         int serialNumber = -1;
         if (wp != null){
@@ -402,8 +407,9 @@ public class MainController implements Initializable {
             wp = Wallpaper.getWallpaper(serialNumber);
         }
         var fixedWp = wp;
-        boolean isPreview = wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_IMAGE_PATH);
-        System.out.println("[MainController]  Is preview ? " + isPreview);
+        boolean prev = isPreview || wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_IMAGE_PATH);
+        System.out.println("[MainController]  Is preview ? " + prev);
+        WallpaperController.isPreview = prev;
         final int fixedSerialNumber = serialNumber;
         var stage = new Stage();
         System.out.println("[MainController]  Open Neo Wallpaper Viewer...");
@@ -420,7 +426,7 @@ public class MainController implements Initializable {
                     fixedWp.leftShift();
                 }
             }
-            if (!isPreview){
+            if (!prev){
                 if (e.getCode() == KeyCode.EQUALS || e.getCode() == KeyCode.UP){
                     if (!fixedWp.isEmpty()){
                         fixedWp.add();
@@ -439,7 +445,10 @@ public class MainController implements Initializable {
         stage.setScene(wallpaperScene);
         stage.getIcons().add(MainApp.icon);
         stage.setOnCloseRequest(e -> {
-            Wallpaper.appendToResultList(fixedSerialNumber);
+            if (!prev){
+                Wallpaper.appendToResultList(fixedSerialNumber);
+                Wallpaper.executeResultAndCleanPreview();
+            }
         });
         stage.show();
     }
@@ -582,7 +591,7 @@ public class MainController implements Initializable {
         imagePreview.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2){
                 try {
-                    OpenWallpaper(theWallpaper);
+                    OpenWallpaper(theWallpaper, true);
                 } catch (IOException e1) {
                     System.out.println(e1.toString());
                 }
@@ -950,7 +959,7 @@ public class MainController implements Initializable {
                         }
                         else if (Dumper.isImage(p)){
                             try {
-                                OpenWallpaper(new Wallpaper(p));
+                                OpenWallpaper(new Wallpaper(p), false);
                             } catch (IOException e1) { System.out.println("Failed to open wallpaper"); }
                         }
                         else if (Dumper.isMusic(p)){
@@ -969,13 +978,13 @@ public class MainController implements Initializable {
         else { // 真正的 FileExplorer 因此完善 OwO
             if (Dumper.isImage(path)){
                 if (me.getClickCount() == 2){
-                    OpenWallpaper(new Wallpaper(path));
+                    OpenWallpaper(new Wallpaper(path), false);
                 }
                 var iv = new ImageView(new Image(path.toFile().toURI().toString()));
                 iv.setOnMouseClicked(e -> {
                     if (e.getClickCount() == 2){
                         try {
-                            OpenWallpaper(new Wallpaper(path));
+                            OpenWallpaper(new Wallpaper(path), false);
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }

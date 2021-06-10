@@ -27,8 +27,10 @@ public class PreferenceController implements Initializable {
     public static boolean keepMusic = false;
     public static boolean randomMusic = false;
     public static boolean minimizedMsg = true;
+    public static boolean terminalDetails = true;
     
     @FXML private CheckBox showWallpapers;
+    @FXML private CheckBox moreRunningDetails;
     @FXML private CheckBox customizeBox;
     @FXML private TextField savingDir;
     @FXML private CheckBox showMinimizedMessage;
@@ -102,6 +104,7 @@ public class PreferenceController implements Initializable {
         //     WallpaperController.showWallpapersAfterCrawling = new_val;
         //     PreferenceController.showWallpapersAfterCrawling.set(new_val);
         // });
+        // moreRunningDetails.selectedProperty().addListener((a, b, c) -> PreferenceController.terminalDetails = c);
 
         keepPlayingMusic.setSelected(keepMusic);
         keepPlayingMusic.selectedProperty().addListener(e -> keepMusic = keepPlayingMusic.isSelected());

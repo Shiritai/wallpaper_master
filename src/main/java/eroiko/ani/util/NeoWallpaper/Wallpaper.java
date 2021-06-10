@@ -22,8 +22,10 @@ public class Wallpaper {
     /* 開放對外存取 Wallpaper 途徑 */
     private static HashMap<Integer, Wallpaper> wallpapersToFile = new HashMap<>(); // 不必排序, 僅要快速訪問 (O(1))
     private static int lastWallpaperNumber = 0;
+
     public static int getWallpaperSerialNumberImmediately(){ return lastWallpaperNumber; }
     public static Wallpaper getWallpaper(int serialNumber){ return wallpapersToFile.get(serialNumber); }
+
     public static int addNewWallpaper(Wallpaper wp){
         wallpapersToFile.put(++lastWallpaperNumber, wp);
         if (!wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_IMAGE_PATH) && 
@@ -42,6 +44,7 @@ public class Wallpaper {
     /* 處理檔案增刪操作用資結 */
     private static myPair<TreeSet<Path>, TreeSet<Path>> resultList = new myPair<>(new TreeSet<>(), new TreeSet<>()); // 選好的資結的重要性 OwO
     private static ArrayList<Path> previewPathRec = new ArrayList<>();
+
     /** Append choices to resultList, i.e. myPair<toAdd, toDelete> */
     public static void appendToResultList(int serialNumber){
         var source = wallpapersToFile.get(serialNumber);
@@ -53,7 +56,6 @@ public class Wallpaper {
                 resultList.value.add(wpTri.third);
             }
         }
-        System.out.println("Pushed result into result list");
     }
     /** 執行 resultList 指定的複製, 刪除 */
     public static void executeResultAndCleanPreview(){
@@ -118,6 +120,7 @@ public class Wallpaper {
                 System.out.println(e.toString());
             }
         });
+        System.out.println("Wallpaper choosing has been executed successfully.");
     }
     
     /* 實例部分 */

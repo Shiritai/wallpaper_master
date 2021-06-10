@@ -26,8 +26,9 @@ public enum Type {
             },
             new Description [] {
                 new Description(
-                    "-a --all".split(" "), 
-                    "Print all available commands."
+                    "-a --all".split(" "), new String [] {
+                        "Print all available commands."
+                    }
                 ),
             }
         )
@@ -64,16 +65,20 @@ public enum Type {
             },
             new Description [] {
                 new Description(
-                    "<NO_PARAMETER> -s --sorted".split(" "), 
-                    "the order determined by the software designer."
+                    "<NO_PARAMETER> -s --sorted".split(" "), new String [] {
+                        "The order determined by the software designer."
+                    }
                 ),
                 new Description(
-                    "-n --normal".split(" "),
-                    "the alphabetical order."
+                    "-n --normal".split(" "), new String [] {
+                        "The alphabetical order.",
+                        "Regardless of whether it's upper or lower case."
+                    }
                 ),
                 new Description(
-                    "-p --path".split(" "),
-                    "the order determined by java.nio.Path class."
+                    "-p --path".split(" "), new String [] {
+                        "The order determined by java.nio.Path class."
+                    }
                 )
             }
         )
@@ -180,16 +185,18 @@ public enum Type {
         }), new Descriptions(
             new String [] {
                 "Use Wallpaper Master Crawler to fetch Wallpapers with specified parameters.",
-                "Noted that there are multiple different crawlers in Wallpaper Master."
             },
             new Description [] {
                 new Description(
-                    "PAGE_NUMBER".split(" "), 
-                    "The integer that determine the pages which a single crawler should walk through."
+                    "PAGE_NUMBER".split(" "), new String [] {
+                        "The integer that determine the pages which a single crawler should walk through.",
+                        "Noted that there are multiple different crawlers in Wallpaper Master."
+                    }
                 ),
                 new Description(
-                    "ARTWORK_KEYWORD".split(" "), 
-                    "The keywords according to what you'd like to search."
+                    "ARTWORK_KEYWORD".split(" "), new String [] {
+                        "The keywords according to what you'd like to search.",
+                    }
                 ),
             }
         )
@@ -215,22 +222,41 @@ public enum Type {
             },
             new Description [] {
                 new Description(
-                    "--this".split(" "), 
-                    "Open Wallpaper Viewer from this folder."
+                    "-p".split(" "), new String [] {
+                        "Open Wallpaper Viewer in preview mode, which means you can't add nor delete wallpapers."
+                    }
                 ),
                 new Description(
-                    "--new".split(" "), 
-                    "Open Wallpaper View w.r.t this newest Wallpapers from Crawler or the last opened Wallpaper Viewer."
+                    "--this".split(" "), new String [] {
+                        "Open Wallpaper Viewer from this folder."
+                    }
+                ),
+                new Description(
+                    "--new".split(" "), new String [] {
+                        "Open Wallpaper View w.r.t this newest Wallpapers from Crawler or the last opened Wallpaper Viewer."
+                    }
+                ),
+                new Description(
+                    "--clean".split(" "), new String [] {
+                        "Clean all the temporary files stored after your downloading.", 
+                        "Wish you not do this before you choose your wallpapers."
+                    }
                 ),
             }
         )
+    )),
+
+    WM(260, new Document(
+        new Synopsis(new Name("wm", "wallpaper master functions"), new Name [] {
+            new Name("--about", "Open About window."),
+            new Name("--music", "Open Music with Syamiko."),
+            new Name("--pref", "Open Preference window."),
+        })
     )),
     ;
     
     final int code;
     final Document doc;
-    // final String name;
-    // final String name;
     
     private Type(int code, Document doc){
         this.code = code;

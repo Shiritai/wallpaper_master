@@ -287,6 +287,7 @@ public class MusicWithAkari implements Initializable {
                 case DIGIT0, NUMPAD0 -> { play(CURRENT); refresh(); }
                 default -> {}
             }
+            e.consume();
         });
 
         map.get(mediaBoxPath).setOnCloseRequest(e -> {

@@ -151,6 +151,7 @@ public class Console {
                             }
                         });
                     }
+                    case "wm" -> new Wm(stripHeadingCommand(cmd)).execute();
                     default -> consoleOut.println("Command not defined!");
                 }
             } catch (IllegalArgumentException ile){

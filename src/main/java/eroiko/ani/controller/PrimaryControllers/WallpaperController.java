@@ -22,7 +22,7 @@ import javafx.scene.text.Text;
 public class WallpaperController implements Initializable{
     public static boolean quit;
     public static Path currentPath;
-    public static boolean showWallpapersAfterCrawling;
+    public static boolean isPreview = false; // 用來傳遞是否已 Preview 開啟的變數, 每次調用 WallpaperView 前修改之, 基本交給 MainController.OpenWallpaper 處理
     
     public static final int REFRESH = 0;
     public static final int NEXT = 1;
@@ -81,10 +81,10 @@ public class WallpaperController implements Initializable{
             }
         });
         lastSize = wp.getSize();
-        viewMode = wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_IMAGE_PATH);
+        viewMode = isPreview;
+        initFont();
         refresh();
         setMouseBehavior();
-        initFont();
     }
     
     private void setMouseBehavior(){

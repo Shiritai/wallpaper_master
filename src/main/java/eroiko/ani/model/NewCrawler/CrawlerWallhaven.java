@@ -113,7 +113,7 @@ public class CrawlerWallhaven extends CrawlerBase {
 
     private String fetchFullLink(String url){
         try {
-            new TimeWait(4000);
+            new TimeWait(500);
             Document doc = Jsoup.connect(url)
                 .userAgent(CrawlerBase.UserAgent)
                 .timeout(10000)
@@ -128,7 +128,7 @@ public class CrawlerWallhaven extends CrawlerBase {
         } catch (Exception e){
             System.out.println(e.toString());
             System.out.println("Try re-request...");
-            new TimeWait(2000);
+            new TimeWait(1000);
             return fetchFullLink(url);
         }
     }

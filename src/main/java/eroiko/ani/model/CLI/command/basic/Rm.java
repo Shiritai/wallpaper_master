@@ -45,11 +45,11 @@ public class Rm extends Command implements Consultable{
         }
     }
 
-    private void delete(Path cur){
+    public static void delete(Path cur){
         if (Files.isDirectory(cur)){
             try {
                 try (var dirStream = Files.newDirectoryStream(cur)){
-                    dirStream.forEach(this::delete);
+                    dirStream.forEach(Rm::delete);
                 }
             } catch (IOException ie){ ie.printStackTrace(); }
             cur.toFile().delete();
