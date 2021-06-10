@@ -6,9 +6,9 @@ import java.nio.file.Path;
 
 import eroiko.ani.model.CLI.command.fundamental.*;
 
-/** 有待在 Windows 上更好的實作, 目前這個指令只能在 Linux 下順利運行 
- * <p>
- * 似乎是因為在 Windows 下需要取得 Admin 才可使用 link
+/** 
+ * 有待在 Windows 上更好的實作, 目前這個指令只能在 Linux 下順利運行 
+ * <p> 似乎是因為在 Windows 下需要取得 Admin 才可使用 link
  */
 public class Ln extends Command {
     private final Path dirName;

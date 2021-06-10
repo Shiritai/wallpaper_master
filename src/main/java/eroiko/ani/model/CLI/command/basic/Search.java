@@ -9,6 +9,9 @@ import eroiko.ani.model.CLI.command.fundamental.*;
 public class Search extends Command {
     private final String keyword;
 
+    /**
+     * 列出該路徑下所有擁有指定 {@code keyword} 的檔案與資料夾
+     */
     public Search(String keyword){
         super(Type.SEARCH);
         this.keyword = keyword;
@@ -16,7 +19,7 @@ public class Search extends Command {
     
     @Override
     public void execute(){
-        search(thisDir);
+        search(thisDir); // recur
     }
 
     /** 未處理 AccessDeniedException */

@@ -1,14 +1,15 @@
 package eroiko.ani.model.CLI.command.fundamental;
 
 import eroiko.ani.model.CLI.command.fundamental.Document.*;
-// import java.util.function.Supplier;
 
 /** 
  * 支持指令的類型辨識、查詢文件等操作
+ * <p> 使用自創 Document classes 完成文件的印出格式
  * <p> Documentation is horrible...QQ
  */
 public enum Type {
     /* Fundamental */
+    /* 所有不可視 enum 皆 <= 0 */
     COMMAND(0, new Document(
         new Synopsis(new Name("command", "This is the base of all commands, you shouldn't see this!"))
     )),
@@ -51,7 +52,7 @@ public enum Type {
 
     HISTORY(67, new Document(
         new Synopsis(new Name("history", "Eroiko History Library"), new Name [] {
-            new Name("<NO_PARAMETER>", "Search all your history commands start from activating this console.")
+            new Name("<NO_PARAMETER>", "List all history commands start from activating this console.")
         })
     )),
 
@@ -152,25 +153,25 @@ public enum Type {
         new Synopsis(new Name("shell", "This is an inner type, you shouldn't see this!"))
     )),
 
-    CMD(131, new Document(
+    CMD(130, new Document(
         new Synopsis(new Name("cmd", "call command prompt"), new Name []{
             new Name("LINE_TO_EXECUTE", "Execute LINE_TO_EXECUTE use local command prompt if exist.")
         })
     )),
     
-    POWERSHELL(132, new Document(
+    POWERSHELL(131, new Document(
         new Synopsis(new Name("powershell", "call powershell"), new Name []{
             new Name("LINE_TO_EXECUTE", "Execute LINE_TO_EXECUTE use local powershell if exist.")
         })
     )),
     
-    WINDOWS_TERMINAL(133, new Document(
+    WINDOWS_TERMINAL(132, new Document(
         new Synopsis(new Name("windows terminal", "call windows terminal"), new Name []{
             new Name("LINE_TO_EXECUTE", "Execute LINE_TO_EXECUTE use local windows terminal if exist.")
         })
     )),
     
-    BASH(134, new Document(
+    BASH(133, new Document(
         new Synopsis(new Name("bash", "call bash"), new Name []{
             new Name("LINE_TO_EXECUTE", "Execute LINE_TO_EXECUTE use local bash if exist.")
         })
@@ -263,6 +264,12 @@ public enum Type {
         this.doc = doc;
     }
     
+    public final int getCode(){ return this.code; }
+    public final String getName(){ return this.doc.getName(); }
+    public final String getDoc(){ return this.doc.toString(); }
+    public final String getBriefSynopsis(){ return this.doc.getBriefSynopsis(); }
+    
+    /* 舊寫法 : 使用 java.util.function.Suppler */
     // private final Supplier<String> manualDoc;
     // private Type(int code, String name, Supplier<String> manualDoc){
     //     this.code = code;
@@ -270,12 +277,6 @@ public enum Type {
     //     this.manualDoc = manualDoc;
     // }
     // public final String getDoc(){ return manualDoc.get(); }
-    
-    public final int getCode(){ return this.code; }
-    public final String getName(){ return this.doc.getName(); }
-    public final String getDoc(){ return this.doc.toString(); }
-    public final String getBriefSynopsis(){ return this.doc.getBriefSynopsis(); }
 
     // public final String getName(){ return this.name; }
-
 }

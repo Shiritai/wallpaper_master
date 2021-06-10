@@ -15,7 +15,7 @@ public class Ls extends Command {
 
     /** 
      * 會直接列印例外
-     * <p> 如果可以, 請調用其他執行續來執行 
+     * <p> 如果可以, 請調用其他執行緒來執行 
      */
     public Ls(Comparator<Path> comparator, String cmdLine){
         super(Type.LS);
@@ -28,7 +28,7 @@ public class Ls extends Command {
         if (cmdLine == null){
             printList(comparator);
         }
-        else if (cmdLine.equals("-s") || cmdLine.equals("--sorted")){ // 照 WallpaperUtil.pathDirAndNameCompare 排序
+        else if (cmdLine.equals("-s") || cmdLine.equals("--sorted")){ // 照指定 Comparator 排序
             printList(comparator);
         }
         else if (cmdLine.equals("-n") || cmdLine.equals("--normal")){

@@ -13,6 +13,12 @@ public class Touch extends Command {
     private final String fileName;
     private final String context;
 
+    /**
+     * 此 Touch 並非 Linux 下的 touch 指令
+     * <P> 目前只擁有創建檔案 {@code fileName} 並寫入字串 {@code context} 的功能
+     * @param fileName  創建檔案檔名
+     * @param context   檔案內容
+     */
     public Touch(String fileName, String context){
         super(Type.TOUCH);
         this.fileName = fileName;

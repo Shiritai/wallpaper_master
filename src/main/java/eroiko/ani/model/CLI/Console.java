@@ -88,9 +88,9 @@ public class Console {
     
     /**
      * @param cmd the command to execute
-     * @throws ShutdownSoftwareException when user try shutdown this software
-     * @throws ClearConsoleException when need to clear terminal text space
-     * @throws ExitConsoleException when user try exit this console
+     * @throws ShutdownSoftwareException    when user try shutdown this software
+     * @throws ClearConsoleException        when need to clear terminal text space
+     * @throws ExitConsoleException         when user try exit this console
      */
     public void readLine(String cmd) throws Exception{
         if (rq.checkNeedRequest()){
@@ -111,7 +111,7 @@ public class Console {
                 switch (cmdLine[0]){
                     /* Fundamental */
                     case "" -> consoleOut.println(toString()); // this is when the user pressed ENTER
-                    case "man" -> new Man(stripHeadingCommand(cmd)).execute(); // this is when the user pressed ENTER
+                    case "man" -> new Man(stripHeadingCommand(cmd)).execute();
 
                     /* Basic */
                     case "cd" -> new Cd(stripHeadingCommand(cmd)).execute();
@@ -122,10 +122,10 @@ public class Console {
                     case "ls" -> service.submit(() -> new Ls(compPath, stripHeadingCommand(cmd)).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
                     case "ln" -> new Ln(cmdLine[1], cmdLine[2]).execute(); // 可用性未知
                     case "search" -> service.submit(() -> new Search(cmdLine[1]).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
-                    case "clear" -> new Clear().callHost(); // 之後可能會去實現
-                    case "exit" -> new Exit().callHost(); // 終止程式
+                    case "clear" -> new Clear().callHost();
+                    case "exit" -> new Exit().callHost(); // 終止 Console
                     case "history" -> new History().execute();
-                    case "echo" -> consoleOut.println(stripHeadingCommand(cmd)); // 若遇到無空白的情況, cmd.indexOf(' ') + 1 = 0, 表輸出 echo
+                    case "echo" -> consoleOut.println(stripHeadingCommand(cmd));
                     case "shutdown" -> new Shutdown().callHost();
 
                     /* Special */
@@ -161,7 +161,7 @@ public class Console {
     }
 
     /** Strip heading command, return {@code null} if the input a pure command with no parameter */
-    public String stripHeadingCommand(String str){
+    public String stripHeadingCommand(String str){ // 若遇到無空白的情況, cmd.indexOf(' ') + 1 = 0, 表輸出該指令字串
         if (str.indexOf(' ') == -1){
             return null;
         }

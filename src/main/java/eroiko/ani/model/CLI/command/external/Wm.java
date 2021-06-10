@@ -11,7 +11,7 @@ public class Wm extends Command {
     
     /** 
      * WM stands for the acronym of Wallpaper Master
-     * <p> This command is for software manipulation
+     * <p> This command is for Wallpaper Master manipulation
      */
     public Wm(String toDo){
         super(Type.WM);
