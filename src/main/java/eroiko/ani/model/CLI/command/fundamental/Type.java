@@ -111,7 +111,7 @@ public enum Type {
 
     LN(73, new Document(
         new Synopsis(new Name("ln", "make links between files"), new Name [] {
-            new Name("TARGET LINK_NAME", "Create a link to TARGET with the name LINK_NAME.")
+            new Name("\"TARGET\" \"LINK_NAME\"", "Create a link to TARGET with the name LINK_NAME.")
         })
     )),
 
