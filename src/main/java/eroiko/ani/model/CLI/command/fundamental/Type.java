@@ -5,7 +5,7 @@ import eroiko.ani.model.CLI.command.fundamental.Document.*;
 /** 
  * 支持指令的類型辨識、查詢文件等操作
  * <p> 使用自創 Document classes 完成文件的印出格式
- * <p> Documentation is horrible...QQ
+ * <p> Documentation is cool...QQ
  */
 public enum Type {
     /* Fundamental */
@@ -92,14 +92,14 @@ public enum Type {
     )),
 
     RM(70, new Document(
-        new Synopsis(new Name("rm", "remove files or directories"), new Name [] {
-            new Name("[FILE]", "Remove (unlink) the FILE.")
+        new Synopsis(new Name("rm", "remove a file or a directory"), new Name [] {
+            new Name("FILE", "Remove (unlink) the FILE.")
         })
     )),
 
     SEARCH(71, new Document(
         new Synopsis(new Name("search", "search files and directories"), new Name [] {
-            new Name("[NAME_TOKEN]", "search all files and directories under this path with specific NAME_TOKEN.")
+            new Name("NAME_TOKEN", "search all files and directories under this path with one specific NAME_TOKEN.")
         })
     )),
 
@@ -214,12 +214,11 @@ public enum Type {
     WALLPAPER(259, new Document(
         new Synopsis(new Name("wallpaper", "Open Wallpaper Viewer"), new Name [] {
             new Name("<NO_PARAMETER>", "Open Wallpaper View with default wallpaper path."),
-            new Name("KEYWORD", "Open Wallpaper View w.r.t KEYWORD, see description below."),
-            new Name("IMAGE_DIRECTORY", "Open Wallpaper View from IMAGE_DIRECTORY."),
-            new Name("IMAGE_FILE", "Open Wallpaper View from IMAGE_FILE."),
+            new Name("[OPTION] IMAGE_DIRECTORY", "Open Wallpaper View from IMAGE_DIRECTORY."),
+            new Name("[OPTION] IMAGE_FILE", "Open Wallpaper View from IMAGE_FILE."),
         }), new Descriptions(
             new String [] {
-                "Below are KEYWORD functions",
+                "Below are the available OPTIONs.",
             },
             new Description [] {
                 new Description(

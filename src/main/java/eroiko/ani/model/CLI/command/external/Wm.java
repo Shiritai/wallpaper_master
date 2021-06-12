@@ -24,7 +24,7 @@ public class Wm extends Command {
             case "--about" -> MainController.OpenAboutWindow();
             case "--pref" -> MainController.OpenPreferenceWindow();
             case "--music" -> MusicWithSyamiko.openMusicWithSyamiko();
-            default -> throw new IllegalArgumentException(id.getName() + " : Invalid parameter option.");
+            default -> throw illegalParaStr("Invalid parameter option.");
         }
     }
     

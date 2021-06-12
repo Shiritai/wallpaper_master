@@ -3,6 +3,7 @@ package eroiko.ani.model.CLI.command.basic;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.regex.Pattern;
 
 import eroiko.ani.model.CLI.command.fundamental.*;
 
@@ -14,10 +15,15 @@ public class Ln extends Command {
     private final Path dirName;
     private final Path linkName;
     
-    public Ln(String dirName, String linkName){
+    public Ln(String parameters){
         super(Type.LN);
-        this.dirName = thisDir.resolve(dirName);
-        this.linkName = thisDir.resolve(linkName);
+        Pattern.compile("\"+\s\"").matcher(parameters).replaceAll("\" \"");
+        var tmp = parameters.split(" ");
+        if (tmp.length != 2){
+            throw illegalParaStr();
+        }
+        this.dirName = thisDir.resolve(tmp[0]);
+        this.linkName = thisDir.resolve(tmp[1]);
     }
 
     @Override
@@ -30,7 +36,7 @@ public class Ln extends Command {
             }
         }
         else {
-            throw new IllegalArgumentException(id.getName() + " : Bad directory or link name conflict.");
+            throw illegalParaStr("Bad directory or link name conflict.");
         }
     }
 }

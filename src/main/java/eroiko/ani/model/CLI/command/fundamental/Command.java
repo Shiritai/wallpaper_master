@@ -36,6 +36,10 @@ public abstract class Command {
     abstract public void execute() throws IllegalArgumentException;
 
     public final Type getType(){ return id; }
+
+    public IllegalArgumentException illegalParaStr(){ return new IllegalArgumentException(id.getName() + " : Lost or too much parameters"); }
+    public IllegalArgumentException illegalParaStr(String content){ return new IllegalArgumentException(id.getName() + " : " + content); }
+    public IllegalArgumentException illegalParaStr(String formerExceptionMsg, String content){ return new IllegalArgumentException(formerExceptionMsg + "\n" + id.getName() + " : " + content); }
     
     public static Path getCurrentPath(){
         thisDir = thisDir.normalize();

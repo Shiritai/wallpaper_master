@@ -27,6 +27,10 @@ public class Rm extends Command implements Consultable{
     public void execute() throws IllegalArgumentException{
         Path target = thisDir.resolve(fileName);
         if (target.toFile().exists()){ // traverse and delete
+            if (!Files.isDirectory(target)){
+                target.toFile().delete();
+                return;
+            }
             try {
                 try (var dirStream = Files.newDirectoryStream(target)){
                     if (dirStream.iterator().hasNext()){
@@ -41,7 +45,7 @@ public class Rm extends Command implements Consultable{
             } catch (IOException ie){ ie.printStackTrace(); }
         }
         else {
-            throw new IllegalArgumentException("rm failed, file or directory not exist!");
+            throw illegalParaStr("rm failed, file or directory not exist!");
         }
     }
 
@@ -63,7 +67,7 @@ public class Rm extends Command implements Consultable{
     public void exeAfterRequest(String cmd) throws IllegalArgumentException {
         if (cmd.equals("") || cmd.toLowerCase().trim().equals("y")){
             switch (state){
-                case NONE -> throw new IllegalArgumentException(id.getName() + " : NONE, some error happens!");
+                case NONE -> throw illegalParaStr("NONE, no required request!");
                 case QUERY_DELETE -> {
                     out.println(id.getName() + " : executed.");
                     Path target = thisDir.resolve(fileName);
@@ -75,13 +79,13 @@ public class Rm extends Command implements Consultable{
                         } catch (IOException ie){ ie.printStackTrace(); }
                     }
                     else {
-                        throw new IllegalArgumentException(id.getName() + " : File or directory not exist!");
+                        throw illegalParaStr("File or directory not exist!");
                     }
                 }
             }
         }
         else {
-            throw new IllegalArgumentException(id.getName() + " : Canceled!");
+            throw illegalParaStr("Canceled.");
         }
     }
 

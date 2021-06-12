@@ -38,7 +38,7 @@ public class Ls extends Command {
             printList(Path::compareTo);
         }
         else {
-            out.println(id.getName() + " : Illegal parameter!");
+            out.println(illegalParaStr().getMessage());
         }
     }
     

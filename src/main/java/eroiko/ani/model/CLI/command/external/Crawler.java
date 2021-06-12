@@ -38,7 +38,7 @@ public class Crawler extends Command {
             out.println("[Crawler Manager]  Close...");
         }
         else {
-            throw new IllegalArgumentException(id.getName() + " : Invalid keywords.");
+            throw illegalParaStr("Invalid keywords.");
         }
     }
 }

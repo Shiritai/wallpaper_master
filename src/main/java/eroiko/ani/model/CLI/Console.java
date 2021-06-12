@@ -108,35 +108,36 @@ public class Console {
                 return;
             }
             try {
+                var passingStr = stripHeadingCommand(cmd);
                 switch (cmdLine[0]){
                     /* Fundamental */
                     case "" -> consoleOut.println(toString()); // this is when the user pressed ENTER
-                    case "man" -> new Man(stripHeadingCommand(cmd)).execute();
+                    case "man" -> new Man(passingStr).execute();
 
                     /* Basic */
-                    case "cd" -> new Cd(stripHeadingCommand(cmd)).execute();
-                    case "mkdir" -> new Mkdir(cmdLine[1]).execute();
-                    case "touch" -> new Touch(cmdLine[1], cmdLine[2]).execute();
-                    case "rm" -> new Rm(rq, cmdLine[1]).execute();
-                    case "cat" -> new Cat(cmdLine[1]).execute();
-                    case "ls" -> service.submit(() -> new Ls(compPath, stripHeadingCommand(cmd)).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
-                    case "ln" -> new Ln(cmdLine[1], cmdLine[2]).execute(); // 可用性未知
-                    case "search" -> service.submit(() -> new Search(cmdLine[1]).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
+                    case "cd" -> new Cd(passingStr).execute();
+                    case "mkdir" -> new Mkdir(passingStr).execute();
+                    case "touch" -> new Touch(passingStr).execute();
+                    case "rm" -> new Rm(rq, passingStr).execute();
+                    case "cat" -> new Cat(passingStr).execute();
+                    case "ls" -> service.submit(() -> new Ls(compPath, passingStr).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
+                    case "ln" -> new Ln(passingStr).execute(); // 可用性有疑慮
+                    case "search" -> service.submit(() -> new Search(passingStr).execute()); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
                     case "clear" -> new Clear().callHost();
                     case "exit" -> new Exit().callHost(); // 終止 Console
                     case "history" -> new History().execute();
-                    case "echo" -> consoleOut.println(stripHeadingCommand(cmd));
+                    case "echo" -> consoleOut.println(passingStr);
                     case "shutdown" -> new Shutdown().callHost();
 
                     /* Special */
                     case "meow" -> new Meow().execute();
-                    case "cmd", "cmd.exe" -> service.submit(() -> new Cmd(stripHeadingCommand(cmd)).execute());
-                    case "powershell.exe", "powershell", "pwsh" -> service.submit(() -> new PowerShell(stripHeadingCommand(cmd)).execute());
-                    case "wt", "wt.exe" -> service.submit(() -> new WindowsTerminal(stripHeadingCommand(cmd)).execute());
-                    case "bash" -> service.submit(() -> new Bash(stripHeadingCommand(cmd)).execute());
+                    case "cmd", "cmd.exe" -> service.submit(() -> new Cmd(passingStr).execute());
+                    case "powershell.exe", "powershell", "pwsh" -> service.submit(() -> new PowerShell(passingStr).execute());
+                    case "wt", "wt.exe" -> service.submit(() -> new WindowsTerminal(passingStr).execute());
+                    case "bash" -> service.submit(() -> new Bash(passingStr).execute());
                     /* External */
-                    case "wallpaper" -> new Wallpaper(stripHeadingCommand(cmd)).execute();
-                    case "music" -> new Music(stripHeadingCommand(cmd)).execute();
+                    case "wallpaper" -> new Wallpaper(passingStr).execute();
+                    case "music" -> new Music(passingStr).execute();
                     case "crawler" -> {
                         service.submit(() -> {
                             try {
@@ -144,14 +145,14 @@ public class Console {
                                 new Crawler(number, cmd.substring(cmd.indexOf(' ', cmd.indexOf(' ') + 1) + 1)).execute();
                             } catch (NumberFormatException ne){
                                 try {
-                                    new Crawler(stripHeadingCommand(cmd)).execute();
+                                    new Crawler(passingStr).execute();
                                 } catch (IllegalArgumentException ile){
                                     consoleOut.println(ile.getMessage() + "\nIllegal argument, please try again.");
                                 }
                             }
                         });
                     }
-                    case "wm" -> new Wm(stripHeadingCommand(cmd)).execute();
+                    case "wm" -> new Wm(passingStr).execute();
                     default -> consoleOut.println("Command not defined!");
                 }
             } catch (IllegalArgumentException ile){

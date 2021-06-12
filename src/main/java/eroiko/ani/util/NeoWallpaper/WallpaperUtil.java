@@ -56,15 +56,6 @@ public class WallpaperUtil {
         return a.toString().compareTo(b.toString()); // 這個不是直接返回這個即可
     }
 
-    // /* 取得各桌布的 Serial Number 直接建成 Map 比較有效率... */
-    // public static Integer takeWallpaperSerialNumber(Path p){
-    //     Matcher m1 = numberMatcher.matcher(p.toString());
-    //     if (m1.find()){
-    //         return Integer.parseInt(m1.group(0));
-    //     }
-    //     throw new IllegalArgumentException("Fail to take wallpaper's serial Number");
-    // }
-
     public static boolean isImage(Path pathOfFile){
         return Dumper.imagePattern.matcher(pathOfFile.getFileName().toString()).find();
     }
@@ -145,6 +136,7 @@ public class WallpaperUtil {
     /** 取得系統小圖示, 這野太方便... */
     public static ImageView fetchIconUsePath(Path path){ // 真方便
         var tmp = FileSystemView.getFileSystemView().getSystemIcon(path.toFile());
+        // var tmp2 = ShellFolder.getShellFolder(path.toFile()).getIcon(true);
         var tmpBufferImage = new java.awt.image.BufferedImage(
             tmp.getIconWidth(),
             tmp.getIconHeight(),
@@ -152,5 +144,6 @@ public class WallpaperUtil {
         );
         tmp.paintIcon(null, tmpBufferImage.getGraphics(), 0, 0);
         return new ImageView(SwingFXUtils.toFXImage(tmpBufferImage, null));
+        // return new ImageView(SwingFXUtils.toFXImage(image, null));
     }
 }

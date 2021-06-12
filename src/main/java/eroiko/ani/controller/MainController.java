@@ -17,6 +17,7 @@ import eroiko.ani.model.CLI.exception.ClearConsoleException;
 import eroiko.ani.model.CLI.exception.ExitConsoleException;
 import eroiko.ani.model.CLI.exception.ShutdownSoftwareException;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
+import eroiko.ani.util.Method.CarryReturn;
 import eroiko.ani.util.Method.DoubleToStringProperty;
 import eroiko.ani.util.Method.Dumper;
 import eroiko.ani.util.Method.TimeWait;
@@ -910,13 +911,16 @@ public class MainController implements Initializable {
     }
     
     private void treeViewSelected(MouseEvent me) throws IOException{
+        if (me.getPickResult().getIntersectedNode().toString().contains("null")){
+            System.out.println("[File Explorer (Tree)]  No selected item.");
+            treeFileExplorer.getSelectionModel().clearSelection();
+        }
         Path path;
         TreeItem<myPair<String, Path>> dir;
         try {
             dir = treeFileExplorer.getSelectionModel().getSelectedItem();
             path = dir.getValue().value.toAbsolutePath();
         } catch (java.lang.NullPointerException ne){
-            System.out.println("[File Explorer (tree)]  No selected item.");
             return;
         }
         System.out.println("[File Explorer (Path)]  " + path);
@@ -925,7 +929,6 @@ public class MainController implements Initializable {
                 var tmp = treeFileExplorer.getSelectionModel().getSelectedItem();
                 if (tmp != null){
                     initTreeDir(tmp);
-                    tmp.setExpanded(true);
                 }
             }
 
@@ -942,14 +945,14 @@ public class MainController implements Initializable {
             var list = new ArrayList<VBox>(paths.size());
             paths.forEach(p -> {
                 var iconView = WallpaperUtil.fetchIconUsePath(p);
-                iconView.setFitHeight(58);
-                iconView.setFitWidth(58);
+                iconView.setFitHeight(36);
+                iconView.setFitWidth(36);
                 
-                var name = new Text(p.getFileName().toString());
-                name.setStyle("-fx-font: 11 system;");
+                var name = new Text(CarryReturn.addCarryReturnForAbout(p.getFileName().toString(), 20, 0));
+                name.setFont(MainApp.notoSansCJKLight12);
                 
                 var vbox = new VBox(iconView, name);
-                vbox.setAlignment(Pos.CENTER);
+                vbox.setAlignment(Pos.TOP_CENTER);
                 vbox.setOnMouseClicked(e -> {
                     if (e.getClickCount() == 2){
                         if (Files.isDirectory(p)){
@@ -973,6 +976,8 @@ public class MainController implements Initializable {
                 list.add(vbox);
             });
             viewImageTileTable.getChildren().addAll(list);
+            viewImageTileTable.prefHeightProperty().bind(scrollableTile.heightProperty()); // 自由改變高
+            viewImageTileTable.prefWidthProperty().bind(scrollableTile.widthProperty()); // 自由改變寬
             scrollableTile.setContent(viewImageTileTable);
         }
         else { // 真正的 FileExplorer 因此完善 OwO

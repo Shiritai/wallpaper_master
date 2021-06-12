@@ -28,7 +28,7 @@ public class Music extends Command {
             try {
                 MusicWithAkari.openMusicWithAkari(tmp);
             } catch (IllegalArgumentException ile){
-                throw new IllegalArgumentException(ile.getMessage() + "\n" + id.getName() + " : File not exist, bad file or is a directory.");
+                throw illegalParaStr(ile.getMessage(), "File not exist, bad file or is a directory.");
             }
         }
     }

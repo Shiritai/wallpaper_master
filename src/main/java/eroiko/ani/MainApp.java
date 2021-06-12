@@ -54,6 +54,7 @@ public class MainApp extends Application{
     public static Font firaCode20;
     public static Font firaCodeBold24;
     public static Font bookAntiquaItalic25;
+    public static Font notoSansCJKLight12;
     public static Font notoSansCJK15;
     public static Font notoSansCJK22;
 
@@ -76,6 +77,7 @@ public class MainApp extends Application{
         firaCode20 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 20.);
         firaCodeBold24 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Bold.ttf").toFile()), 24.);
         bookAntiquaItalic25 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/Book Antiqua Italic.ttf").toFile()), 25.);
+        notoSansCJKLight12 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/NotoSansCJKtc-Light.otf").toFile()), 12.);
         notoSansCJK15 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/NotoSansCJKtc-Regular.otf").toFile()), 15.);
         notoSansCJK22 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/NotoSansCJKtc-Regular.otf").toFile()), 22.);
 
@@ -122,11 +124,8 @@ public class MainApp extends Application{
         mainStage.setTitle("Wallpaper Master");
         mainStage.setScene(mainScene);
         mainStage.setResizable(false);
+        mainStage.setOnCloseRequest(e -> closeMainStage());
         mainStage.show();
-
-        mainStage.setOnCloseRequest(e -> {
-            closeMainStage();
-        });
     }
     
     public static void closeMainStage(){

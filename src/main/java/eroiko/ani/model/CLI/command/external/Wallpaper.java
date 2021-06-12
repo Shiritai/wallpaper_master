@@ -22,14 +22,14 @@ public class Wallpaper extends Command {
             try {
                 MainController.OpenWallpaper(new eroiko.ani.util.NeoWallpaper.Wallpaper(), false);
             } catch (IOException e) {
-                throw new IllegalArgumentException(id.getName() + " : Unknown error");
+                throw illegalParaStr("Unknown error");
             }
         }
         else if (fileInfo.equals("-p")){
             try {
                 MainController.OpenWallpaper(new eroiko.ani.util.NeoWallpaper.Wallpaper(), true);
             } catch (IOException e) {
-                throw new IllegalArgumentException(id.getName() + " : Unknown error");
+                throw illegalParaStr("Unknown error");
             }
         }
         else if (fileInfo.equals("--clean")){
@@ -56,7 +56,7 @@ public class Wallpaper extends Command {
                     MainController.OpenWallpaper(wp, fileInfo.contains("-p"));
                 }
             } catch (IllegalArgumentException ile) {
-                throw new IllegalArgumentException(ile.getMessage() + "\n" + id.getName() + " : Wallpaper not exist.");    
+                throw illegalParaStr(ile.getMessage(), "Wallpaper not exist.");    
             } catch (IOException e){ e.printStackTrace(); }
         }
     }

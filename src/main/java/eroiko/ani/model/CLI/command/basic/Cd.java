@@ -30,7 +30,7 @@ public class Cd extends Command {
                         thisDir = unchecked;
                     }
                     else {
-                        throw new IllegalArgumentException(id.getName() + " : Link corrupt");
+                        throw illegalParaStr("Link corrupt.");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -40,7 +40,7 @@ public class Cd extends Command {
                 thisDir = target;
             }
             else {
-                throw new IllegalArgumentException(id.getName() + " : File not exist or not a directory");
+                throw illegalParaStr("File not exist or not a directory.");
             }
         }
     }

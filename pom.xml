@@ -21,6 +21,13 @@
   <dependencies>
 
       <dependency>
+        <groupId>org.jclarion</groupId>
+        <artifactId>image4j</artifactId>
+        <version>0.7</version>
+      </dependency>
+
+
+      <dependency>
         <groupId>com.dustinredmond.fxtrayicon</groupId>
         <artifactId>FXTrayIcon</artifactId>
         <version>3.0.0</version>
@@ -122,7 +129,7 @@
       <artifactId>javafx-swing</artifactId>
       <version>15.0.1</version>
     </dependency>
-    
+        
     </dependencies>
 
   <build>

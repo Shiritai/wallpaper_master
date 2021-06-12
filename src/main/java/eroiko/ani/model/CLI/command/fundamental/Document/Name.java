@@ -6,7 +6,7 @@ public class Name {
 
     /**
      * The NAME part of the manual document
-     * <p> You can also use this as a String pair
+     * <p> Can also be used as a String pair
      * <p> The first argument should not be null
      * @param first : the command name, usually in lower case
      * @param description : the description of this command 
@@ -20,7 +20,7 @@ public class Name {
     }
 
     /** 
-     * This will treat this class as a name token and print with NAME format :
+     * This will treat this class as a name token with the NAME format :
      * @return {@code first.toUpperCase() + "\n\nNAME\n\t" + first + " - " + second}
      */
     @Override
@@ -29,8 +29,8 @@ public class Name {
     }
 
     /** 
-     * This will treat this class as a name token and print with NAME format :
-     * @return {@code first.toUpperCase() + "\n\nNAME\n\t" + first + " - " + second}
+     * This will treat this class as a String pair :
+     * @return {@code first + ((second != null) ? " -- " + second : ""}
      */
     public String stringPair(){
         return first + ((second != null) ? " -- " + second : "");

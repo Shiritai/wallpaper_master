@@ -28,7 +28,7 @@ public class Cat extends Command {
             out.println(outWriter);
         }
         else {
-            throw new IllegalArgumentException(id.getName() + " : Not a file!");
+            throw illegalParaStr("Not a file!");
         }
     }
 }
