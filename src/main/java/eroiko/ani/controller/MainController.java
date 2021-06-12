@@ -8,6 +8,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import java.util.TreeSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
 
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
@@ -21,6 +23,7 @@ import eroiko.ani.util.Method.CarryReturn;
 import eroiko.ani.util.Method.DoubleToStringProperty;
 import eroiko.ani.util.Method.Dumper;
 import eroiko.ani.util.Method.TimeWait;
+import eroiko.ani.util.MyDS.DoubleHistoryList;
 import eroiko.ani.util.MyDS.myPair;
 import eroiko.ani.util.NeoWallpaper.*;
 import javafx.application.Platform;
@@ -45,6 +48,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -80,6 +84,9 @@ public class MainController implements Initializable {
     @FXML private BorderPane openWindowsFileExplorer = new BorderPane();
     @FXML private BorderPane refreshExplorer;
     @FXML private TabPane tableOfBrowser;
+    @FXML private Label previousExplorer;
+    @FXML private Label nextExplorer;
+    private DoubleHistoryList<Path> explorerRec;
     
     /* About Search */
     @FXML private TextField searchBar;
@@ -90,6 +97,7 @@ public class MainController implements Initializable {
     @FXML private TableView<myPair<String, String>> searchQueue;
     @FXML private TableColumn<myPair<String, String>, String> keywords;
     @FXML private TableColumn<myPair<String, String>, String> amount;
+
     /* About downloading processing */
     private Service<Void> crawlerThread;
     private Service<Void> doBFS;
@@ -294,8 +302,7 @@ public class MainController implements Initializable {
                 imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
             }
             else {
-                currentPath = file;
-                pathLabel.setText(" " + currentPath.toAbsolutePath());
+                refreshExplorerPath(file, true, true);
                 theWallpaper = new Wallpaper(currentPath);
                 hasChangedPreview.set(true);
                 imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
@@ -458,13 +465,11 @@ public class MainController implements Initializable {
     void SwitchBackToImgPath(ActionEvent event) {
         try {
             theWallpaper = new Wallpaper();
-            currentPath = WallpaperPath.DEFAULT_DATA_PATH;
-            pathLabel.setText(" " + currentPath);
+            refreshExplorerPath(WallpaperPath.DEFAULT_DATA_PATH, true, true);
             imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
         } catch (IOException e) {
             System.out.println(e.toString());
         }
-        initTreeView();
     }
 
     @FXML
@@ -556,13 +561,12 @@ public class MainController implements Initializable {
         
         downloadAmountChoice.getItems().addAll(modes[0], modes[1], modes[2]);
         downloadAmountChoice.setValue(modes[2]);
-        currentPath = WallpaperPath.DEFAULT_DATA_PATH;
-        pathLabel.setText(" " + currentPath);
+        
         hasChangedPreview.addListener((a, b, c) -> {
             if (!theWallpaper.isEmpty()){
                 imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
             }
-            initTreeView();
+            initTreeView(true);
             hasChangedPreview.set(false);
         });
         searchQueue.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -571,12 +575,16 @@ public class MainController implements Initializable {
             percentageMark.textProperty().bind(DoubleToStringProperty.toStringProperty(CrawlerManager.progress));
         });
         nowProcessingText.setEditable(false);
+
+        viewImageTileTable.setPadding(new Insets(5., 5., 5., 8.));
+        viewImageTileTable.setVgap(8.);
+        viewImageTileTable.setHgap(8.);
         
         initFont();
         initializeKeyBoardShortcuts();
         initializeMouseEvents();
         initSearchQueue();
-        initTreeView();
+        refreshExplorerPath(WallpaperPath.DEFAULT_DATA_PATH, true, false);
         startTerminal();
     }
     
@@ -586,6 +594,8 @@ public class MainController implements Initializable {
         Terminal_in.setFont(MainApp.firaCode13);
         Terminal_out.setFont(MainApp.firaCode15);
         percentageMark.setFont(MainApp.firaCode12);
+        nextExplorer.setFont(MainApp.firaCode20);
+        previousExplorer.setFont(MainApp.firaCode20);
     }
     
     public void initializeMouseEvents(){
@@ -655,6 +665,20 @@ public class MainController implements Initializable {
                 System.out.println(e1);
             }
         });
+        nextExplorer.setOnMouseEntered(e -> nextExplorer.setTextFill(Color.rgb(12, 81, 249)));
+        nextExplorer.setOnMouseClicked(e -> {
+            if (explorerRec.hasNext()){
+                refreshPathWithoutAdding(explorerRec.getNext(), true);
+            }
+        });
+        nextExplorer.setOnMouseExited(e -> nextExplorer.setTextFill(Color.rgb(0, 0, 0)));
+        previousExplorer.setOnMouseEntered(e -> previousExplorer.setTextFill(Color.rgb(12, 81, 249)));
+        previousExplorer.setOnMouseExited(e -> previousExplorer.setTextFill(Color.rgb(0, 0, 0)));
+        previousExplorer.setOnMouseClicked(e -> {
+            if (explorerRec.hasPrevious()){
+                refreshPathWithoutAdding(explorerRec.getPrevious(), true);
+            }
+        });
     }
     
     public void initializeKeyBoardShortcuts(){
@@ -675,8 +699,7 @@ public class MainController implements Initializable {
                         ex.printStackTrace();
                     }
                     if (console != null){ // 可能已經 exit 或 shutdown
-                        currentPath = console.getCurrentPath();
-                        initTreeView();
+                        refreshExplorerPath(console.getCurrentPath(), true, true);
                     }
                 }
                 else {
@@ -772,7 +795,7 @@ public class MainController implements Initializable {
                 e.consume();
             }
         });
-        refreshExplorer.setOnMouseClicked(e -> initTreeView());
+        refreshExplorer.setOnMouseClicked(e -> initTreeView(true));
     }
 
     private void initSearchQueue(){
@@ -836,9 +859,8 @@ public class MainController implements Initializable {
         }
     }
     
-    private void initTreeView(){
+    private void initTreeView(boolean isExpanded){
         var rootPath = currentPath;
-        pathLabel.setText(" " + currentPath);
         var rootName = (rootPath.getNameCount() == 0) ? rootPath.toString() : rootPath.getFileName().toString();
         var root = new TreeItem<>(new myPair<>(rootName, rootPath), WallpaperUtil.fetchIconUsePath(rootPath));
         if (doBFS != null && doBFS.isRunning()){
@@ -859,7 +881,7 @@ public class MainController implements Initializable {
             }
         };
         doBFS.setOnSucceeded(e -> {
-            root.setExpanded(true);
+            root.setExpanded(isExpanded);
             treeFileExplorer.setRoot(root);
             var str = (rootPath.toAbsolutePath().toString().length() < 45) ? rootPath.toString() : "*/" + rootPath.getFileName().toString();
             percentageMark.setText("Finish loading " + str);
@@ -920,65 +942,11 @@ public class MainController implements Initializable {
         try {
             dir = treeFileExplorer.getSelectionModel().getSelectedItem();
             path = dir.getValue().value.toAbsolutePath();
-        } catch (java.lang.NullPointerException ne){
-            return;
-        }
+        } catch (java.lang.NullPointerException ne){ return; }
         System.out.println("[File Explorer (Path)]  " + path);
-        if (Files.isDirectory(path.toRealPath().toAbsolutePath())){
-            if (me.getClickCount() == 1){
-                var tmp = treeFileExplorer.getSelectionModel().getSelectedItem();
-                if (tmp != null){
-                    initTreeDir(tmp);
-                }
-            }
-
-            viewImageTileTable.getChildren().clear();
-            viewImageTileTable.setPadding(new Insets(5., 5., 5., 8.));
-            viewImageTileTable.setVgap(8.);
-            viewImageTileTable.setHgap(8.);
-
-            var paths = new TreeSet<Path>(WallpaperUtil::pathDirAndNameCompare);
-            try (var dirStream = Files.newDirectoryStream(path)){
-                dirStream.forEach(e -> paths.add(e));
-            }
-
-            var list = new ArrayList<VBox>(paths.size());
-            paths.forEach(p -> {
-                var iconView = WallpaperUtil.fetchIconUsePath(p);
-                iconView.setFitHeight(36);
-                iconView.setFitWidth(36);
-                
-                var name = new Text(CarryReturn.addCarryReturnForAbout(p.getFileName().toString(), 20, 0));
-                name.setFont(MainApp.notoSansCJKLight12);
-                
-                var vbox = new VBox(iconView, name);
-                vbox.setAlignment(Pos.TOP_CENTER);
-                vbox.setOnMouseClicked(e -> {
-                    if (e.getClickCount() == 2){
-                        if (Files.isDirectory(p)){
-                            currentPath = p;
-                            pathLabel.setText(" " + currentPath);
-                            initTreeView();
-                        }
-                        else if (Dumper.isImage(p)){
-                            try {
-                                OpenWallpaper(new Wallpaper(p), false);
-                            } catch (IOException e1) { System.out.println("Failed to open wallpaper"); }
-                        }
-                        else if (Dumper.isMusic(p)){
-                            MusicWithAkari.openMusicWithAkari(p);
-                        }
-                        else {
-                            openFile(p);
-                        }
-                    }
-                });
-                list.add(vbox);
-            });
-            viewImageTileTable.getChildren().addAll(list);
-            viewImageTileTable.prefHeightProperty().bind(scrollableTile.heightProperty()); // 自由改變高
-            viewImageTileTable.prefWidthProperty().bind(scrollableTile.widthProperty()); // 自由改變寬
-            scrollableTile.setContent(viewImageTileTable);
+        if (Files.isDirectory(path)){
+            initTreeDir(dir);
+            initTileExplorer(path);
         }
         else { // 真正的 FileExplorer 因此完善 OwO
             if (Dumper.isImage(path)){
@@ -1013,6 +981,90 @@ public class MainController implements Initializable {
         scrollableTile.setVbarPolicy(ScrollBarPolicy.ALWAYS);
     }
 
+    /**
+     * 以 {@code root} 展開, 對所有圖片並行讀取, 並以欲覽圖的方式呈現, 好快啊 XD
+     * @param root : 欲展開之根目錄
+     * @throws IOException
+     */
+    private void initTileExplorer(Path root) throws IOException{
+        viewImageTileTable.getChildren().clear();
+
+        var paths = new TreeSet<Path>(WallpaperUtil::pathDirAndNameCompare);
+        try (var dirStream = Files.newDirectoryStream(root)){
+            dirStream.forEach(e -> paths.add(e));
+        }
+
+        var list = new ArrayList<VBox>(paths.size());
+        var service = new Service<Void>(){
+            @Override
+            protected Task<Void> createTask(){
+                return new Task<Void>(){
+                    @Override
+                    protected Void call(){
+                        var pool = Executors.newCachedThreadPool();
+                        var poolList = new ArrayList<Callable<VBox>>(paths.size());
+                        for (var p : paths){
+                            poolList.add(() -> {
+                                ImageView iconView;
+                                if (Dumper.isImage(p)){
+                                    iconView = WallpaperUtil.fetchSmallImage(p);
+                                }
+                                else {
+                                    iconView = WallpaperUtil.fetchIconUsePath(p);
+                                    iconView.setFitHeight(36);
+                                    iconView.setFitWidth(36);
+                                }
+                                
+                                var name = new Text(CarryReturn.addCarryReturnForAbout(p.getFileName().toString(), 21, 0));
+                                name.setFont(MainApp.notoSansCJKLight12);
+                                
+                                var vbox = new VBox(iconView, name);
+                                vbox.setAlignment(Pos.TOP_CENTER);
+                                vbox.setOnMouseClicked(e -> {
+                                    initTreeView(false);
+                                    if (e.getClickCount() == 2){
+                                        if (Files.isDirectory(p)){
+                                            refreshExplorerPath(p, false, true);
+                                            try {
+                                                initTileExplorer(p);
+                                            } catch (IOException ie){ ie.printStackTrace(); }
+                                        }
+                                        else if (Dumper.isImage(p)){
+                                            try {
+                                                OpenWallpaper(new Wallpaper(p), false);
+                                            } catch (IOException e1) { System.out.println("Failed to open wallpaper"); }
+                                        }
+                                        else if (Dumper.isMusic(p)){
+                                            MusicWithAkari.openMusicWithAkari(p);
+                                        }
+                                        else {
+                                            openFile(p);
+                                        }
+                                    }
+                                });
+                                return vbox;
+                            });
+                        }
+                        try {
+                            var tmp = pool.invokeAll(poolList);
+                            for (var t : tmp){
+                                list.add(t.get());
+                            }
+                        } catch (Exception e){ e.printStackTrace(); }
+                        return null;
+                    }
+                };
+            }
+        };
+        service.setOnSucceeded(e -> {
+            viewImageTileTable.getChildren().addAll(list);
+            viewImageTileTable.prefHeightProperty().bind(scrollableTile.heightProperty()); // 自由改變高
+            viewImageTileTable.prefWidthProperty().bind(scrollableTile.widthProperty()); // 自由改變寬
+            scrollableTile.setContent(viewImageTileTable);
+        });
+        service.restart();
+    }
+
     public void openFile(Path path){
         try {
             Desktop.getDesktop().open(path.toFile());
@@ -1021,5 +1073,21 @@ public class MainController implements Initializable {
             openFileThread.setDaemon(true);
             openFileThread.start();
         }
+    }
+
+    private void refreshExplorerPath(Path path, boolean isExpanded, boolean trimOrRestore){
+        currentPath = path;
+        if (explorerRec == null){
+            explorerRec = new DoubleHistoryList<>();
+        }
+        explorerRec.add(path, trimOrRestore);
+        pathLabel.setText(" " + currentPath.toAbsolutePath());
+        initTreeView(isExpanded);
+    }
+    
+    private void refreshPathWithoutAdding(Path path, boolean isExpanded){
+        currentPath = path;
+        pathLabel.setText(" " + currentPath.toAbsolutePath());
+        initTreeView(isExpanded);
     }
 }

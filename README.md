@@ -50,6 +50,10 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 9. 可呼叫 `man COMMAND_NAME` 或 `COMMAND_NAME --help` 來查詢各個指令的使用方式, 亦可呼叫 `man -a` 或 `man --all` 來查詢所有可用指令
 
+10. File Explorer (tile part) 新增快速預覽圖片, 採並行讀取, 提高實用性
+
+11. File Explorer 新增上一頁、下一頁的功能, 完整整合拖曳、點擊、指令等路徑移動的歷史紀錄
+
 ## Change Log 內部變化紀錄
 
 1. 補強指令查詢與修復 Bugs, 改變 Exception passing

@@ -1,6 +1,7 @@
 package eroiko.ani.util.NeoWallpaper;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.regex.Matcher;
@@ -10,6 +11,7 @@ import javax.swing.filechooser.FileSystemView;
 
 import eroiko.ani.util.Method.Dumper;
 import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 public class WallpaperUtil {
@@ -136,7 +138,6 @@ public class WallpaperUtil {
     /** 取得系統小圖示, 這野太方便... */
     public static ImageView fetchIconUsePath(Path path){ // 真方便
         var tmp = FileSystemView.getFileSystemView().getSystemIcon(path.toFile());
-        // var tmp2 = ShellFolder.getShellFolder(path.toFile()).getIcon(true);
         var tmpBufferImage = new java.awt.image.BufferedImage(
             tmp.getIconWidth(),
             tmp.getIconHeight(),
@@ -144,6 +145,23 @@ public class WallpaperUtil {
         );
         tmp.paintIcon(null, tmpBufferImage.getGraphics(), 0, 0);
         return new ImageView(SwingFXUtils.toFXImage(tmpBufferImage, null));
-        // return new ImageView(SwingFXUtils.toFXImage(image, null));
+    }
+
+    public static ImageView fetchSmallImage(Path path){ // 真方便
+        var tmp = FileSystemView.getFileSystemView().getSystemIcon(path.toFile());
+        var tmpBufferImage = new java.awt.image.BufferedImage(
+            tmp.getIconWidth(),
+            tmp.getIconHeight(),
+            java.awt.image.BufferedImage.TYPE_INT_ARGB
+        );
+        tmp.paintIcon(null, tmpBufferImage.getGraphics(), 0, 0);
+
+        try {
+            var img = new Image(path.toAbsolutePath().toUri().toURL().toString(), 64, 64, true, false);
+            return new ImageView(img);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

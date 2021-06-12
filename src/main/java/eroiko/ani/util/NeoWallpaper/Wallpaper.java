@@ -120,7 +120,7 @@ public class Wallpaper {
                 System.out.println(e.toString());
             }
         });
-        System.out.println("Wallpaper choosing has been executed successfully.");
+        System.out.println("Wallpaper manipulation has been executed successfully.");
     }
     
     /* 實例部分 */
