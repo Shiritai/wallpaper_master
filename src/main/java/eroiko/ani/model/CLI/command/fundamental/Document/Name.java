@@ -3,6 +3,7 @@ package eroiko.ani.model.CLI.command.fundamental.Document;
 public class Name {
     public final String first;
     public final String second;
+    public final String [] nickName; // 為之後 Alias 開路
 
     /**
      * The NAME part of the manual document
@@ -11,9 +12,10 @@ public class Name {
      * @param first : the command name, usually in lower case
      * @param description : the description of this command 
      */
-    public Name(String first, String description){
+    public Name(String first, String description, String... nickName){
         this.first = first;
         this.second = description;
+        this.nickName = nickName;
         if (first == null){
             throw new IllegalArgumentException("The first argument should not be null!");
         }

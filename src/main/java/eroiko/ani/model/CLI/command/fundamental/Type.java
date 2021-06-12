@@ -154,19 +154,19 @@ public enum Type {
     )),
 
     CMD(130, new Document(
-        new Synopsis(new Name("cmd", "call command prompt"), new Name []{
+        new Synopsis(new Name("cmd", "call command prompt", "cmd.exe"), new Name []{
             new Name("LINE_TO_EXECUTE", "Execute LINE_TO_EXECUTE use local command prompt if exist.")
         })
     )),
     
     POWERSHELL(131, new Document(
-        new Synopsis(new Name("powershell", "call powershell"), new Name []{
+        new Synopsis(new Name("powershell", "call powershell", "powershell.exe", "pwsh"), new Name []{
             new Name("LINE_TO_EXECUTE", "Execute LINE_TO_EXECUTE use local powershell if exist.")
         })
     )),
     
-    WINDOWS_TERMINAL(132, new Document(
-        new Synopsis(new Name("windows terminal", "call windows terminal"), new Name []{
+    WT(132, new Document(
+        new Synopsis(new Name("wt", "call windows terminal", "wt.exe"), new Name []{
             new Name("LINE_TO_EXECUTE", "Execute LINE_TO_EXECUTE use local windows terminal if exist.")
         })
     )),
