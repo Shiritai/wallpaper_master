@@ -60,7 +60,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 2. Terminal 為 OCP 與 java.nio 的練習成果
 
-3. 當前使用程式碼行數 (Exclude deprecated classes) 約 : 5600 行
+3. 當前使用程式碼行數 (Exclude deprecated classes) 約 : 6000 行
 
 ## Known issue 已知問題
 
