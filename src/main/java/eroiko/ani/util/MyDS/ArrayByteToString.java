@@ -1,3 +1,8 @@
+/*
+ * Author : Shiritai (楊子慶, or Eroiko on Github) at 2021/06/13.
+ * See https://github.com/Shiritai/wallpaper_master for more information.
+ * Created using VSCode.
+ */
 package eroiko.ani.util.MyDS;
 /* 輸入輸出輔助資結, 僅支援寫入位元, 並以字串形式讀出 */
 public class ArrayByteToString {

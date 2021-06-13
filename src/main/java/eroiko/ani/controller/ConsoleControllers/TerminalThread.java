@@ -1,4 +1,9 @@
-package eroiko.ani.controller.ConsoleTextArea;
+/*
+ * Author : Shiritai (楊子慶, or Eroiko on Github) at 2021/06/13.
+ * See https://github.com/Shiritai/wallpaper_master for more information.
+ * Created using VSCode.
+ */
+package eroiko.ani.controller.ConsoleControllers;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -9,13 +14,13 @@ import javafx.scene.control.TextArea;
 public class TerminalThread implements Runnable {
     private final PipedInputStream outPusher;
     private Thread outPuller;
-    private TextArea terminalOutArea;
+    private TextArea terminalText;
     private boolean quitFlag = false;
 
-    public TerminalThread(PipedInputStream outPusher, Thread outPuller, TextArea terminalOutArea, boolean quit){
+    public TerminalThread(PipedInputStream outPusher, Thread outPuller, TextArea terminalText, boolean quit){
         this.outPuller = outPuller;
         this.outPusher = outPusher;
-        this.terminalOutArea = terminalOutArea;
+        this.terminalText = terminalText;
         this.quitFlag = quit;
         this.quitFlag = false;
 
@@ -43,15 +48,12 @@ public class TerminalThread implements Runnable {
                         this.outPusher.read(b);
                         tmp.add(b);
                     } while (!tmp.endsWith("\n") && !tmp.endsWith("\n") && !this.quitFlag);
-
-                    this.terminalOutArea.appendText(tmp.toString());
-                }
+                    this.terminalText.appendText(tmp.toString());
+            }
             } catch (IOException ie) {
                 System.out.println(ie.toString());
                 System.err.println(ie.toString());
             }
         }
-
     }
-
 }

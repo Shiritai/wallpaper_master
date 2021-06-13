@@ -1,3 +1,8 @@
+/*
+ * Author : Shiritai (楊子慶) at 2021/06/13
+ * See https://github.com/Shiritai/wallpaper_master for more information
+ * This is a example from Java SE14 技術手冊
+ */
 package eroiko.ani.model.CLI.util;
 
 import java.io.IOException;

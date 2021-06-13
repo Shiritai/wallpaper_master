@@ -1,3 +1,8 @@
+/*
+ * Author : Shiritai (楊子慶, or Eroiko on Github) at 2021/06/13.
+ * See https://github.com/Shiritai/wallpaper_master for more information.
+ * Created using VSCode.
+ */
 package eroiko.ani.controller;
 
 import java.awt.Desktop;
@@ -12,7 +17,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
 import eroiko.ani.MainApp;
-import eroiko.ani.controller.ConsoleTextArea.TerminalThread;
+import eroiko.ani.controller.ConsoleControllers.TerminalThread;
 import eroiko.ani.controller.PrimaryControllers.*;
 import eroiko.ani.model.CLI.Console;
 import eroiko.ani.model.CLI.exception.ClearConsoleException;
@@ -883,7 +888,7 @@ public class MainController implements Initializable {
         doBFS.setOnSucceeded(e -> {
             root.setExpanded(isExpanded);
             treeFileExplorer.setRoot(root);
-            var str = (rootPath.toAbsolutePath().toString().length() < 45) ? rootPath.toString() : "*/" + rootPath.getFileName().toString();
+            var str = (rootPath.toAbsolutePath().toString().length() < 45) ? rootPath.toString() : ".../" + rootPath.getFileName().toString();
             percentageMark.setText("Finish loading " + str);
         });
         doBFS.restart();
@@ -914,7 +919,7 @@ public class MainController implements Initializable {
         return cur;
     }
 
-    /* 優化二層遍歷效率, 避免低效二層遍歷 */
+    /* 優化二層遍歷效率, 避免低效第二層遍歷 */
     private TreeItem<myPair<String, Path>> touchSurface(TreeItem<myPair<String, Path>> cur) throws IOException{
         if (cur != null && Files.isDirectory(cur.getValue().value)){
             try (var dirStream = Files.newDirectoryStream(cur.getValue().value)){
@@ -982,7 +987,7 @@ public class MainController implements Initializable {
     }
 
     /**
-     * 以 {@code root} 展開, 對所有圖片並行讀取, 並以欲覽圖的方式呈現, 好快啊 XD
+     * 以 {@code root} 展開, 對所有圖片並行讀取, 以預覽圖的方式呈現, 好快啊 XD
      * @param root : 欲展開之根目錄
      * @throws IOException
      */

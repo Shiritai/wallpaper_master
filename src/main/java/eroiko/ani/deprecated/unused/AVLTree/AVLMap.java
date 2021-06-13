@@ -1,4 +1,9 @@
-package eroiko.ani.util.MyDS.AVLTree;
+/*
+ * Author : Shiritai (楊子慶) at 2021/06/13
+ * See https://github.com/Shiritai/wallpaper_master for more information
+ * 可惜沒用上，但作為學習紀錄留著
+ */
+package eroiko.ani.deprecated.unused.AVLTree;
 
 import java.util.Collection;
 import java.util.Comparator;
