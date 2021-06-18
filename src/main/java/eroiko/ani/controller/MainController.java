@@ -7,6 +7,7 @@ package eroiko.ani.controller;
 
 import java.awt.Desktop;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -507,6 +508,11 @@ public class MainController implements Initializable {
         Terminal_in.setContextMenu(new ContextMenu());
         Terminal_out.setEditable(false);
         Terminal_out.setContextMenu(new ContextMenu());
+        try {
+            Terminal_out.getStylesheets().addAll(WallpaperPath.FXML_SOURCE_PATH.resolve("style/transparentTextArea.css").toAbsolutePath().toUri().toURL().toString());
+            scrollableTile.getStylesheets().addAll(WallpaperPath.FXML_SOURCE_PATH.resolve("style/transparentScrollPane.css").toAbsolutePath().toUri().toURL().toString());
+        } catch (MalformedURLException e) {}
+        Terminal_out.setStyle("-fx-background-color: #333333;");
 
         searchBar.setPromptText(">  Search Artwork");
         
