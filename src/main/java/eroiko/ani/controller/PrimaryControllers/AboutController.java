@@ -26,7 +26,7 @@ public class AboutController implements Initializable{
     @FXML private Hyperlink githubLink;
     
     public static final String introEn = "    Wallpaper Master is the application that helps you manage your waifus as easy as possible. With this, all you have to do is simply search using your waifu's name (or rather, the artwork's name), wait a minute for downloading, and choose what you like!";
-    public static final String introTW = "　　桌布大師旨在讓使用者可以輕鬆管理自己的老婆。僅需輸入關鍵字，等待下載完畢，選擇喜愛的桌布後就大功告成了。\n　　桌布大師會驗證搜尋的正確性、下載的效率、檔案管理等過程，並且提供非常多額外功能，諸如將資料夾與其中的圖片預覽、篩選、整理至桌布資料夾，右鍵複製後的圖片可以直接存入桌布資料夾，還附上最小化至工作列，完整的音樂播放器，能同步整合或者獨立使用的終端機，及多種快捷鍵支持等。功能眾多請盡情享受!";
+    public static final String introTW = "　　桌布大師旨在讓使用者可以輕鬆管理自己的老婆。僅需輸入關鍵字，等待下載完畢，選擇喜愛的桌布後就大功告成了。\n　　桌布大師會驗證搜尋的正確性、下載的效率、檔案管理等過程，並且提供非常多額外功能，諸如將資料夾的圖片預覽、篩選、整理至桌布資料夾，右鍵複製後的圖片可以直接存入桌布資料夾，還附上最小化至工作列，完整的音樂播放器，能同步整合或者獨立使用的終端機，及多種快捷鍵支持等。功能眾多請盡情享受!";
     public static final String author = "Author : Eroiko";
     public static final String others = "Made with all my enthusiasm to ACGN!";
 

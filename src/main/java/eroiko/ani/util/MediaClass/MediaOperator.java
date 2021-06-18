@@ -50,7 +50,10 @@ public class MediaOperator {
             System.out.println(e.toString());
         }
         medias.sort((a, b) -> WallpaperUtil.pathNameCompare(a.getFileName(), b.getFileName())); // 直接沿用有何不可 OwO
+        System.out.println("Dir : " + musicPath);
+        System.out.println("Music : " + certainPath);
         current = (certainPath != null) ? medias.indexOf(certainPath) : 0;
+        System.out.println("Current : " + current);
     }
     
     /** 

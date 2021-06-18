@@ -38,6 +38,8 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 3. 新增 Music With Akari 的彩蛋
 
+4. 修正 CLI.Command.Music 呼叫 Music With Akari 的 Bug
+
 ## Change Log 內部變化紀錄
 
 1. 補強指令查詢與修復 Bugs, 修改 Exception passing 機制

@@ -40,7 +40,17 @@ public class Music extends Command {
                 }
                 else {
                     try (var dirStream = Files.newDirectoryStream(tmp, "*.{mp3,wav}")){
-                        MusicWithAkari.openMusicWithAkari(dirStream.iterator().next());
+                        var it = dirStream.iterator();
+                        while (it.hasNext()){
+                            var m = it.next();
+                            if (m.getFileName().toString().contains("00_")){
+                                continue;
+                            }
+                            else {
+                                MusicWithAkari.openMusicWithAkari(m);
+                                break;
+                            }
+                        }
                     }
                 }
             } catch (IllegalArgumentException | NoSuchElementException ile){

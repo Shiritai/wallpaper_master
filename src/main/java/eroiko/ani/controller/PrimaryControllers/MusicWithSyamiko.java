@@ -378,10 +378,8 @@ public class MusicWithSyamiko implements Initializable {
     private void refreshWithPlayingCheck(){
         /* 測試是否正在撥放 */
         var tmp = refresh();
-        System.out.println(tmp);
         new TimeWait(2000);
         playMusicButton.setImage(tmp == progress.get() ? pauseImage : playImage);
-        System.out.println(progress.get());
     }
     
     private double refresh(){

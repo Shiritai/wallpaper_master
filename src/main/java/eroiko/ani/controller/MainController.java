@@ -310,6 +310,7 @@ public class MainController implements Initializable {
         var file = files.get(0).toPath();
         try {
             if (WallpaperUtil.isImage(file)){
+                refreshExplorerPath(file.getParent(), true, true);
                 theWallpaper = new Wallpaper(file);
                 hasChangedPreview.set(true);
                 imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
@@ -407,6 +408,7 @@ public class MainController implements Initializable {
     public static void OpenMusicWithAkari(){
         var tmp = new javafx.stage.FileChooser();
         tmp.setTitle("Open music with Akari");
+        tmp.setInitialDirectory(WallpaperPath.DEFAULT_DATA_PATH.toFile());
         try {
             tmp.getExtensionFilters().addAll(new javafx.stage.FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3"));
             MusicWithAkari.openMusicWithAkari(tmp.showOpenDialog(null).toPath());
@@ -695,6 +697,7 @@ public class MainController implements Initializable {
                     var tmp = console.getPreviousCommand();
                     if (tmp != null){
                         Terminal_in.setText(tmp);
+                        Terminal_in.end();
                     }
                 }
             }
@@ -707,6 +710,7 @@ public class MainController implements Initializable {
                     else {
                         Terminal_in.clear();
                     }
+                    Terminal_in.end();
                 }
             }
             else if (new KeyCodeCombination(KeyCode.C, KeyCodeCombination.CONTROL_DOWN).match(e)){
