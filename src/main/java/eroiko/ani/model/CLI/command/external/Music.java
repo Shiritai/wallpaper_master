@@ -12,8 +12,6 @@ import java.util.NoSuchElementException;
 import eroiko.ani.controller.PrimaryControllers.MusicWithAkari;
 import eroiko.ani.controller.PrimaryControllers.MusicWithSyamiko;
 import eroiko.ani.model.CLI.command.fundamental.*;
-// import eroiko.ani.model.CLI.command.basic.Rm;
-// import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 
 public class Music extends Command {
     private final String musicToOpen;

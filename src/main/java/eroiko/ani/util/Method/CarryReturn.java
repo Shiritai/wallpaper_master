@@ -54,9 +54,8 @@ public class CarryReturn {
     }
 
     /** 
-     * @param tolerantLength : 最高長度為 length + tolerantLength
-     * 
      * 只為 About controller 使用 
+     * @param tolerantLength : 最高長度為 length + tolerantLength
      **/
     public static String addCarryReturnForAbout(String str, int length, int tolerantLength){
         String res = "";

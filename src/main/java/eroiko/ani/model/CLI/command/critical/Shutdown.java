@@ -7,6 +7,7 @@ package eroiko.ani.model.CLI.command.critical;
 
 import java.io.PrintStream;
 import java.util.concurrent.Callable;
+
 import eroiko.ani.model.CLI.command.fundamental.Type;
 import eroiko.ani.model.CLI.exception.*;
 
