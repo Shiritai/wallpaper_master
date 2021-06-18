@@ -5,8 +5,10 @@
  */
 package eroiko.ani.model.CLI.command.external;
 
+import eroiko.ani.MainApp;
 import eroiko.ani.controller.MainController;
 import eroiko.ani.controller.PrimaryControllers.MusicWithSyamiko;
+import eroiko.ani.controller.PromptControllers.ConsoleController;
 import eroiko.ani.model.CLI.command.fundamental.Command;
 import eroiko.ani.model.CLI.command.fundamental.Type;
 
@@ -29,6 +31,8 @@ public class Wm extends Command {
             case "--about" -> MainController.OpenAboutWindow();
             case "--pref" -> MainController.OpenPreferenceWindow();
             case "--music" -> MusicWithSyamiko.openMusicWithSyamiko();
+            case "--terminal" -> ConsoleController.OpenCompleteTerminal();
+            case "--complete" -> MainApp.OpenMainWindow();
             default -> throw illegalParaStr("Invalid parameter option.");
         }
     }

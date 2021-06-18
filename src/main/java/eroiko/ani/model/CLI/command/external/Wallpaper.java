@@ -7,7 +7,7 @@ package eroiko.ani.model.CLI.command.external;
 
 import java.io.IOException;
 
-import eroiko.ani.controller.MainController;
+import eroiko.ani.controller.PrimaryControllers.WallpaperController;
 import eroiko.ani.model.CLI.command.basic.Rm;
 import eroiko.ani.model.CLI.command.fundamental.*;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
@@ -25,14 +25,14 @@ public class Wallpaper extends Command {
     public void execute() throws IllegalArgumentException {
         if (fileInfo == null){
             try {
-                MainController.OpenWallpaper(new eroiko.ani.util.NeoWallpaper.Wallpaper(), false);
+                WallpaperController.OpenWallpaper(new eroiko.ani.util.NeoWallpaper.Wallpaper(), false);
             } catch (IOException e) {
                 throw illegalParaStr("Unknown error");
             }
         }
         else if (fileInfo.equals("-p")){
             try {
-                MainController.OpenWallpaper(new eroiko.ani.util.NeoWallpaper.Wallpaper(), true);
+                WallpaperController.OpenWallpaper(new eroiko.ani.util.NeoWallpaper.Wallpaper(), true);
             } catch (IOException e) {
                 throw illegalParaStr("Unknown error");
             }
@@ -44,21 +44,21 @@ public class Wallpaper extends Command {
             try {
                 if (fileInfo.contains("--this")){ // 以當前資料夾為基礎開啟 wallpaper
                     var wp = new eroiko.ani.util.NeoWallpaper.Wallpaper(thisDir);
-                    MainController.OpenWallpaper(wp, fileInfo.contains("-p"));
+                    WallpaperController.OpenWallpaper(wp, fileInfo.contains("-p"));
                 }
                 else if (fileInfo.contains("--new")){
                     var wp = eroiko.ani.util.NeoWallpaper.Wallpaper.getWallpaper(
                         eroiko.ani.util.NeoWallpaper.Wallpaper.getWallpaperSerialNumberImmediately()
                     );
                     if (wp != null){
-                        MainController.OpenWallpaper(wp, fileInfo.contains("-p"));
+                        WallpaperController.OpenWallpaper(wp, fileInfo.contains("-p"));
                     }
                 }
                 else {
                     var wp = new eroiko.ani.util.NeoWallpaper.Wallpaper(thisDir.resolve(
                         fileInfo.substring(fileInfo.contains("-p") ? fileInfo.indexOf("-p ") + 3 : 0)
                     ));
-                    MainController.OpenWallpaper(wp, fileInfo.contains("-p"));
+                    WallpaperController.OpenWallpaper(wp, fileInfo.contains("-p"));
                 }
             } catch (IllegalArgumentException ile) {
                 throw illegalParaStr(ile.getMessage(), "Wallpaper not exist.");    

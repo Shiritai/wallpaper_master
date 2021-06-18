@@ -3,7 +3,7 @@
  * See https://github.com/Shiritai/wallpaper_master for more information.
  * Created using VSCode.
  */
-package eroiko.ani.controller.ConsoleControllers;
+package eroiko.ani.controller.PromptControllers;
 
 import java.io.IOException;
 import java.io.PipedInputStream;
@@ -47,7 +47,7 @@ public class TerminalThread implements Runnable {
                         byte[] b = new byte[av];
                         this.outPusher.read(b);
                         tmp.add(b);
-                    } while (!tmp.endsWith("\n") && !tmp.endsWith("\n") && !this.quitFlag);
+                    } while (!tmp.endsWith("\n") && !this.quitFlag);
                     this.terminalText.appendText(tmp.toString());
             }
             } catch (IOException ie) {

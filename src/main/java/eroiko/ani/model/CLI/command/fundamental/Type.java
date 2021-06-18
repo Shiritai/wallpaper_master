@@ -130,20 +130,26 @@ public enum Type {
     /* Critical */
     CLEAR(75, new Document(
         new Synopsis(new Name("clear", "clear this console text area"), new Name []{
-            new Name("<NO_PARAMETER>", "Throw ClearConsoleException and let the designer handle the clear event.")
+            new Name("<NO_PARAMETER>", "Throw ClearConsoleException and let the designer handle clear event.")
         })
     )),
 
     EXIT(76, new Document(
         new Synopsis(new Name("exit", "exit this console"), new Name []{
-            new Name("<NO_PARAMETER>", "Throw ExitConsoleException and let the designer handle the exit event.")
+            new Name("<NO_PARAMETER>", "Throw ExitConsoleException and let the designer handle exit event.")
         })
     )),
 
     SHUTDOWN(77, new Document(
         new Synopsis(new Name("shutdown", "shutdown this software"), new Name []{
-            new Name("<NO_PARAMETER>", "Throw ShutdownSoftwareException and let the designer handle the shutdown event."),
+            new Name("<NO_PARAMETER>", "Throw ShutdownSoftwareException and let the designer handle shutdown event."),
             // new Name("MINI_SECOND", "Throw ShutdownSoftwareException after waiting MINI_SECOND and let the designer handle the shutdown event.")
+        })
+    )),
+
+    INFORMATION(78, new Document(
+        new Synopsis(new Name("information", "print the information of this console"), new Name []{
+            new Name("<NO_PARAMETER>", "Throw CustomInformationException and let the designer handle this event.")
         })
     )),
     
@@ -256,8 +262,14 @@ public enum Type {
             new Name("--about", "Open About window."),
             new Name("--music", "Open Music with Syamiko."),
             new Name("--pref", "Open Preference window."),
+            new Name("--terminal", "Switch to Real Terminal."),
+            new Name("--complete", "Switch to Main Window."),
         })
     )),
+
+    SETTING(261, new Document(
+        new Synopsis(new Name("setting", "activate console setting"))
+    ))
     ;
     
     final int code;

@@ -66,7 +66,7 @@ public class MusicWithSyamiko implements Initializable {
     private static boolean openedWindow = false;
     /** True : play, False : pause */
     private static BooleanProperty playOrPauseImageSwitcher = new SimpleBooleanProperty(player.getStatus().equals(MediaPlayer.Status.PLAYING));
-    private static DoubleProperty volume = new SimpleDoubleProperty(0.025);
+    private static DoubleProperty volume = new SimpleDoubleProperty(25);
     private static DoubleProperty progress = new SimpleDoubleProperty(0.);
     private static DoubleProperty maxProgress = new SimpleDoubleProperty(0.);
     private static StringProperty nameOfMusic = new SimpleStringProperty();
@@ -178,7 +178,7 @@ public class MusicWithSyamiko implements Initializable {
             }
         }
         else {
-            new Alert(Alert.AlertType.INFORMATION, "You've already open Music with Syamiko :)").showAndWait();
+            new Alert(Alert.AlertType.INFORMATION, "You've already opened Music with Syamiko :)").showAndWait();
         }
     }
     /* Controller part */
@@ -206,6 +206,7 @@ public class MusicWithSyamiko implements Initializable {
     void OpenMusicExplorerForComplete(ActionEvent event) {
         if (customizeCompleteMusic.selectedProperty().get()){
             var tmp = new FileChooser();
+            tmp.setInitialDirectory(WallpaperPath.DEFAULT_DATA_PATH.toFile());
             tmp.setTitle("Choose complete music");
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3"));
@@ -218,6 +219,7 @@ public class MusicWithSyamiko implements Initializable {
     void OpenMusicExplorerForProcessing(ActionEvent event) {
         if (customizeProcessingMusic.selectedProperty().get()){
             var tmp = new FileChooser();
+            tmp.setInitialDirectory(WallpaperPath.DEFAULT_DATA_PATH.toFile());
             tmp.setTitle("Choose processing music");
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3"));

@@ -11,8 +11,6 @@ import java.util.ResourceBundle;
 
 import eroiko.ani.util.MediaClass.MediaOperator;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
-// import javafx.beans.property.BooleanProperty;
-// import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,8 +25,6 @@ import javafx.stage.FileChooser.ExtensionFilter;
 public class PreferenceController implements Initializable {
 
     public static boolean quit;
-    // public static BooleanProperty showWallpapersAfterCrawling = new SimpleBooleanProperty(true);
-    // public static BooleanProperty minimizedMsg = new SimpleBooleanProperty(true);
     public static boolean keepMusic = false;
     public static boolean randomMusic = false;
     public static boolean minimizedMsg = true;
@@ -50,6 +46,7 @@ public class PreferenceController implements Initializable {
     void OpenFileChooser(ActionEvent event) {
         if (customizeBox.selectedProperty().get()){
             var tmp = new DirectoryChooser();
+            tmp.setInitialDirectory(WallpaperPath.DEFAULT_DATA_PATH.toFile());
             tmp.setTitle("Choose default wallpaper path");
             try {
                 WallpaperPath.updateUserWallpaperPath(tmp.showDialog(null).toPath());
@@ -62,6 +59,7 @@ public class PreferenceController implements Initializable {
     public void OpenMusicExplorerForComplete(ActionEvent event) {
         if (customizeCompleteMusic.selectedProperty().get()){
             var tmp = new FileChooser();
+            tmp.setInitialDirectory(WallpaperPath.DEFAULT_DATA_PATH.toFile());
             tmp.setTitle("Choose complete music");
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));

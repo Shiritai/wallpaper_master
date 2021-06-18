@@ -1,5 +1,5 @@
 /*
- * Author : Shiritai (楊子慶, or Eroiko on Github) at 2021/06/13.
+ * Author : Shiritai (楊子慶, or Eroiko on Github) at 2021/06/18.
  * See https://github.com/Shiritai/wallpaper_master for more information.
  * Created using VSCode.
  */
@@ -37,8 +37,8 @@ import javafx.stage.*;
 public class MainApp extends Application{
         
     public static boolean isTesting = true;
-    public static final String version = "version 0.1.5";
-    public static final String date = "2021/06/12";
+    public static final String version = "version 0.1.6";
+    public static final String date = "2021/06/18";
     public static Image icon;
     public static String hostName;
     public static String userName;
@@ -88,7 +88,7 @@ public class MainApp extends Application{
 
         MainApp.mainStage = mainStage;
         Parent root = FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("MainWindow.fxml").toUri().toURL());
-        // Parent root = FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("TerminalWindow.fxml").toUri().toURL());
+        // Parent root = FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("TerminalWindow.fxml").toUri().toURL()); // for debug
         mainScene = new Scene(root);
 
         if (SystemTray.isSupported()){
@@ -113,12 +113,6 @@ public class MainApp extends Application{
             }
         });
         /* 定義全視窗快捷鍵 */
-        mainScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> { //  彈出 Properties 視窗, 因為是對整個 Scene, 因此宣告在此
-            if (new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN).match(e)){
-                MainController.OpenPreferenceWindow();
-                e.consume();
-            }
-        });
         mainStage.addEventFilter(KeyEvent.KEY_PRESSED, e -> { // 最小化至 System tray
             if (new KeyCodeCombination(KeyCode.M, KeyCodeCombination.CONTROL_DOWN).match(e)){
                 mainStage.hide();
@@ -132,6 +126,16 @@ public class MainApp extends Application{
         mainStage.setResizable(false);
         mainStage.setOnCloseRequest(e -> closeMainStage());
         mainStage.show();
+    }
+
+    public static void OpenMainWindow(){
+        try {
+            mainStage.setScene(
+                new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("MainWindow.fxml").toUri().toURL()))
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     public static void closeMainStage(){

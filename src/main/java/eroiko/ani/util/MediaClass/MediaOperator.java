@@ -308,7 +308,7 @@ public class MediaOperator {
     
     public Media getMedia(int serialNumber){
         if (serialNumber >= medias.size() || serialNumber < 0){
-            throw new IllegalArgumentException("Music index out of range!");
+            throw new IllegalArgumentException("Music index out of range : " + serialNumber);
         }
         try {
             var tmp = new Media(medias.get(serialNumber).toUri().toURL().toString());

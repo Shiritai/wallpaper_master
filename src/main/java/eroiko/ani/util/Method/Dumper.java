@@ -40,6 +40,19 @@ public class Dumper {
             }
         }
     }
+    
+    public static void dump(Reader in, Writer out){
+        try (in; out){
+            try (var bufIn = new BufferedReader(in); var bufOut = new BufferedWriter(out)){
+                String tmp;
+                while ((tmp = bufIn.readLine()) != null){
+                    bufOut.append(tmp + "\n");
+                }
+            }
+        } catch (IOException ie){
+            ie.printStackTrace();
+        }
+    }
 
     /**
      * @param cm : Crawler Manager

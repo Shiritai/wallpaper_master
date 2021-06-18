@@ -62,7 +62,7 @@ public class Shutdown implements ThrowException {
     }
 
     @Override
-    public void callHost() throws ShutdownSoftwareException, ExitConsoleException, ClearConsoleException {
+    public void callHost() throws ShutdownSoftwareException {
         throw new ShutdownSoftwareException(type.toString());
         // if (count == 0){
             // throw new ShutdownSoftwareException(type.toString());

@@ -9,6 +9,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.util.ResourceBundle;
+import java.io.IOException;
 import java.lang.Math;
 
 import eroiko.ani.MainApp;
@@ -17,12 +18,17 @@ import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Group;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 public class WallpaperController implements Initializable{
     public static boolean quit;
@@ -34,6 +40,69 @@ public class WallpaperController implements Initializable{
     public static final int PREV = 2;
     public static final int ADD = 3;
     public static final int DEL = 4;
+
+        
+    /**
+     * @param wp            the Wallpaper to open
+     * @param isPreview     whether to use file choosing functions or not
+     * @throws IOException
+     */
+    public static void OpenWallpaper(Wallpaper wp, boolean isPreview) throws IOException{
+        int serialNumber = -1;
+        if (wp != null){
+            serialNumber = Wallpaper.addNewWallpaper(wp);
+        }
+        else {
+            serialNumber = Wallpaper.getWallpaperSerialNumberImmediately();
+            wp = Wallpaper.getWallpaper(serialNumber);
+        }
+        var fixedWp = wp;
+        boolean prev = isPreview || wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_IMAGE_PATH);
+        System.out.println("[Wallpaper Controller]  Is preview ? " + prev);
+        WallpaperController.isPreview = prev;
+        final int fixedSerialNumber = serialNumber;
+        var stage = new Stage();
+        System.out.println("[Wallpaper Controller]  Open Neo Wallpaper Viewer...");
+        stage.setTitle("Neo Wallpaper Viewer");
+        var wallpaperScene = new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("WallpaperWindow.fxml").toUri().toURL()));
+        wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+            if (e.getCode() == KeyCode.RIGHT){
+                if (!fixedWp.isEmpty()){
+                    fixedWp.rightShift();
+                }
+            }
+            else if (e.getCode() == KeyCode.LEFT){
+                if (!fixedWp.isEmpty()){
+                    fixedWp.leftShift();
+                }
+            }
+            if (!prev){
+                if (e.getCode() == KeyCode.EQUALS || e.getCode() == KeyCode.UP){
+                    if (!fixedWp.isEmpty()){
+                        fixedWp.add();
+                    }
+                    fixedWp.triggerChangedFlag();
+                }
+                else if (e.getCode() == KeyCode.MINUS || e.getCode() == KeyCode.DOWN){
+                    if (!fixedWp.isEmpty()){
+                        fixedWp.delete();
+                    }
+                    fixedWp.triggerChangedFlag();
+                }
+            }
+            e.consume();
+        });
+        stage.setScene(wallpaperScene);
+        stage.getIcons().add(MainApp.icon);
+        stage.setOnCloseRequest(e -> {
+            if (!prev){
+                Wallpaper.appendToResultList(fixedSerialNumber);
+                Wallpaper.executeResultAndCleanPreview();
+            }
+        });
+        stage.show();
+    }
+
     
     Wallpaper wp;
     public static ImageView imageView;

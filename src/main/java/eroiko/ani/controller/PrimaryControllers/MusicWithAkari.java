@@ -38,6 +38,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -65,6 +66,9 @@ public class MusicWithAkari implements Initializable {
     private static HashMap<Path, Stage> map = new HashMap<>();
     private static Path temporaryPath;
     private Path mediaBoxPath;
+
+    /* Easter egg part */
+    private static final MediaOperator akari = new MediaOperator(WallpaperPath.DEFAULT_MUSIC_PATH.resolve("Akari"));
     
     public void playOrPause(){
         if (player.getStatus().equals(MediaPlayer.Status.PLAYING)){
@@ -154,6 +158,7 @@ public class MusicWithAkari implements Initializable {
     @FXML private Text addToSyamikoText;
     @FXML private Rectangle addToSyamikoDefault;
     @FXML private Text addToSyamikoDefaultText;
+    @FXML private Circle sayHi;
     private int addDefaultSwitch = 0;
 
     @Override
@@ -299,6 +304,13 @@ public class MusicWithAkari implements Initializable {
             box.clean();
             player.stop();
             System.out.println("Close Music With Akari");
+        });
+
+        sayHi.setOpacity(0);
+        sayHi.setOnMouseClicked(e -> {
+            var p = new MediaPlayer(akari.getRandomMedia());
+            p.setVolume(volumeBar.getValue() / 500);
+            p.play();
         });
         
         setPromptLabel();

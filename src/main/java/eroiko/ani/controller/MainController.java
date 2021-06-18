@@ -1,8 +1,8 @@
 /*
- * Author : Shiritai (楊子慶, or Eroiko on Github) at 2021/06/13.
- * See https://github.com/Shiritai/wallpaper_master for more information.
- * Created using VSCode.
- */
+* Author : Shiritai (楊子慶, or Eroiko on Github) at 2021/06/13.
+* See https://github.com/Shiritai/wallpaper_master for more information.
+* Created using VSCode.
+*/
 package eroiko.ani.controller;
 
 import java.awt.Desktop;
@@ -17,8 +17,9 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
 import eroiko.ani.MainApp;
-import eroiko.ani.controller.ConsoleControllers.TerminalThread;
 import eroiko.ani.controller.PrimaryControllers.*;
+import eroiko.ani.controller.PromptControllers.ConsoleController;
+import eroiko.ani.controller.PromptControllers.TerminalThread;
 import eroiko.ani.model.CLI.Console;
 import eroiko.ani.model.CLI.exception.ClearConsoleException;
 import eroiko.ani.model.CLI.exception.ExitConsoleException;
@@ -74,6 +75,7 @@ public class MainController implements Initializable {
     public static ProgressBar MainCtrlPbar = new ProgressBar();
     public static ProgressIndicator MainCtrlPin = new ProgressIndicator();
     /* FXML variables */
+    @FXML private VBox rootPane;
     @FXML private TextArea Terminal_out = new TextArea();
     @FXML private TextField Terminal_in = new TextField();
     @FXML private SplitPane terminalButtonDivider;
@@ -216,6 +218,11 @@ public class MainController implements Initializable {
     }
 
     @FXML
+    void OpenRealTerminal(ActionEvent event) {
+        ConsoleController.OpenCompleteTerminal();
+    }
+
+    @FXML
     void OpenPreferenceWindow(ActionEvent event) {
         OpenPreferenceWindow();
     }
@@ -270,10 +277,10 @@ public class MainController implements Initializable {
         var file = files.get(0).toPath();
         try {
             if (WallpaperUtil.isImage(file)){ // image
-                OpenWallpaper(new Wallpaper(file), false);
+                WallpaperController.OpenWallpaper(new Wallpaper(file), false);
             }
             else { // directory
-                OpenWallpaper(new Wallpaper(file), false);
+                WallpaperController.OpenWallpaper(new Wallpaper(file), false);
             }
         } catch (IOException e) {
             System.out.println(e.toString());
@@ -340,6 +347,7 @@ public class MainController implements Initializable {
         "\nList all available commands with \"man -a\" or \"man --all\"" + 
         "\nTry key in \"meow\" and see what will happen OwO\n");
         console = new Console(currentPath, WallpaperUtil::pathDirAndNameCompare, MainApp.hostName, MainApp.userName, true);
+        System.out.println(console.toString());
     }
 
     @FXML
@@ -402,68 +410,6 @@ public class MainController implements Initializable {
             tmp.getExtensionFilters().addAll(new javafx.stage.FileChooser.ExtensionFilter("Audio Files", "*.wav", "*.mp3"));
             MusicWithAkari.openMusicWithAkari(tmp.showOpenDialog(null).toPath());
         } catch (Exception e){} // 表示沒做選擇, InvocationTargetException
-    }
-    
-    /**
-     * @param wp            the Wallpaper to open
-     * @param isPreview     whether to use file choosing functions or not
-     * @throws IOException
-     */
-    public static void OpenWallpaper(Wallpaper wp, boolean isPreview) throws IOException{
-        WallpaperController.quit = quit;
-        int serialNumber = -1;
-        if (wp != null){
-            serialNumber = Wallpaper.addNewWallpaper(wp);
-        }
-        else {
-            serialNumber = Wallpaper.getWallpaperSerialNumberImmediately();
-            wp = Wallpaper.getWallpaper(serialNumber);
-        }
-        var fixedWp = wp;
-        boolean prev = isPreview || wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_IMAGE_PATH);
-        System.out.println("[MainController]  Is preview ? " + prev);
-        WallpaperController.isPreview = prev;
-        final int fixedSerialNumber = serialNumber;
-        var stage = new Stage();
-        System.out.println("[MainController]  Open Neo Wallpaper Viewer...");
-        stage.setTitle("Neo Wallpaper Viewer");
-        var wallpaperScene = new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("WallpaperWindow.fxml").toUri().toURL()));
-        wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
-            if (e.getCode() == KeyCode.RIGHT){
-                if (!fixedWp.isEmpty()){
-                    fixedWp.rightShift();
-                }
-            }
-            else if (e.getCode() == KeyCode.LEFT){
-                if (!fixedWp.isEmpty()){
-                    fixedWp.leftShift();
-                }
-            }
-            if (!prev){
-                if (e.getCode() == KeyCode.EQUALS || e.getCode() == KeyCode.UP){
-                    if (!fixedWp.isEmpty()){
-                        fixedWp.add();
-                    }
-                    fixedWp.triggerChangedFlag();
-                }
-                else if (e.getCode() == KeyCode.MINUS || e.getCode() == KeyCode.DOWN){
-                    if (!fixedWp.isEmpty()){
-                        fixedWp.delete();
-                    }
-                    fixedWp.triggerChangedFlag();
-                }
-            }
-            e.consume();
-        });
-        stage.setScene(wallpaperScene);
-        stage.getIcons().add(MainApp.icon);
-        stage.setOnCloseRequest(e -> {
-            if (!prev){
-                Wallpaper.appendToResultList(fixedSerialNumber);
-                Wallpaper.executeResultAndCleanPreview();
-            }
-        });
-        stage.show();
     }
     
     @FXML
@@ -558,7 +504,9 @@ public class MainController implements Initializable {
         staticPathLabel = pathLabel;
         imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
 
+        Terminal_in.setContextMenu(new ContextMenu());
         Terminal_out.setEditable(false);
+        Terminal_out.setContextMenu(new ContextMenu());
 
         searchBar.setPromptText(">  Search Artwork");
         
@@ -607,7 +555,7 @@ public class MainController implements Initializable {
         imagePreview.setOnMouseClicked(e -> {
             if (e.getClickCount() == 2){
                 try {
-                    OpenWallpaper(theWallpaper, true);
+                    WallpaperController.OpenWallpaper(theWallpaper, true);
                 } catch (IOException e1) {
                     System.out.println(e1.toString());
                 }
@@ -682,6 +630,26 @@ public class MainController implements Initializable {
         previousExplorer.setOnMouseClicked(e -> {
             if (explorerRec.hasPrevious()){
                 refreshPathWithoutAdding(explorerRec.getPrevious(), true);
+            }
+        });
+        rootPane.addEventFilter(KeyEvent.KEY_PRESSED, e -> { //  彈出 Properties 視窗, 因為是對整個 Scene, 因此宣告在此
+            if (new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN).match(e)){
+                MainController.OpenPreferenceWindow();
+                e.consume();
+            }
+        });
+        rootPane.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+            if (e.getButton() == MouseButton.FORWARD){
+                if (explorerRec.hasNext()){
+                    refreshPathWithoutAdding(explorerRec.getNext(), true);
+                }
+                e.consume();
+            }
+            else if (e.getButton() == MouseButton.BACK){
+                if (explorerRec.hasPrevious()){
+                    refreshPathWithoutAdding(explorerRec.getPrevious(), true);
+                }
+                e.consume();
             }
         });
     }
@@ -956,13 +924,13 @@ public class MainController implements Initializable {
         else { // 真正的 FileExplorer 因此完善 OwO
             if (Dumper.isImage(path)){
                 if (me.getClickCount() == 2){
-                    OpenWallpaper(new Wallpaper(path), false);
+                    WallpaperController.OpenWallpaper(new Wallpaper(path), false);
                 }
                 var iv = new ImageView(new Image(path.toFile().toURI().toString()));
                 iv.setOnMouseClicked(e -> {
                     if (e.getClickCount() == 2){
                         try {
-                            OpenWallpaper(new Wallpaper(path), false);
+                            WallpaperController.OpenWallpaper(new Wallpaper(path), false);
                         } catch (IOException e1) {
                             e1.printStackTrace();
                         }
@@ -1036,7 +1004,7 @@ public class MainController implements Initializable {
                                         }
                                         else if (Dumper.isImage(p)){
                                             try {
-                                                OpenWallpaper(new Wallpaper(p), false);
+                                                WallpaperController.OpenWallpaper(new Wallpaper(p), false);
                                             } catch (IOException e1) { System.out.println("Failed to open wallpaper"); }
                                         }
                                         else if (Dumper.isMusic(p)){
@@ -1094,5 +1062,10 @@ public class MainController implements Initializable {
         currentPath = path;
         pathLabel.setText(" " + currentPath.toAbsolutePath());
         initTreeView(isExpanded);
+        try {
+            initTileExplorer(currentPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

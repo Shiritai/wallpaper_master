@@ -9,10 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import eroiko.ani.controller.MainController;
 import eroiko.ani.util.Method.Dumper;
@@ -176,13 +174,7 @@ public class CrawlerManager {
             }
             /* invoke! */
             try {
-                var status = service.invokeAll(calls);
-                int sizeOfStatus = status.size();
-                for (int h = 0; h < sizeOfStatus; ++h){
-                    if (!status.get(h).isDone()){
-                        --h;
-                    }
-                }
+                service.invokeAll(calls);
                 /* 因為有 iterator is null 的 bug, 改用傳統迴圈 */
                 int size = container.size();
                 for (int x = 0; x < size; ++x){
@@ -224,19 +216,11 @@ public class CrawlerManager {
                 return true;
             });
         }
-        List<Future<Boolean>> status = null;
         try {
-            status = service.invokeAll(calls);
+            service.invokeAll(calls);
         } catch (InterruptedException e) {
             service.shutdownNow();
             // System.out.println(e.toString());
-        }
-        /* 等待結束 */
-        int sizeOfStatus = status.size();
-        for (int h = 0; h < sizeOfStatus; ++h){
-            if (!status.get(h).isDone()){
-                h--;
-            }
         }
         service.shutdown();
     }

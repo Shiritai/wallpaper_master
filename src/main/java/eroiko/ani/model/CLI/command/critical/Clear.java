@@ -17,7 +17,7 @@ public class Clear implements ThrowException {
     }
     
     @Override
-    public void callHost() throws ShutdownSoftwareException, ExitConsoleException, ClearConsoleException {
+    public void callHost() throws ClearConsoleException {
         throw new ClearConsoleException(type.toString());
     }
     

@@ -5,6 +5,10 @@
  */
 package eroiko.ani.model.CLI.command.external;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.NoSuchElementException;
+
 import eroiko.ani.controller.PrimaryControllers.MusicWithAkari;
 import eroiko.ani.controller.PrimaryControllers.MusicWithSyamiko;
 import eroiko.ani.model.CLI.command.fundamental.*;
@@ -31,9 +35,18 @@ public class Music extends Command {
         else {
             var tmp = thisDir.resolve(musicToOpen);
             try {
-                MusicWithAkari.openMusicWithAkari(tmp);
-            } catch (IllegalArgumentException ile){
-                throw illegalParaStr(ile.getMessage(), "File not exist, bad file or is a directory.");
+                if (!Files.isDirectory(tmp)){
+                    MusicWithAkari.openMusicWithAkari(tmp);
+                }
+                else {
+                    try (var dirStream = Files.newDirectoryStream(tmp, "*.{mp3,wav}")){
+                        MusicWithAkari.openMusicWithAkari(dirStream.iterator().next());
+                    }
+                }
+            } catch (IllegalArgumentException | NoSuchElementException ile){
+                throw illegalParaStr(ile.getMessage(), "File not exist.");
+            } catch (IOException ie){
+                throw illegalParaStr(ie.getMessage(), "Directory not exist.");
             }
         }
     }

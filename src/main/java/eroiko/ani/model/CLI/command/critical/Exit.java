@@ -16,7 +16,7 @@ public class Exit implements ThrowException {
     }
     
     @Override
-    public void callHost() throws ShutdownSoftwareException, ExitConsoleException, ClearConsoleException {
+    public void callHost() throws ExitConsoleException {
         throw new ExitConsoleException(type.toString());
     }
 }
