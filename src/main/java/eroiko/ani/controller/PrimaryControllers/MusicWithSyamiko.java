@@ -378,7 +378,7 @@ public class MusicWithSyamiko implements Initializable {
     private void refreshWithPlayingCheck(){
         /* 測試是否正在撥放 */
         var tmp = refresh();
-        new TimeWait(2000);
+        new TimeWait(200); // 等待進度數值變化, 但效果不彰 = =
         playMusicButton.setImage(tmp == progress.get() ? pauseImage : playImage);
     }
     
