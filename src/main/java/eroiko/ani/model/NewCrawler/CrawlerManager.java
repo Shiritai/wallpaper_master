@@ -6,7 +6,6 @@
 package eroiko.ani.model.NewCrawler;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -82,7 +81,7 @@ public class CrawlerManager {
         var res = new ArrayList<CrawlerBase>();
         for (int i = 1; i <= CrawlerBase.CRAWLER_SUPPORT_NUMBERS; ++i){
             CrawlerBase e;
-            if ((e = WalkThroughCrawlers(i)) != null){
+            if ((e = CrawlerBase.WalkThroughCrawlers(keywords, i)) != null){
                 res.add(e);
             }
         }
@@ -90,32 +89,6 @@ public class CrawlerManager {
             return res;
         }
         return null;
-    }
-
-    /**
-     *  1 : CrawlerZeroChan
-     *  2 : CrawlerWallhaven
-     */
-    private CrawlerBase WalkThroughCrawlers(int serialNumber){
-        try {
-            return switch(serialNumber){
-                case 1 -> new CrawlerZeroChan(keywords);
-                case 2 -> new CrawlerWallhaven(keywords);
-                default -> null;
-            };
-        } catch (IOException ie){
-            return null;
-        }
-    }
-
-    public static boolean checkValidation(String keyword){
-        CrawlerBase [] tmp = new CrawlerBase [] {new CrawlerZeroChan(), new CrawlerWallhaven(), };
-        for (CrawlerBase t : tmp){
-            if (t.isValidKeyword(keyword)){
-                return true;
-            }
-        }
-        return false;
     }
 
     private static int tasksForEachLoop(CrawlerManager cm){
@@ -129,6 +102,16 @@ public class CrawlerManager {
             }
         }
         return res;
+    }
+    
+    public static boolean checkValidation(String keyword){
+        CrawlerBase [] tmp = new CrawlerBase [] {new CrawlerZeroChan(), new CrawlerWallhaven(), };
+        for (CrawlerBase t : tmp){
+            if (t.isValidKeyword(keyword)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public int Z_getProcessElementsNumber(){

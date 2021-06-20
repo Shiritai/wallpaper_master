@@ -5,6 +5,7 @@
  */
 package eroiko.ani.model.NewCrawler;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 
@@ -34,5 +35,21 @@ public abstract class CrawlerBase {
             }
         }
         return false;
+    }
+    
+    /**
+     *  1 : CrawlerZeroChan
+     *  2 : CrawlerWallhaven
+     */
+    protected static CrawlerBase WalkThroughCrawlers(String [] keywords,int serialNumber){
+        try {
+            return switch(serialNumber){
+                case 1 -> new CrawlerZeroChan(keywords);
+                case 2 -> new CrawlerWallhaven(keywords);
+                default -> null;
+            };
+        } catch (IOException ie){
+            return null;
+        }
     }
 }
