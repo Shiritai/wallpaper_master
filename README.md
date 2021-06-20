@@ -54,7 +54,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 ## Known issue 已知問題
 
-1. 先以任何形式開啟 Music With Syamiko 後, Music With Akari 無法正常開啟, 反之則沒問題, 推估問題出在 `MediaOperator.class`
+1. ~~先以指令開啟 Music With Syamiko 後, Music With Akari 無法正常開啟, 反之則沒問題, 推估問題出在 `MediaOperator.class`~~ (問題已解決, 出自 Music 指令的 Bug)
 
 ## Environment
 
