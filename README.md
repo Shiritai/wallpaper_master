@@ -34,7 +34,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 1. 釋出獨立終端機版本, 可以與 Wallpaper Master 地個部件連動, 有數個 Independent Terminal 介面設定可供選擇
 
-2. 修正多處 Bug, 尤其原本終端機的多處功能
+2. 修正多處 Bug, 尤其原本終端機的功能
 
 3. 新增 Music With Akari 的彩蛋
 
@@ -46,9 +46,11 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 2. WallpaperUtil 的比較函數 debug
 
-3. 內嵌與獨立 Terminal 為 OCP, java.nio 以及多線程的練習成果
+3. Decoupling and kill magic number/classes
 
-4. 當前使用程式碼行數 (Excluded deprecated classes) 約 : 6200 行
+4. 內嵌與獨立 Terminal 為 OCP, java.nio 以及多線程的練習成果
+
+5. 當前使用程式碼行數 (Excluded deprecated classes) 約 : 6200 行
 
 ## Known issue 已知問題
 
