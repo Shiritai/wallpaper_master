@@ -4,7 +4,7 @@
 
 ## Introduction 簡介
 
-My first Individual project! (For practice OwO)
+My first Individual project!
 
 Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆。僅需輸入關鍵字，等待下載完畢，選擇喜愛的桌布後就大功告成了。
 
@@ -38,7 +38,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 3. 新增 Music With Akari 的彩蛋
 
-4. 修正 CLI.Command.Music 呼叫 Music With Akari 的 Bug
+4. 修正 Music 指令呼叫 Music With Akari 的 Bug
 
 ## Change Log 內部變化紀錄
 
@@ -46,7 +46,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 2. WallpaperUtil 的比較函數 debug
 
-3. Decoupling and kill magic number/classes
+3. Decouple and kill magic number/classes
 
 4. 內嵌與獨立 Terminal 為 OCP, java.nio 以及多線程的練習成果
 

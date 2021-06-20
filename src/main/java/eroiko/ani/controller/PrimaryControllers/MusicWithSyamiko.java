@@ -118,7 +118,7 @@ public class MusicWithSyamiko implements Initializable {
                 }
             }
         });
-        System.out.println(box.getCurrentMediaName());
+        System.out.println("[Syamiko]  " + box.getCurrentMediaName());
         if (type == PROCESSING){
             player.setCycleCount(MediaPlayer.INDEFINITE);
             nameOfMusic.set(MediaOperator.getDefaultProcessingName());

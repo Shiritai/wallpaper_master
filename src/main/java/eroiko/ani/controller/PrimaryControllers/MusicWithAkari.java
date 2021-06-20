@@ -108,7 +108,7 @@ public class MusicWithAkari implements Initializable {
                 refresh();
             }
         });
-        System.out.println(box.getCurrentMediaName());
+        System.out.println("[Syamiko]  " + box.getCurrentMediaName());
         nameOfMusic.set(box.getCurrentMediaName());
         player.setOnReady(() -> {
             maxProgress.set(player.getTotalDuration().toSeconds());
@@ -303,7 +303,7 @@ public class MusicWithAkari implements Initializable {
         map.get(mediaBoxPath).setOnCloseRequest(e -> {
             box.clean();
             player.stop();
-            System.out.println("Close Music With Akari");
+            System.out.println("[Syamiko]  Close Music With Akari");
         });
 
         sayHi.setOpacity(0);
