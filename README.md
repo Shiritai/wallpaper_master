@@ -32,7 +32,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 ## Release note
 
-1. 釋出獨立終端機版本, 可以與 Wallpaper Master 地個部件連動, 有數個 Independent Terminal 介面設定可供選擇
+1. 釋出獨立終端機版本, 可以與 Wallpaper Master 各個部件連動, 有數個 Independent Terminal 介面設定可供選擇
 
 2. 修正多處 Bug, 尤其原本終端機的功能
 
