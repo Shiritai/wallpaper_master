@@ -123,7 +123,9 @@ public class Console {
      */
     public void normalReadLine(String cmd) throws Exception{
         if (rq.checkNeedRequest()){
+            consoleOut.println();
             rq.takeCommand(cmd);
+            consoleOut.print(promptString());
         }
         else {
             if (!cmd.equals("")){ //  when the user didn't press ENTER
@@ -140,7 +142,7 @@ public class Console {
                 tmp.setDaemon(true);
                 tmp.start();
             }
-            else {
+            else if (!rq.checkNeedRequest()) {
                 consoleOut.print(promptString());
             }
         }

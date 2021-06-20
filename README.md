@@ -76,6 +76,6 @@ Undoubtedly, my dear **vscode**!
 
 ## Wallpaper (進版圖)
 
-![image](https://i.imgur.com/OqV05rM.jpg)
+![image](https://i.imgur.com/EaTS9LV.jpg)
 
-![image](https://i.imgur.com/sktWxXr.jpg)
+![image](https://i.imgur.com/RDgpUhs.jpg)
