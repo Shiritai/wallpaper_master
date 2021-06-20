@@ -56,7 +56,7 @@ public class Console {
         Command.setDefaultPath(root);
         Command.setPrintBehavior(printRelative);
         Command.setAllCommandPrintStream(consoleOut);
-        service = Executors.newScheduledThreadPool(4);
+        service = Executors.newScheduledThreadPool(16); // 16 is just a trivial number
         rq = new Consulter(consoleOut);
         this.compPath = compPath;
         future = null;

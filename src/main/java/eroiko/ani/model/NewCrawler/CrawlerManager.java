@@ -1,5 +1,5 @@
 /*
- * Author : Shiritai (楊子慶, or Eroiko on Github) at 2021/06/13.
+ * Author : Shiritai (楊子慶, or Eroiko on Github) at 2021/06/19.
  * See https://github.com/Shiritai/wallpaper_master for more information.
  * Created using VSCode.
  */
@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 
-import eroiko.ani.controller.MainController;
 import eroiko.ani.util.Method.Dumper;
 import eroiko.ani.util.MyDS.myQuartet;
 import eroiko.ani.util.MyDS.myTriple;
@@ -36,6 +35,12 @@ public class CrawlerManager {
 
     private static final int mulTimes = 4;
     
+    /**
+     * 爬蟲模組, 管理數個多線程爬蟲的查找, 下載, 歸檔
+     * @param folderPath    母目標資料夾, 會在其內建立 tmp 資料夾
+     * @param keywords      爬蟲搜索關鍵字
+     * @param pages         目標頁數, 每頁都有多張圖
+     */
     public CrawlerManager(String folderPath, String [] keywords, int pages){
         progress.set(0.);
         fullSavePath = folderPath + "\\" + String.join(" ", keywords);
@@ -279,9 +284,6 @@ public class CrawlerManager {
         } catch (Exception e){
             e.printStackTrace();
             System.out.println(e.toString());
-            if (!MainController.quit){
-                System.err.println(e.toString());
-            }
         }
     }
 }

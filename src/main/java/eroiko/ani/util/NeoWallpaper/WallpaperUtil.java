@@ -23,10 +23,19 @@ public class WallpaperUtil {
     public static Pattern numberMatcher = Pattern.compile("\\d+");
     /* 比較同類型, 以編號區分的檔案, 使用正則表達式, 適用於 ArrayList, Set */
     public static int pathNameCompare(Path a, Path b){
-        Matcher m1 = numberMatcher.matcher(a.getFileName().toString());
-        Matcher m2 = numberMatcher.matcher(b.getFileName().toString());
+        return pathNameCompare(a.getFileName().toString(), b.getFileName().toString());
+    }
+    
+    public static int pathNameCompare(String a, String b){
+        Matcher m1 = numberMatcher.matcher(a);
+        Matcher m2 = numberMatcher.matcher(b);
         if (m1.find() && m2.find()){
-            return Integer.parseInt(m1.group(0)) - Integer.parseInt(m2.group(0));
+            var s1 = m1.group(0);
+            var s2 = m2.group(0);
+            if (s1.length() != s2.length()){
+                return s1.length() - s2.length();
+            }
+            return s1.compareTo(s2);
         }
         else if (m1.find()){
             return 1;
@@ -35,21 +44,6 @@ public class WallpaperUtil {
             return -1;
         }
         return a.toString().compareTo(b.toString());
-    }
-    
-    public static int pathNameCompare(String a, String b){
-        Matcher m1 = numberMatcher.matcher(a);
-        Matcher m2 = numberMatcher.matcher(b);
-        if (m1.find() && m2.find()){
-            return Integer.parseInt(m1.group(0)) - Integer.parseInt(m2.group(0));
-        }
-        else if (m1.find()){
-            return 1;
-        }
-        else if (m2.find()){
-            return -1;
-        }
-        return a.compareTo(b);
     }
 
     public static int pathDirAndNameCompare(Path a, Path b){

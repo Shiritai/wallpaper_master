@@ -42,11 +42,13 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 ## Change Log 內部變化紀錄
 
-1. 補強指令查詢與修復 Bugs, 修改 Exception passing 機制
+1. CLI : 補強指令查詢與修復 Bugs, 修改 Exception passing 機制
 
-2. 內嵌與獨立 Terminal 為 OCP, java.nio 以及多線程的練習成果
+2. WallpaperUtil 的比較函數 debug
 
-3. 當前使用程式碼行數 (Excluded deprecated classes) 約 : 6200 行
+3. 內嵌與獨立 Terminal 為 OCP, java.nio 以及多線程的練習成果
+
+4. 當前使用程式碼行數 (Excluded deprecated classes) 約 : 6200 行
 
 ## Known issue 已知問題
 

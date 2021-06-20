@@ -40,6 +40,7 @@ public class WallpaperController implements Initializable{
     public static final int PREV = 2;
     public static final int ADD = 3;
     public static final int DEL = 4;
+    private static Scene wallpaperScene;
 
         
     /**
@@ -64,7 +65,7 @@ public class WallpaperController implements Initializable{
         var stage = new Stage();
         System.out.println("[Wallpaper Controller]  Open Neo Wallpaper Viewer...");
         stage.setTitle("Neo Wallpaper Viewer");
-        var wallpaperScene = new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("WallpaperWindow.fxml").toUri().toURL()));
+        wallpaperScene = new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("WallpaperWindow.fxml").toUri().toURL()));
         wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (e.getCode() == KeyCode.RIGHT){
                 if (!fixedWp.isEmpty()){
@@ -268,6 +269,5 @@ public class WallpaperController implements Initializable{
     private void initFont(){
         wallpaperName.setFont(MainApp.firaCode16);
         wallpaperPosition.setFont(MainApp.firaCode16);
-        
     }
 }

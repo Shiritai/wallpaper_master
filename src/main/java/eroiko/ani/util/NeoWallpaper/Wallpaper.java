@@ -162,16 +162,21 @@ public class Wallpaper {
             path = path.getParent();
         }
         this.path = path;
-        var tmpTarget = new File(path.toAbsolutePath().toString() + "\\previews");
+        var tmpTarget = new File(path.resolve("previews").toString());
 
         wallpapers = new ArrayList<>();
 
         var fullArr = new ArrayList<Path>();
+        // var tr = new TreeSet<Path>(WallpaperUtil::pathNameCompare);
         try (var dirStream = Files.newDirectoryStream(this.path, "*.{jpg,jpeg,png,gif}")){
-            dirStream.forEach(p -> fullArr.add(p));
+            // dirStream.forEach(tr::add);
+            dirStream.forEach(fullArr::add);
         }
         fullArr.sort(WallpaperUtil::pathNameCompare); // OwO
-
+        // fullArr.forEach(System.out::println);
+        // var fullArr = new ArrayList<Path>(tr.size());
+        // tr.forEach(fullArr::add);
+        // tr = null;
         if (fullArr.size() == 0){
             throw new IllegalArgumentException("Not a wallpaper folder!");
         }

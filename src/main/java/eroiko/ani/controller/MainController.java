@@ -977,6 +977,7 @@ public class MainController implements Initializable {
             dirStream.forEach(e -> paths.add(e));
         }
 
+        // var list = new TreeSet<VBox>((a, b) -> WallpaperUtil.pathNameCompare(((Text) a.getChildren().get(1)).getText(), ((Text) a.getChildren().get(1)).getText()));
         var list = new ArrayList<VBox>(paths.size());
         var service = new Service<Void>(){
             @Override
@@ -998,7 +999,7 @@ public class MainController implements Initializable {
                                     iconView.setFitWidth(36);
                                 }
                                 
-                                var name = new Text(CarryReturn.addCarryReturnForAbout(p.getFileName().toString(), 21, 0));
+                                var name = new Text(CarryReturn.addCarryReturnForAbout(p.getFileName().toString(), 19, 0));
                                 name.setFont(MainApp.notoSansCJKLight12);
                                 
                                 var vbox = new VBox(iconView, name);
@@ -1040,6 +1041,7 @@ public class MainController implements Initializable {
             }
         };
         service.setOnSucceeded(e -> {
+            list.sort((a, b) -> WallpaperUtil.pathNameCompare(((Text) a.getChildren().get(1)).getText(), ((Text) a.getChildren().get(1)).getText()));
             viewImageTileTable.getChildren().addAll(list);
             viewImageTileTable.prefHeightProperty().bind(scrollableTile.heightProperty()); // 自由改變高
             viewImageTileTable.prefWidthProperty().bind(scrollableTile.widthProperty()); // 自由改變寬
