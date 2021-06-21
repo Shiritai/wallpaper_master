@@ -12,7 +12,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
@@ -37,7 +36,6 @@ import eroiko.ani.util.NeoWallpaper.*;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -51,7 +49,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.skin.TreeViewSkin;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -98,7 +95,7 @@ public class MainController implements Initializable {
     @FXML private Label previousExplorer;
     @FXML private Label nextExplorer;
     private DoubleHistoryList<Path> explorerRec;
-    private Path lastTilePath = null;
+    private Path lastTilePath = null; // 之後給 Tile Pane 使用
     
     /* About Search */
     @FXML private TextField searchBar;
