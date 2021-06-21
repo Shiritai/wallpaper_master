@@ -17,7 +17,7 @@ public class Rm extends Command implements Consultable{
     private final String fileName;
     private final int NONE = 0;
     private final int QUERY_DELETE = 1;
-    private final String reqMsg = "This directory has child files.\nDo you want to continue? [Y/n]";
+    private final String reqMsg = "This directory has child file.\nDo you want to continue? [Y/n]";
     private Consulter rq;
     private int state;
 

@@ -165,7 +165,6 @@ public class ConsoleController implements Initializable {
 
         ConsoleTextArea txt; // 可以直接訪問並讀寫, 相對的, this (Label) 不允許直接訪問讀寫
         Service<Void> service;
-        // FXConsole console;
         Console console;
         StringProperty savedText;
         PrintStream print;
@@ -259,6 +258,8 @@ public class ConsoleController implements Initializable {
                         var cb = new ClipboardContent();
                         cb.putString(txt.getSelectedText());
                         Clipboard.getSystemClipboard().setContent(cb);
+                        int pos = txt.getSelection().getStart();
+                        txt.selectRange(pos, pos); // clear selected text
                     }
                 }
             });

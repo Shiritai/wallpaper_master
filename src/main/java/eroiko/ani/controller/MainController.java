@@ -12,6 +12,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.TreeSet;
 import java.util.concurrent.Callable;
@@ -36,6 +37,7 @@ import eroiko.ani.util.NeoWallpaper.*;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -49,6 +51,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.skin.TreeViewSkin;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
@@ -95,6 +98,7 @@ public class MainController implements Initializable {
     @FXML private Label previousExplorer;
     @FXML private Label nextExplorer;
     private DoubleHistoryList<Path> explorerRec;
+    private Path lastTilePath = null;
     
     /* About Search */
     @FXML private TextField searchBar;
@@ -232,7 +236,7 @@ public class MainController implements Initializable {
         PreferenceController.quit = quit;
         try {
             var stage = new Stage();
-            stage.setTitle("Properties");
+            stage.setTitle("Preference");
             stage.setScene(new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("PreferenceWindow.fxml").toUri().toURL())));
             stage.getIcons().add(MainApp.icon);
             stage.show();
@@ -608,8 +612,15 @@ public class MainController implements Initializable {
         });
         Terminal_in.setOnMouseClicked(e -> {
             if (e.getButton().equals(MouseButton.SECONDARY)){
-                var cb = Clipboard.getSystemClipboard().getString();
-                Terminal_in.appendText(cb);
+                if (Terminal_in.getSelectedText().equals("")){
+                    var cb = Clipboard.getSystemClipboard().getString();
+                    Terminal_in.appendText(cb);
+                }
+                else {
+                    var content = new ClipboardContent();
+                    content.putString(Terminal_in.getSelectedText());
+                    Clipboard.getSystemClipboard().setContent(content);
+                }
             }
         });
         Terminal_out.setOnMouseClicked(e -> {
@@ -617,6 +628,8 @@ public class MainController implements Initializable {
                 var content = new ClipboardContent();
                 content.putString(Terminal_out.getSelectedText());
                 Clipboard.getSystemClipboard().setContent(content);
+                int pos = Terminal_out.getSelection().getStart();
+                Terminal_out.selectRange(pos, pos); // clear selected text
             }
         });
         treeFileExplorer.setOnMouseClicked(e -> {
@@ -663,6 +676,11 @@ public class MainController implements Initializable {
     }
     
     public void initializeKeyBoardShortcuts(){
+        rootPane.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.F5){
+                refreshPathWithoutAdding(currentPath, true);
+            }
+        });
         Terminal_in.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (new KeyCodeCombination(KeyCode.ENTER).match(e)){
                 if (console != null){
@@ -778,7 +796,7 @@ public class MainController implements Initializable {
                 e.consume();
             }
         });
-        refreshExplorer.setOnMouseClicked(e -> initTreeView(true));
+        refreshExplorer.setOnMouseClicked(e -> refreshPathWithoutAdding(currentPath, true));
     }
 
     private void initSearchQueue(){
@@ -786,8 +804,8 @@ public class MainController implements Initializable {
         keywords.setMinWidth(170);
         keywords.setPrefWidth(170);
         keywords.setCellValueFactory(new PropertyValueFactory<>("key"));
-        amount.setMinWidth(130);
-        amount.setPrefWidth(130);
+        amount.setMinWidth(150);
+        amount.setPrefWidth(150);
         amount.setCellValueFactory(new PropertyValueFactory<>("value"));
     }
 
@@ -916,9 +934,25 @@ public class MainController implements Initializable {
     }
     
     private void treeViewSelected(MouseEvent me) throws IOException{
-        if (me.getPickResult().getIntersectedNode().toString().contains("null")){
+        var clicked = me.getPickResult().getIntersectedNode();
+        if (clicked.toString().contains("null")){
             System.out.println("[File Explorer (Tree)]  No selected item.");
             treeFileExplorer.getSelectionModel().clearSelection();
+        }
+        else if (clicked.getStyleClass().toString().equals("arrow") || clicked.getStyleClass().toString().equals("tree-disclosure-node")){
+            var tmp = clicked.getParent();
+            while (!tmp.toString().contains("TreeViewSkin")){
+                tmp = tmp.getParent();
+            }
+            treeFileExplorer.getRoot().getChildren().forEach(p -> {
+                if (p.isExpanded()){
+                    try {
+                        bfsSurface(p);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
         Path path;
         TreeItem<myPair<String, Path>> dir;
@@ -970,14 +1004,14 @@ public class MainController implements Initializable {
      * @throws IOException
      */
     private void initTileExplorer(Path root) throws IOException{
-        viewImageTileTable.getChildren().clear();
 
+        lastTilePath = root;
         var paths = new TreeSet<Path>(WallpaperUtil::pathDirAndNameCompare);
         try (var dirStream = Files.newDirectoryStream(root)){
             dirStream.forEach(e -> paths.add(e));
         }
+        viewImageTileTable.getChildren().clear();
 
-        // var list = new TreeSet<VBox>((a, b) -> WallpaperUtil.pathNameCompare(((Text) a.getChildren().get(1)).getText(), ((Text) a.getChildren().get(1)).getText()));
         var list = new ArrayList<VBox>(paths.size());
         var service = new Service<Void>(){
             @Override
@@ -987,6 +1021,27 @@ public class MainController implements Initializable {
                     protected Void call(){
                         var pool = Executors.newCachedThreadPool();
                         var poolList = new ArrayList<Callable<VBox>>(paths.size());
+                        /* 未來實現 */
+                        // final ContextMenu menu = new ContextMenu();
+                        // var delete = new MenuItem("delete");
+                        // Path vboxPath = null;
+                        // // var vboxPath = new SimpleStringProperty();
+                        // delete.setOnAction(e -> {
+                        //     try {
+                        //         deleteFile(vboxPath);
+                        //     } catch (IOException e2) {
+                        //         e2.printStackTrace();
+                        //     }
+                        // });
+                        // menu.getItems().addAll(delete);
+                        // var copy = new MenuItem("copy");
+                        // copy.setOnAction(e -> {
+                        //     var content = new ClipboardContent();
+                        //     content.putFilesByPath(List<String>.of());
+                        //     Clipboard.getSystemClipboard().setContent(content);
+                        // });
+                        // var paste = new MenuItem("paste");
+                        // menu.getItems().addAll(copy, paste);
                         for (var p : paths){
                             poolList.add(() -> {
                                 ImageView iconView;
@@ -1005,25 +1060,30 @@ public class MainController implements Initializable {
                                 var vbox = new VBox(iconView, name);
                                 vbox.setAlignment(Pos.TOP_CENTER);
                                 vbox.setOnMouseClicked(e -> {
-                                    initTreeView(false);
-                                    if (e.getClickCount() == 2){
-                                        if (Files.isDirectory(p)){
-                                            refreshExplorerPath(p, false, true);
-                                            try {
-                                                initTileExplorer(p);
-                                            } catch (IOException ie){ ie.printStackTrace(); }
+                                    if (e.getButton() == MouseButton.PRIMARY){
+                                        initTreeView(false);
+                                        if (e.getClickCount() == 2){
+                                            if (Files.isDirectory(p)){
+                                                refreshExplorerPath(p, false, true);
+                                                try {
+                                                    initTileExplorer(p);
+                                                } catch (IOException ie){ ie.printStackTrace(); }
+                                            }
+                                            else if (Dumper.isImage(p)){
+                                                try {
+                                                    WallpaperController.OpenWallpaper(new Wallpaper(p), false);
+                                                } catch (IOException e1) { System.out.println("Failed to open wallpaper"); }
+                                            }
+                                            else if (Dumper.isMusic(p)){
+                                                MusicWithAkari.openMusicWithAkari(p);
+                                            }
+                                            else {
+                                                openFile(p);
+                                            }
                                         }
-                                        else if (Dumper.isImage(p)){
-                                            try {
-                                                WallpaperController.OpenWallpaper(new Wallpaper(p), false);
-                                            } catch (IOException e1) { System.out.println("Failed to open wallpaper"); }
-                                        }
-                                        else if (Dumper.isMusic(p)){
-                                            MusicWithAkari.openMusicWithAkari(p);
-                                        }
-                                        else {
-                                            openFile(p);
-                                        }
+                                    }
+                                    else {
+                                        
                                     }
                                 });
                                 return vbox;
@@ -1068,6 +1128,11 @@ public class MainController implements Initializable {
         explorerRec.add(path, trimOrRestore);
         pathLabel.setText(" " + currentPath.toAbsolutePath());
         initTreeView(isExpanded);
+        try {
+            initTileExplorer(currentPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     private void refreshPathWithoutAdding(Path path, boolean isExpanded){
@@ -1078,6 +1143,25 @@ public class MainController implements Initializable {
             initTileExplorer(currentPath);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /** 完全刪除檔案, 含子資料夾 
+     * @throws IOException */
+    private void deleteFile(Path path) throws IOException{
+        if (path != null){
+            if (Files.isDirectory(path)){
+                try (var dirStream = Files.newDirectoryStream(path)){
+                    dirStream.forEach(t -> {
+                        try {
+                            deleteFile(t);
+                        } catch (IOException e) {}
+                    });
+                }
+            }
+            else {
+                path.toFile().delete();
+            }
         }
     }
 }
