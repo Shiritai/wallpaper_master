@@ -945,7 +945,7 @@ public class MainController implements Initializable {
                 tmp = tmp.getParent();
             }
             treeFileExplorer.getRoot().getChildren().forEach(p -> {
-                if (p.isExpanded()){
+                if (p.isExpanded() && p.getChildren().size() <= 1){ // 不起眼但很有效的優化, 正確判斷需要被 BFS 的子項目, 而非一股腦對所有展開的子項目進行 BFS
                     try {
                         bfsSurface(p);
                     } catch (IOException e) {
