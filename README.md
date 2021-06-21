@@ -4,6 +4,9 @@
 
 ## Introduction 簡介
 
+[使用與技術介紹連結 (for Final Project Introduction)](https://drive.google.com/file/d/1A1tRqz0CPOHCmy4RV9ET-W0nfSnqViEc/view?usp=sharing)
+[使用示範 (for Final Project Demo)](https://drive.google.com/file/d/1x6VS8rtZH1xRogoARr1NJ8jrX-ND6anc/view?usp=sharing)
+
 My first Individual project!
 
 Wallpaper Master 旨在讓使用者可以輕鬆管理自己的老婆。僅需輸入關鍵字，等待下載完畢，選擇喜愛的桌布後就大功告成了。
