@@ -70,7 +70,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 4. File Explorer 新增右鍵選單, 支援在檔案總管的基本操作
 
-5. 新增自動下載更新此軟體功能
+5. 新增自動下載更新此軟體的功能
 
 6. 實作網路流量監測 (for crawler)
 
