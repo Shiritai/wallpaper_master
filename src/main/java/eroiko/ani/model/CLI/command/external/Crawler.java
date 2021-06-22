@@ -12,24 +12,26 @@ import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 public class Crawler extends Command {
 
     private String keywords;
-    private final int number;
     
     public Crawler(String keywords){
         super(Type.CRAWLER);
         this.keywords = keywords;
-        number = 1;
-    }
-
-    public Crawler(int number, String keywords){
-        super(Type.CRAWLER);
-        this.keywords = keywords;
-        this.number = number;
     }
 
     @Override
     public void execute() throws IllegalArgumentException {
+        /* 確認是否印出詳細 */
         var printInfo = keywords.startsWith("-i");
-        if (printInfo){ keywords = keywords.substring(2); }
+        if (printInfo){ keywords = keywords.substring(3); }
+        /* 確認數量 */
+        var para = keywords.split(" "); // 用來修剪 keywords 並取得參數, 確保 keywords 正確
+        int number;
+        try {
+            number = Integer.parseInt(para[0]);
+            keywords = keywords.substring(para[0].length() + 1);
+        } catch (NumberFormatException ne){ // 無指定
+            number = 1;
+        }
         var check = CrawlerManager.checkValidation(keywords);
         if (check){
             var cw = new CrawlerManager(WallpaperPath.DEFAULT_TMP_WALLPAPER_PATH.toString(), keywords.split(" "), number, printInfo);

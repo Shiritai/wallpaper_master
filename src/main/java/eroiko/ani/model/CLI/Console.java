@@ -168,9 +168,9 @@ public class Console {
                 case "touch" -> new Touch(passingStr).execute();
                 case "rm" -> new Rm(rq, passingStr).execute();
                 case "cat" -> new Cat(passingStr).execute();
-                case "ls" -> future = service.submit(() -> {new Ls(compPath, passingStr).execute(); return null; }); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
+                case "ls" -> future = service.submit(() -> { new Ls(compPath, passingStr).execute(); return null; }); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
                 case "ln" -> new Ln(passingStr).execute(); // 可用性有疑慮
-                case "search" -> future = service.submit(() -> {new Search(passingStr).execute(); return null; }); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
+                case "search" -> future = service.submit(() -> { new Search(passingStr).execute(); return null; }); // 可能會很久, 且必定無異常或者異常不重要, 因此另開新執行緒
                 case "clear" -> new Clear().callHost();
                 case "exit" -> new Exit().callHost(); // 終止 Console
                 case "history" -> new History().execute();
@@ -179,30 +179,16 @@ public class Console {
                 case "info" -> new Information().callHost();
     
                 /* Special */
-                case "meow" -> future = service.submit(() -> {new Meow().execute(); return null; });
-                case "cmd", "cmd.exe" -> future = service.submit(() -> {new Cmd(passingStr).execute(); return null; });
-                case "powershell.exe", "powershell", "pwsh" -> future = service.submit(() -> {new PowerShell(passingStr).execute(); return null; });
-                case "wt", "wt.exe" -> future = service.submit(() -> {new WindowsTerminal(passingStr).execute(); return null; });
-                case "bash" -> future = service.submit(() -> {new Bash(passingStr).execute(); return null; });
+                case "meow" -> future = service.submit(() -> { new Meow().execute(); return null; });
+                case "cmd", "cmd.exe" -> future = service.submit(() -> { new Cmd(passingStr).execute(); return null; });
+                case "powershell.exe", "powershell", "pwsh" -> future = service.submit(() -> { new PowerShell(passingStr).execute(); return null; });
+                case "wt", "wt.exe" -> future = service.submit(() -> { new WindowsTerminal(passingStr).execute(); return null; });
+                case "bash" -> future = service.submit(() -> { new Bash(passingStr).execute(); return null; });
 
                 /* External */
                 case "wallpaper" -> new Wallpaper(passingStr).execute();
                 case "music" -> new Music(passingStr).execute();
-                case "crawler" -> {
-                    future = service.submit(() -> {
-                        try {
-                            int number = Integer.parseInt(cmdLine[1]);
-                            new Crawler(number, cmd.substring(cmd.indexOf(' ', cmd.indexOf(' ') + 1) + 1)).execute();
-                        } catch (NumberFormatException ne){
-                            try {
-                                new Crawler(passingStr).execute();
-                            } catch (IllegalArgumentException ile){
-                                consoleOut.println(ile.getMessage() + "\nIllegal argument, please try again.");
-                            }
-                        }
-                        return null;
-                    });
-                }
+                case "crawler" -> future = service.submit(() -> { new Crawler(passingStr).execute(); return null; });
                 case "wm" -> new Wm(passingStr).execute();
                 case "setting" -> new Setting().callHost();
                 default -> consoleOut.println("Command not defined!");
