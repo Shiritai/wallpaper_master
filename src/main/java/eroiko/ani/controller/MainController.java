@@ -33,7 +33,6 @@ import eroiko.ani.util.Method.TimeWait;
 import eroiko.ani.util.MyDS.DoubleHistoryList;
 import eroiko.ani.util.MyDS.myPair;
 import eroiko.ani.util.NeoWallpaper.*;
-import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.ObservableList;
