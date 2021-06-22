@@ -146,15 +146,7 @@ public class WallpaperUtil {
         return new ImageView(SwingFXUtils.toFXImage(tmpBufferImage, null));
     }
 
-    public static ImageView fetchSmallImage(Path path){ // 真方便
-        var tmp = FileSystemView.getFileSystemView().getSystemIcon(path.toFile());
-        var tmpBufferImage = new java.awt.image.BufferedImage(
-            tmp.getIconWidth(),
-            tmp.getIconHeight(),
-            java.awt.image.BufferedImage.TYPE_INT_ARGB
-        );
-        tmp.paintIcon(null, tmpBufferImage.getGraphics(), 0, 0);
-
+    public static ImageView fetchSmallImage(Path path){
         try {
             var img = new Image(path.toAbsolutePath().toUri().toURL().toString(), 64, 64, true, false);
             return new ImageView(img);
