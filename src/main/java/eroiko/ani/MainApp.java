@@ -113,7 +113,7 @@ public class MainApp extends Application{
             }
         });
         /* 定義全視窗快捷鍵 */
-        mainStage.addEventFilter(KeyEvent.KEY_PRESSED, e -> { // 最小化至 System tray
+        mainStage.addEventFilter(KeyEvent.KEY_PRESSED, e -> { // 最小化至 System tray, 對使用 mainStage 者有效
             if (new KeyCodeCombination(KeyCode.M, KeyCodeCombination.CONTROL_DOWN).match(e)){
                 mainStage.hide();
             }
@@ -141,7 +141,7 @@ public class MainApp extends Application{
     public static void closeMainStage(){
         MediaOperator.playBox.clean();
         Wallpaper.executeResultAndCleanPreview(); // 執行所有 Wallpaper 檔案操作!
-        new Wallpaperize().execute();
+        new Wallpaperize().execute(); // 臨走前整理一下 Wallpaper 預設資料夾
         mainStage.close();
         Platform.exit();
         System.exit(0);
@@ -164,7 +164,7 @@ public class MainApp extends Application{
         menuItems[num++].setOnAction(e -> {
             var cb = Clipboard.getSystemClipboard().getFiles();
             try {
-                var tmpFile = new File(WallpaperPath.getWallpaperPath().toString()); // 未來必須改用 Preference Path
+                var tmpFile = new File(WallpaperPath.getWallpaperPath().toString());
                 if (!tmpFile.exists()){
                     tmpFile.mkdir();
                 }
@@ -199,11 +199,12 @@ public class MainApp extends Application{
 
     private String getComputerName(){
         Map<String, String> env = System.getenv();
-        if (env.containsKey("COMPUTERNAME"))
+        if (env.containsKey("COMPUTERNAME")){
             return env.get("COMPUTERNAME");
-        else if (env.containsKey("HOSTNAME"))
+        }
+        else if (env.containsKey("HOSTNAME")){
             return env.get("HOSTNAME");
-        else
-            return "Unknown Computer";
+        }
+        return "Unknown Computer";
     }
 }

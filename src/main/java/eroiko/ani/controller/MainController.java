@@ -60,6 +60,7 @@ import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
+/** 主視窗 Controller */
 public class MainController implements Initializable {
     /* Support variables */
     public static ImageView staticImagePreview;
@@ -128,8 +129,6 @@ public class MainController implements Initializable {
             killTerminal();
         }
         MainApp.closeMainStage();
-        Platform.exit();
-        System.exit(0);
     }
     
     @FXML
@@ -406,6 +405,7 @@ public class MainController implements Initializable {
         OpenMusicWithAkari();
     }
     
+    /** 開啟 FileChooser 來選擇檔案, 並呼叫 Music with Akari 的靜態開啟方法 */
     public static void OpenMusicWithAkari(){
         var tmp = new javafx.stage.FileChooser();
         tmp.setTitle("Open music with Akari");
@@ -650,12 +650,6 @@ public class MainController implements Initializable {
                 refreshPathWithoutAdding(explorerRec.getPrevious(), true);
             }
         });
-        rootPane.addEventFilter(KeyEvent.KEY_PRESSED, e -> { //  彈出 Preference 視窗, 因為是對整個 Scene, 因此宣告在此
-            if (new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN).match(e)){
-                MainController.OpenPreferenceWindow();
-                e.consume();
-            }
-        });
         rootPane.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
             if (e.getButton() == MouseButton.FORWARD){
                 if (explorerRec.hasNext()){
@@ -673,9 +667,14 @@ public class MainController implements Initializable {
     }
     
     public void initializeKeyBoardShortcuts(){
-        rootPane.setOnKeyPressed(e -> {
+        rootPane.addEventFilter(KeyEvent.KEY_PRESSED, e -> { //  彈出 Preference 視窗
+            if (new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN).match(e)){
+                MainController.OpenPreferenceWindow();
+                e.consume();
+            }
             if (e.getCode() == KeyCode.F5){
                 refreshPathWithoutAdding(currentPath, true);
+                e.consume();
             }
         });
         Terminal_in.addEventFilter(KeyEvent.KEY_PRESSED, e -> {

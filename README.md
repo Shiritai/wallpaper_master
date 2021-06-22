@@ -60,6 +60,30 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 1. ~~先以指令開啟 Music With Syamiko 後, Music With Akari 無法正常開啟, 反之則沒問題, 推估問題出在 `MediaOperator.class`~~ (問題已解決, 出自 Music 指令的 Bug)
 
+## In the future... 未來可能的擴充方向
+
+1. 支援中文介面
+
+2. 雙 Music Player 新增音樂播放清單
+
+3. Music with Akari 新增最小化 or 可關閉視窗的播放功能
+
+4. File Explorer 新增右鍵選單, 支援在檔案總管的基本操作
+
+5. 新增自動下載更新此軟體功能
+
+6. 實作網路流量監測 (for crawler)
+
+7. File Explorer 右側區域新增可切換以大圖示 / 詳細資料來瀏覽的介面
+
+8. 新增自訂軟體啟動的小幫手
+
+9. 更多可調參數的爬蟲, 如果有必要甚至考慮為其加開 Controller
+
+10. 增加爬蟲目標
+
+11. ~~動態看板娘~~
+
 ## Environment
 
 Java|JRE|JVM

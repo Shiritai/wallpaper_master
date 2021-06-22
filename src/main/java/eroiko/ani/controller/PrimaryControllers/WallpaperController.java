@@ -130,15 +130,16 @@ public class WallpaperController implements Initializable{
     private boolean viewMode;
 
     /* Creative msg */
-    private String [] addHints = new String [] {
+    private static String [] addHints = new String [] {
         "See you later!", "Nice to meet you~", "Love you :)", "How do you do?",
         "It's time to change waifu OwO", "Dinner, shower, or perhaps, me?",
-        "Hi there, ...wait, isn't there too many waifus here?"
+        "Hi there, ...wait, isn't there too many waifus here?", "A~ri~ga~tou~",
+        "It's not like I like you or something, but I just...",
     };
-    private String [] deleteHints = new String [] {
+    private static String [] deleteHints = new String [] {
         "I'll never forget the promise we've made...", "I'll swear you forever :(",
         "Bye bye, my fellow", "I love you then, and even now. So may I kill you?",
-        "How dare you!", "fxxk..."
+        "How dare you!", "fxxk...", "The great Zenarith　sama, please put a curse on " + MainApp.userName,
     };
 
     @Override
@@ -269,5 +270,6 @@ public class WallpaperController implements Initializable{
     private void initFont(){
         wallpaperName.setFont(MainApp.firaCode16);
         wallpaperPosition.setFont(MainApp.firaCode16);
+        hint.setFont(MainApp.bookAntiquaItalic25);
     }
 }
