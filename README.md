@@ -4,9 +4,9 @@
 
 ## Introduction 簡介
 
-[使用與技術介紹 Introduction (for NCU CSIE Final Project Introduction)](https://drive.google.com/file/d/1A1tRqz0CPOHCmy4RV9ET-W0nfSnqViEc/view?usp=sharing)
+[使用與技術介紹 Introduction (for NCU CSIE Final Project Introduction, version 0.1.7)](https://drive.google.com/file/d/1A1tRqz0CPOHCmy4RV9ET-W0nfSnqViEc/view?usp=sharing)
 
-[使用示範 Demo Video (for NCU CSIE Final Project Demo)](https://drive.google.com/file/d/1x6VS8rtZH1xRogoARr1NJ8jrX-ND6anc/view?usp=sharing)
+[使用示範 Demo Video (for NCU CSIE Final Project Demo), version 0.1.6](https://drive.google.com/file/d/1x6VS8rtZH1xRogoARr1NJ8jrX-ND6anc/view?usp=sharing)
 
 My first Individual project!
 
