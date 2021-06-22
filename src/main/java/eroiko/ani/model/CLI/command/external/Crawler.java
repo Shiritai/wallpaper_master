@@ -11,7 +11,7 @@ import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 
 public class Crawler extends Command {
 
-    private final String keywords;
+    private String keywords;
     private final int number;
     
     public Crawler(String keywords){
@@ -28,9 +28,11 @@ public class Crawler extends Command {
 
     @Override
     public void execute() throws IllegalArgumentException {
+        var printInfo = keywords.startsWith("-i");
+        if (printInfo){ keywords = keywords.substring(2); }
         var check = CrawlerManager.checkValidation(keywords);
         if (check){
-            var cw = new CrawlerManager(WallpaperPath.DEFAULT_TMP_WALLPAPER_PATH.toString(), keywords.split(" "), number);
+            var cw = new CrawlerManager(WallpaperPath.DEFAULT_TMP_WALLPAPER_PATH.toString(), keywords.split(" "), number, printInfo);
             out.println("[Crawler Manager]  Fetch links...");
             cw.A_getLinks();
             cw.print();

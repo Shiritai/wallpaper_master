@@ -6,6 +6,7 @@
 package eroiko.ani.model.NewCrawler;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -20,18 +21,21 @@ import javafx.beans.property.SimpleDoubleProperty;
 /** 管理多線程搜尋 / 下載操作 */
 public class CrawlerManager {
     private ArrayList<CrawlerBase> crawlers;
+    
     /* Integer 的存在是為了確保多線程不會出錯 */
     private ArrayList<myQuartet<Integer, Integer, String, String>> wpLinks; // serial number, crawler type, preview link, full link
     private int pages;
     private String [] keywords;
+    private boolean printInfo = false;
     public final String prevSavePath;
     public final String fullSavePath;
+    
     /* Progress peeking */
-    public static volatile DoubleProperty progress = new SimpleDoubleProperty(0.); // 對外更新數據
     private final int tasks; // 對內設定
     private volatile int currentTask; // 對內更新
     private final int tasksForALoop;
-
+    
+    public static volatile DoubleProperty progress = new SimpleDoubleProperty(0.); // 對外更新數據
     private static final int mulTimes = 4;
     
     /**
@@ -39,8 +43,10 @@ public class CrawlerManager {
      * @param folderPath    母目標資料夾, 會在其內建立 tmp 資料夾
      * @param keywords      爬蟲搜索關鍵字
      * @param pages         目標頁數, 每頁都有多張圖
+     * @param printProcessInfoWhileCrawling 是否再爬取時印出當前資訊
      */
-    public CrawlerManager(String folderPath, String [] keywords, int pages){
+    public CrawlerManager(String folderPath, String [] keywords, int pages, boolean printProcessInfoWhileCrawling){
+        printInfo = printProcessInfoWhileCrawling;
         progress.set(0.);
         fullSavePath = folderPath + "\\" + String.join(" ", keywords);
         prevSavePath = fullSavePath + "\\previews";
@@ -74,21 +80,30 @@ public class CrawlerManager {
         currentTask = 0;
         tasksForALoop = CrawlerManager.tasksForEachLoop(this);
         tasks = this.Z_getProcessElementsNumber();
-        System.out.printf("tasks : %d\n", tasks);
+        if (printInfo){
+            System.out.printf("tasks : %d\n", tasks);
+        }
+    }
+
+    /**
+     * 爬蟲模組, 管理數個多線程爬蟲的查找, 下載, 歸檔
+     * @param folderPath    母目標資料夾, 會在其內建立 tmp 資料夾
+     * @param keywords      爬蟲搜索關鍵字
+     * @param pages         目標頁數, 每頁都有多張圖
+     */
+    public CrawlerManager(String folderPath, String [] keywords, int pages){
+        this(folderPath, keywords, pages, true);
     }
 
     private ArrayList<CrawlerBase> CrawlersGenerator(){
-        var res = new ArrayList<CrawlerBase>();
-        for (int i = 1; i <= CrawlerBase.CRAWLER_SUPPORT_NUMBERS; ++i){
-            CrawlerBase e;
-            if ((e = CrawlerBase.WalkThroughCrawlers(keywords, i)) != null){
-                res.add(e);
-            }
-        }
-        if (res.size() > 0){
+        try {
+            var tmp = CrawlerBase.getAllCrawlers(keywords, printInfo);
+            var res = new ArrayList<CrawlerBase>(tmp.length);
+            for (var t : tmp){ res.add(t); }
             return res;
+        } catch (IOException e) {
+            throw new RuntimeException("Unknown CrawlerBase Exception with keywords : " + keywords + "\nSavePath : " + fullSavePath);
         }
-        return null;
     }
 
     private static int tasksForEachLoop(CrawlerManager cm){
@@ -105,13 +120,7 @@ public class CrawlerManager {
     }
     
     public static boolean checkValidation(String keyword){
-        CrawlerBase [] tmp = new CrawlerBase [] {new CrawlerZeroChan(), new CrawlerWallhaven(), };
-        for (CrawlerBase t : tmp){
-            if (t.isValidKeyword(keyword)){
-                return true;
-            }
-        }
-        return false;
+        return CrawlerBase.isValid(keyword);
     }
 
     public int Z_getProcessElementsNumber(){
@@ -175,16 +184,18 @@ public class CrawlerManager {
                 }
                 container.clear();
             } catch (InterruptedException ie){
-                // System.out.println(ie.toString());
                 service.shutdownNow();
             }
         }
         service.shutdown();
     }
 
+    /** 印出以抓取到的連結 */
     public void print(){
         for (var wp : wpLinks){
-            System.out.printf("%d %d %s %s\n", wp.first, wp.second, wp.third, wp.fourth);
+            if (printInfo){
+                System.out.printf("%d %d %s %s\n", wp.first, wp.second, wp.third, wp.fourth);
+            }
         }
     }
     
@@ -208,7 +219,6 @@ public class CrawlerManager {
             service.invokeAll(calls);
         } catch (InterruptedException e) {
             service.shutdownNow();
-            // System.out.println(e.toString());
         }
         service.shutdown();
     }
@@ -239,7 +249,6 @@ public class CrawlerManager {
             service.invokeAll(calls);
         } catch (InterruptedException e) {
             service.shutdownNow();
-            // System.out.println(e.toString());
         }
         /* Do multi-thread-unsupported crawlers later */
         for (var wp : wpLinks){
@@ -260,13 +269,17 @@ public class CrawlerManager {
 
     public void E_pushWallpaper(){
         progress.set(1.);
-        System.out.println(Path.of(this.fullSavePath));
+        if (printInfo){
+            System.out.println(Path.of(this.fullSavePath));
+        }
         try {
             var tmp = new Wallpaper(Path.of(this.fullSavePath));
             Wallpaper.addNewWallpaper(tmp);
         } catch (Exception e){
             e.printStackTrace();
-            System.out.println(e.toString());
+            if (printInfo){
+                System.out.println(e.toString());
+            }
         }
     }
 }

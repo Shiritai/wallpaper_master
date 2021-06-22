@@ -143,7 +143,7 @@ public class Wallpaper {
     private int initIndex;
 
     /** 
-     * 實作類似 Iterator 的資料結構, 統一管理 preview & full, 所有 get functions (除了 Current) 都會移動 Index
+     * 實作類似含 Iterator 的 ArrayList, 統一管理 preview & full, 所有 get functions (除了 Current) 都會移動 Index
      * @param path : the directory of the images or  the path of the first image
      * @throws IOException
      * @throws IllegalArgumentException
@@ -167,16 +167,10 @@ public class Wallpaper {
         wallpapers = new ArrayList<>();
 
         var fullArr = new ArrayList<Path>();
-        // var tr = new TreeSet<Path>(WallpaperUtil::pathNameCompare);
         try (var dirStream = Files.newDirectoryStream(this.path, "*.{jpg,jpeg,png,gif}")){
-            // dirStream.forEach(tr::add);
             dirStream.forEach(fullArr::add);
         }
         fullArr.sort(WallpaperUtil::pathNameCompare); // OwO
-        // fullArr.forEach(System.out::println);
-        // var fullArr = new ArrayList<Path>(tr.size());
-        // tr.forEach(fullArr::add);
-        // tr = null;
         if (fullArr.size() == 0){
             throw new IllegalArgumentException("Not a wallpaper folder!");
         }
@@ -221,7 +215,7 @@ public class Wallpaper {
     }
 
     /** 
-     * 建立預設圖庫的 Wallpaper, 實作類似 Iterator 的資料結構, 統一管理 preview & full, 所有 get functions (除了 Current) 都會移動 Index 
+     * 建立預設圖庫的 Wallpaper, 實作類似含 Iterator 的 ArrayList, 統一管理 preview & full, 所有 get functions (除了 Current) 都會移動 Index 
      * @throws IOException
      */
     public Wallpaper() throws IOException{

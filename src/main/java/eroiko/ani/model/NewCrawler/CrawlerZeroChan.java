@@ -14,7 +14,6 @@ import java.util.concurrent.ExecutorService;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
-import eroiko.ani.controller.MainController;
 import eroiko.ani.util.Method.TimeWait;
 import eroiko.ani.util.MyDS.myTriple;
 
@@ -32,7 +31,8 @@ public class CrawlerZeroChan extends CrawlerBase{
 
     private static int timeDelate = 0;
     
-    public CrawlerZeroChan(String [] keywords) throws IOException{
+    public CrawlerZeroChan(String [] keywords, boolean printInfo) throws IOException{
+        this.printInfo = printInfo;
         CRAWLER_TYPE = CRAWLER_ZEROCHAN;
 
         this.query = String.join("+", keywords);
@@ -49,10 +49,9 @@ public class CrawlerZeroChan extends CrawlerBase{
             // .proxy(proxy)
             .timeout(10000)
             .get();
-        System.out.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
-        if (!MainController.quit){
-            System.err.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
-        }
+        if (printInfo){
+            System.out.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
+        }    
     }
     
     /** 設定畫質, 2 (僅高) ~ 0 (高低都有) */
@@ -67,16 +66,17 @@ public class CrawlerZeroChan extends CrawlerBase{
     @Override
     public ArrayList<myTriple<Integer, String, String>> fetchImageLinks(int page, ExecutorService service) {
         try {
-            System.out.println(this.first_layer_url + "&p=" + Integer.toString(page));
+            if (printInfo){
+                System.out.println(this.first_layer_url + "&p=" + Integer.toString(page));
+            }
             var doc = Jsoup.connect(this.first_layer_url + "&p=" + Integer.toString(page))
                 .userAgent(CrawlerBase.UserAgent)
                 // .proxy(proxy)
                 .timeout(10000)
                 .get();
-            System.out.println(doc.title()); // 印出標頭, 確保目標正確
-            if (!MainController.quit){
-                System.err.println(doc.title()); // 印出標頭, 確保目標正確
-            }
+            if (printInfo){
+                System.out.println(doc.title()); // 印出標頭, 確保目標正確
+            }    
     
             Elements links = doc.select("img[title]"); // 抓取預覽圖, 預覽圖都有 title
             Elements target = doc.select("a[tabindex=1]");
@@ -127,7 +127,9 @@ public class CrawlerZeroChan extends CrawlerBase{
             }
             return data;
         } catch (Exception e){
-            System.out.println(e.toString());
+            if (printInfo){
+                System.out.println(e.toString());
+            }
         }
         return null;
     }
@@ -144,16 +146,17 @@ public class CrawlerZeroChan extends CrawlerBase{
                 .userAgent(CrawlerBase.UserAgent)
                 .timeout(10000)
                 .get();
-            System.out.println(doc.title()); // just for sure!
-            if (!MainController.quit){
-                System.err.println(doc.title()); // just for sure!
-            }
+            if (printInfo){
+                System.out.println(doc.title()); // just for sure!
+            }    
             return doc.select("a[class=preview]").first().attr("href");
         } catch (NullPointerException ne){
             return null; // 避免讀空後進入無窮遞迴
         } catch (Exception e){
-            System.out.println(e.toString());
-            System.out.println("Try re-request...");
+            if (printInfo){
+                System.out.println(e.toString());
+                System.out.println("Try re-request...");
+            }
             timeDelate += 2;
             new TimeWait(2000); // 限制性等待
             return fetchFullLink(url);
@@ -175,9 +178,8 @@ public class CrawlerZeroChan extends CrawlerBase{
                 // .proxy(proxy)
                 .timeout(10000)
                 .get();
-            System.out.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
-            if (!MainController.quit){
-                System.err.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
+            if (printInfo){
+                System.out.println("Zero Chan : " + doc.title()); // 印出標頭, 確保目標正確
             }
         } catch (SocketTimeoutException ie){
             return isValidKeyword(keyword);

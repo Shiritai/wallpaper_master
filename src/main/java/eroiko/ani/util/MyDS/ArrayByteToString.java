@@ -4,18 +4,19 @@
  * Created using VSCode.
  */
 package eroiko.ani.util.MyDS;
-/* 輸入輸出輔助資結, 僅支援寫入位元, 並以字串形式讀出 */
 public class ArrayByteToString {
     private byte [] data;
     private int capacity;
     private int size;
-
+    
+    /** 輸入輸出輔助資結, 僅支援寫入、查詢末位字節, 並以字串形式讀出 */
     public ArrayByteToString(int capacity){
         this.capacity = capacity;
         data = new byte[capacity];
         size = 0;
     }
-
+    
+    /** 輸入輸出輔助資結, 僅支援寫入、查詢末位字節, 並以字串形式讀出 */
     public ArrayByteToString(){
         this(1024);
     }
@@ -23,7 +24,7 @@ public class ArrayByteToString {
     public int getSize(){ return this.size; }
     public int getCapacity(){ return this.capacity; }
     
-    /* 加入字組陣列, 若有需要會進行擴容 */
+    /** 加入字節陣列, 若有需要會進行擴容 */
     public void add(byte [] byteArray){
         if (size + byteArray.length >= capacity){
             var tmpData = new byte[(size + byteArray.length) << 1];

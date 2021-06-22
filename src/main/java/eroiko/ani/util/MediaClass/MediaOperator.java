@@ -33,7 +33,7 @@ public class MediaOperator {
     private double defaultCompleteDuration = 0;
     private boolean isDefaultMusic;
     
-    /** 音樂播放與遍歷器 */
+    /** 音樂查找與遍歷器 */
     private MediaOperator(Path musicPath, Path certainPath, boolean isDefaultMusic){
         this.isDefaultMusic = isDefaultMusic;
         rootPath = musicPath;
@@ -57,8 +57,8 @@ public class MediaOperator {
     }
     
     /** 
-     * 音樂播放與遍歷器, 此建構子所建立的 MediaOperator 不支援所有 processing/complete music 的增刪改查 method,
-     * 若調用的話必將收到不可預期結果及 Exception
+     * 音樂查找與遍歷器, 此建構子所建立的 MediaOperator 不支援所有 processing/complete music 的增刪改查 method,
+     * <p> 若調用的話必將收到不可預期結果及 Exception
      * @param musicPath : 自定義資料夾
      * @param certainPath : 第一個音樂
      */
@@ -67,8 +67,8 @@ public class MediaOperator {
     }
 
     /** 
-     * 音樂播放與遍歷器, 此建構子所建立的 MediaOperator 不支援所有 processing/complete music 的增刪改查 method,
-     * 若調用的話必將收到不可預期結果及 Exception
+     * 音樂查找與遍歷器, 此建構子所建立的 MediaOperator 不支援所有 processing/complete music 的增刪改查 method,
+     * <p> 若調用的話必將收到不可預期結果及 Exception
      * @param musicPath : 自定義資料夾
      */
     public MediaOperator(Path musicPath){

@@ -650,7 +650,7 @@ public class MainController implements Initializable {
                 refreshPathWithoutAdding(explorerRec.getPrevious(), true);
             }
         });
-        rootPane.addEventFilter(KeyEvent.KEY_PRESSED, e -> { //  彈出 Properties 視窗, 因為是對整個 Scene, 因此宣告在此
+        rootPane.addEventFilter(KeyEvent.KEY_PRESSED, e -> { //  彈出 Preference 視窗, 因為是對整個 Scene, 因此宣告在此
             if (new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN).match(e)){
                 MainController.OpenPreferenceWindow();
                 e.consume();
@@ -1018,7 +1018,7 @@ public class MainController implements Initializable {
                     protected Void call(){
                         var pool = Executors.newCachedThreadPool();
                         var poolList = new ArrayList<Callable<VBox>>(paths.size());
-                        /* 未來實現 */
+                        /* 未來實現, File Explorer 右鍵選單功能 */
                         // final ContextMenu menu = new ContextMenu();
                         // var delete = new MenuItem("delete");
                         // Path vboxPath = null;

@@ -192,13 +192,18 @@ public enum Type {
     /* External */
     CRAWLER(257, new Document(
         new Synopsis(new Name("crawler", "Use crawler to fetch wallpapers"), new Name []{
-            new Name("PAGE_NUMBER ARTWORK_KEYWORD", "Specify PAGE_NUMBER and ARTWORK_KEYWORD."),
-            new Name("ARTWORK_KEYWORD", "Specify ARTWORK_KEYWORD.")
+            new Name("[OPTION] PAGE_NUMBER ARTWORK_KEYWORD", "Specify PAGE_NUMBER and ARTWORK_KEYWORD."),
+            new Name("[OPTION] ARTWORK_KEYWORD", "Specify ARTWORK_KEYWORD.")
         }), new Descriptions(
             new String [] {
                 "Use Wallpaper Master Crawler to fetch Wallpapers with specified parameters.",
             },
             new Description [] {
+                new Description(
+                    "[OPTION] -i".split(" "), new String [] {
+                        "Print information while crawling, default is false.",
+                    }
+                ),
                 new Description(
                     "PAGE_NUMBER".split(" "), new String [] {
                         "The integer that determine the pages which a single crawler should walk through.",

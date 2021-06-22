@@ -72,6 +72,7 @@ public class PreferenceController implements Initializable {
     void OpenMusicExplorerForProcessing(ActionEvent event) {
         if (customizeProcessingMusic.selectedProperty().get()){
             var tmp = new FileChooser();
+            tmp.setInitialDirectory(WallpaperPath.DEFAULT_DATA_PATH.toFile());
             tmp.setTitle("Choose processing music");
             try {
                 tmp.getExtensionFilters().addAll(new ExtensionFilter("Audio Files", "*.wav", "*.mp3", "*.flac"));
@@ -102,12 +103,6 @@ public class PreferenceController implements Initializable {
                 savingDir.setText(WallpaperPath.getWallpaperPath().toString());
             }
         });
-        // showWallpapers.setSelected(showWallpapersAfterCrawling.get());
-        // showWallpapers.selectedProperty().addListener((ov, old_val, new_val) -> {
-        //     WallpaperController.showWallpapersAfterCrawling = new_val;
-        //     PreferenceController.showWallpapersAfterCrawling.set(new_val);
-        // });
-        // moreRunningDetails.selectedProperty().addListener((a, b, c) -> PreferenceController.terminalDetails = c);
 
         keepPlayingMusic.setSelected(keepMusic);
         keepPlayingMusic.selectedProperty().addListener(e -> keepMusic = keepPlayingMusic.isSelected());

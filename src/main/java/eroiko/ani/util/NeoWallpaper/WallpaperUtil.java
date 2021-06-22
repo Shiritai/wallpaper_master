@@ -79,7 +79,6 @@ public class WallpaperUtil {
     public static String capitalize(String str){
         var ret = new StringBuilder();
         var strArr = str.toCharArray();
-        // boolean flag = true;
         for (int i = 0; i < str.length(); ++i){
             if (i == 0){
                 ret.append(Character.toUpperCase(strArr[i]));

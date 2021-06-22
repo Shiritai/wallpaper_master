@@ -22,8 +22,9 @@ public class Wallpaperize {
     private Path path;
     
     /** 
-     *  將當前資料夾 Wallpaperize, 並取得當前最高 {@code Serial number + 1} 方便再次使用 WallpaperUtil.gerSerialNumber()
-     * @param toUseDefault : 是否將此資料夾設為預設 Wallpaper 資料夾
+     * 將當前資料夾 Wallpaperize, 所有圖片統一命名為 WallpaperXXX.XXX
+     * @param path          要 Wallpaperize 的資料夾
+     * @param toUseDefault  是否將此資料夾設為預設 Wallpaper 資料夾
      */
     public Wallpaperize(Path path, boolean toUseDefault) throws IllegalArgumentException {
         this.path = path;
@@ -39,7 +40,7 @@ public class Wallpaperize {
         this.path = WallpaperPath.getWallpaperPath();
     }
     
-    /** make wallpapers to "wallpaperXX" format */
+    /** make wallpapers to "wallpaperXXX" format */
     public void execute(){
         WallpaperUtil.resetSerialNumber();
         try {
@@ -51,7 +52,7 @@ public class Wallpaperize {
                         try {
                             wallpaperList.put(WallpaperUtil.getSerialNumberFromAWallpaper(p), p);
                         } catch (IllegalArgumentException ie){
-                            notWallpaperList.add(p); // not a WallpaperXX form
+                            notWallpaperList.add(p); // not a WallpaperXXX form
                         }
                     });
                     WallpaperUtil.resetSerialNumber();
@@ -85,7 +86,7 @@ public class Wallpaperize {
                         try {
                             wallpaperList.put(WallpaperUtil.getSerialNumberFromAWallpaper(p), p);
                         } catch (IllegalArgumentException ie){
-                            inner.add(p); // not a WallpaperXX form
+                            inner.add(p); // not a WallpaperXXX form
                         }
                     });
                     /* merge inner and outer files */

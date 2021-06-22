@@ -100,7 +100,7 @@ public class MusicWithSyamiko implements Initializable {
             case RANDOM -> new MediaPlayer(box.getRandomMedia());
             case NEXT -> new MediaPlayer(box.getNextMedia());
             case PREVIOUS -> new MediaPlayer(box.getPreviousMedia());
-            default -> throw new IllegalArgumentException("Error type of image!");
+            default -> throw new IllegalArgumentException("Error type of music!");
         };
         player.currentTimeProperty().addListener((a, b, c) -> progress.setValue(c.toSeconds()));
         player.volumeProperty().addListener(e -> volume.set(player.getVolume()));

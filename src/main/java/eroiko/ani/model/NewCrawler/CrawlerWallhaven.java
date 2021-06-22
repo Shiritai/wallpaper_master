@@ -16,7 +16,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import eroiko.ani.controller.MainController;
 import eroiko.ani.util.Method.TimeWait;
 import eroiko.ani.util.MyDS.myTriple;
 import eroiko.ani.util.NeoWallpaper.WallpaperUtil;
@@ -28,7 +27,8 @@ public class CrawlerWallhaven extends CrawlerBase {
     /* Advance selection may implement int the future... */
     // public static final String [] select_header = {"categories=", "purity=", "atleast=", "ratios=", "sorting=", "order=", "colors="};
     // public static final String [][] select_content = {null, null, };
-    public CrawlerWallhaven(String [] keywords) throws IOException {
+    public CrawlerWallhaven(String [] keywords, boolean printInfo) throws IOException {
+        this.printInfo = printInfo;
         CRAWLER_TYPE = CRAWLER_WALLHAVEN;
 
         this.query = String.join("+", keywords);
@@ -40,23 +40,23 @@ public class CrawlerWallhaven extends CrawlerBase {
             .userAgent(CrawlerBase.UserAgent)
             .timeout(10000)
             .get();
-        System.out.println("Wallhaven : " + doc.title()); // 印出標頭, 確保目標正確
-        if (!MainController.quit){
-            System.err.println("Wallhaven : " + doc.title()); // 印出標頭, 確保目標正確
+        if (printInfo){
+            System.out.println("Wallhaven : " + doc.title()); // 印出標頭, 確保目標正確
         }
     }
 
     @Override
     public ArrayList<myTriple<Integer, String, String>> fetchImageLinks(int page, ExecutorService service) {
         try {
-            System.out.println(this.first_layer_url + "&page=" + Integer.toString(page));
+            if (printInfo){
+                System.out.println(this.first_layer_url + "&page=" + Integer.toString(page));
+            }
             var doc = Jsoup.connect(this.first_layer_url + "&page=" + Integer.toString(page))
                 .userAgent(CrawlerBase.UserAgent)
                 .timeout(10000)
                 .get();
-            System.out.println(doc.title()); // 印出標頭, 確保目標正確
-            if (!MainController.quit){
-                System.err.println(doc.title()); // 印出標頭, 確保目標正確
+            if (printInfo){
+                System.out.println(doc.title()); // 印出標頭, 確保目標正確
             }
     
             Elements links = doc.select("img[data-src]"); // 抓取預覽圖, 預覽圖都有 title
@@ -123,16 +123,17 @@ public class CrawlerWallhaven extends CrawlerBase {
                 .userAgent(CrawlerBase.UserAgent)
                 .timeout(10000)
                 .get();
-            System.out.println(doc.title()); // just for sure!
-            if (!MainController.quit){
-                System.err.println(doc.title()); // just for sure!
+            if (printInfo){
+                System.out.println(doc.title()); // just for sure!
             }
             return doc.select("img[id=wallpaper]").first().attr("src");
         } catch (NullPointerException ne){
             return null; // 避免讀空後進入無窮遞迴
         } catch (Exception e){
-            System.out.println(e.toString());
-            System.out.println("Try re-request...");
+            if (printInfo){
+                System.out.println(e.toString());
+                System.out.println("Try re-request...");
+            }
             new TimeWait(1000);
             return fetchFullLink(url);
         }
@@ -156,9 +157,8 @@ public class CrawlerWallhaven extends CrawlerBase {
             else if (WallpaperUtil.hasSubstring(doc.select("h1").text(), "0 Wallpapers found")){
                 return false;
             }
-            System.out.println("Wallhaven : " + doc.title()); // 印出標頭, 確保目標正確
-            if (!MainController.quit){
-                System.err.println("Wallhaven : " + doc.title()); // 印出標頭, 確保目標正確
+            if (printInfo){
+                System.out.println("Wallhaven : " + doc.title()); // 印出標頭, 確保目標正確
             }
         } catch (SocketTimeoutException ie){
             return isValidKeyword(keyword);

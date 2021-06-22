@@ -33,15 +33,15 @@ import javafx.stage.Stage;
 public class WallpaperController implements Initializable{
     public static boolean quit;
     public static Path currentPath;
-    public static boolean isPreview = false; // 用來傳遞是否已 Preview 開啟的變數, 每次調用 WallpaperView 前修改之, 基本交給 MainController.OpenWallpaper 處理
+    public static boolean isPreview = false;
     
     public static final int REFRESH = 0;
     public static final int NEXT = 1;
     public static final int PREV = 2;
     public static final int ADD = 3;
     public static final int DEL = 4;
+    
     private static Scene wallpaperScene;
-
         
     /**
      * @param wp            the Wallpaper to open

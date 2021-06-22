@@ -92,7 +92,7 @@ public class MusicWithAkari implements Initializable {
             case RANDOM -> new MediaPlayer(box.getRandomMedia());
             case NEXT -> new MediaPlayer(box.getNextMedia());
             case PREVIOUS -> new MediaPlayer(box.getPreviousMedia());
-            default -> throw new IllegalArgumentException("Error type of image!");
+            default -> throw new IllegalArgumentException("Error type of music!");
         };
         player.currentTimeProperty().addListener((a, b, c) -> progress.setValue(c.toSeconds()));
         player.volumeProperty().addListener(e -> volume.set(player.getVolume()));
@@ -108,7 +108,7 @@ public class MusicWithAkari implements Initializable {
                 refresh();
             }
         });
-        System.out.println("[Syamiko]  " + box.getCurrentMediaName());
+        System.out.println("[Akari]  " + box.getCurrentMediaName());
         nameOfMusic.set(box.getCurrentMediaName());
         player.setOnReady(() -> {
             maxProgress.set(player.getTotalDuration().toSeconds());
@@ -303,7 +303,7 @@ public class MusicWithAkari implements Initializable {
         map.get(mediaBoxPath).setOnCloseRequest(e -> {
             box.clean();
             player.stop();
-            System.out.println("[Syamiko]  Close Music With Akari");
+            System.out.println("[Akari]  Close Music With Akari");
         });
 
         sayHi.setOpacity(0);
