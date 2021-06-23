@@ -42,9 +42,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 3. 實現自動縮放的 Wallpaper Viewer
 
-4. 新增 Music With Akari 的彩蛋
-
-5. 修正 Music 指令呼叫 Music With Akari 的 Bug
+4. 修正 File Explorer (Tile) 的文字邏輯
 
 ## Change Log 內部變化紀錄
 
