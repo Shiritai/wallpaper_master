@@ -38,7 +38,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 1. 新增網路快速測試, 沒網路時使用爬蟲會跳出錯誤訊息
 
-2. 全新的訊息通知介面, 可向使用者反映更詳細的錯誤、例外、資訊, 其中 EVA 風背景為我使用 小畫家3D 親手製成
+2. 全新的訊息通知介面, 可向使用者反映更詳細的錯誤、例外、資訊, 其中 EVA 風背景, 我使用小畫家3D製成
 
 3. 實現自動縮放的 Wallpaper Viewer
 
