@@ -3,7 +3,9 @@
  * See https://github.com/Shiritai/wallpaper_master for more information.
  * Created using VSCode.
  */
-package eroiko.ani.model.NewCrawler;
+package eroiko.ani.deprecated.Crawler;
+
+import eroiko.ani.model.NewCrawler.CrawlerManager;
 
 // import eroiko.ani.util.SourceRedirector;
 
@@ -14,9 +16,9 @@ public class CrawlerThread {
     public CrawlerThread(String folderPath, String [] keywords, Integer pages){
         var tmp = new Thread(() -> {
             cw = new CrawlerManager(folderPath, keywords, pages);
-            cw.A_getLinks();
-            cw.B_download();
-            cw.D_lastDownloadStage();
+            // cw.A_getLinks();
+            // cw.B_download();
+            // cw.D_lastDownloadStage();
         });
         tmp.setDaemon(true);
         tmp.start();

@@ -1,6 +1,6 @@
 # Wallpaper Master
 
-`version 0.1.7 (2021/06/22)`
+`version 0.1.8 (2021/06/23)`
 
 ## Introduction 簡介
 
@@ -36,13 +36,15 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 ## Release note
 
-1. 釋出獨立終端機版本, 可以與 Wallpaper Master 各個部件連動, 有數個 Independent Terminal 介面設定可供選擇
+1. 新增網路快速測試, 沒網路時使用爬蟲會跳出錯誤訊息
 
-2. 修正多處 Bug, 尤其終端機以及 File Explorer 的功能
+2. 全新的訊息通知介面, 可向使用者反映更詳細的錯誤、例外、資訊, 其中 EVA 風背景為我使用 小畫家3D 親手製成
 
-3. 新增 Music With Akari 的彩蛋
+3. 修正多處 Bug, 尤其終端機以及 File Explorer 的功能
 
-4. 修正 Music 指令呼叫 Music With Akari 的 Bug
+4. 新增 Music With Akari 的彩蛋
+
+5. 修正 Music 指令呼叫 Music With Akari 的 Bug
 
 ## Change Log 內部變化紀錄
 
@@ -58,7 +60,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 ## Known issue 已知問題
 
-1. ~~先以指令開啟 Music With Syamiko 後, Music With Akari 無法正常開啟, 反之則沒問題, 推估問題出在 `MediaOperator.class`~~ (問題已解決, 出自 Music 指令的 Bug)
+1. 如果進入過多圖片的資料夾, 可能會爆記憶體...
 
 ## In the future... 未來可能的擴充方向
 

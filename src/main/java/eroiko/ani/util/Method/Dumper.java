@@ -61,7 +61,7 @@ public class Dumper {
      * @param isFull : is Full Image or Preview Image
      * @return whether the download done successfully or not
      */
-    public boolean downloadPicture(CrawlerManager cm, int serialNumber, String url, boolean isFull){
+    public static boolean downloadPicture(CrawlerManager cm, int serialNumber, String url, boolean isFull){
         return downloadPicture(cm, serialNumber, url, isFull, 0);
     }
 
@@ -70,7 +70,7 @@ public class Dumper {
      * @param tryTime : 嘗試重新下載次數, 上限為 16 次
      * @return 是否下載成功
      */
-    private boolean downloadPicture(CrawlerManager cm, int serialNumber, String url, boolean isFull, int tryTime){
+    private static boolean downloadPicture(CrawlerManager cm, int serialNumber, String url, boolean isFull, int tryTime){
         var successful = true;
         if (imagePattern.matcher(url).find()){ // 確認是否為圖片檔案
             String suffix = url.substring(url.lastIndexOf('.', url.length()));
@@ -111,6 +111,14 @@ public class Dumper {
 
     public static boolean isMusic(Path filePath){
         return musicPattern.matcher(filePath.getFileName().toString()).find();
+    }
+
+    public static boolean quickPing(String target) throws Exception {
+        var tmp = Runtime.getRuntime().exec("cmd /C ping " + target);
+        if (tmp.waitFor() != 0){
+            throw new Exception("Bad network connection!");
+        }
+        return true;
     }
 
     public static void cmdOpenPath(Path path){

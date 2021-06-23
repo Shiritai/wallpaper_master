@@ -4,9 +4,11 @@
  * Created using VSCode.
  */
 package eroiko.ani.model.CLI.command.external;
-
+import eroiko.ani.controller.SupportController.MyAlert;
+import eroiko.ani.controller.SupportController.MyAlert.AlertType;
 import eroiko.ani.model.CLI.command.fundamental.*;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
+import eroiko.ani.util.Method.Dumper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 
 public class Crawler extends Command {
@@ -20,6 +22,14 @@ public class Crawler extends Command {
 
     @Override
     public void execute() throws IllegalArgumentException {
+        /* 檢測網路 */
+        try {
+            Dumper.quickPing("github");
+        } catch (Exception e){
+            out.println(illegalParaStr(e.getMessage()).getMessage());
+            MyAlert.OpenMyAlert(AlertType.ERROR, e);
+            return;
+        }
         /* 確認是否印出詳細 */
         var printInfo = keywords.startsWith("-i");
         if (printInfo){ keywords = keywords.substring(3); }
@@ -32,22 +42,26 @@ public class Crawler extends Command {
         } catch (NumberFormatException ne){ // 無指定
             number = 1;
         }
-        var check = CrawlerManager.checkValidation(keywords);
-        if (check){
-            var cw = new CrawlerManager(WallpaperPath.DEFAULT_TMP_WALLPAPER_PATH.toString(), keywords.split(" "), number, printInfo);
-            out.println("[Crawler Manager]  Fetch links...");
-            cw.A_getLinks();
-            cw.print();
-            out.println("[Crawler Manager]  Peek links and Download Previews...");
-            cw.B_download();
-            out.println("[Crawler Manager]  Download Full Image...");
-            cw.D_lastDownloadStage();
-            out.println("[Crawler Manager]  Pushing result...");
-            cw.E_pushWallpaper();
-            out.println("[Crawler Manager]  Close...");
-        }
-        else {
-            throw illegalParaStr("Invalid keywords.");
+        try {
+            var check = CrawlerManager.checkValidation(keywords);
+            if (check){
+                var cw = new CrawlerManager(WallpaperPath.DEFAULT_TMP_WALLPAPER_PATH.toString(), keywords.split(" "), number, printInfo);
+                out.println("[Crawler Manager]  Fetch links...");
+                cw.A_getLinks();
+                cw.print();
+                out.println("[Crawler Manager]  Peek links and Download Previews...");
+                cw.B_download();
+                out.println("[Crawler Manager]  Download Full Image...");
+                cw.D_lastDownloadStage();
+                out.println("[Crawler Manager]  Pushing result...");
+                cw.E_pushWallpaper();
+                out.println("[Crawler Manager]  Close...");
+            }
+            else {
+                throw illegalParaStr("Invalid keywords.");
+            }
+        } catch (Exception e){
+            out.println(e.getMessage());
         }
     }
 }

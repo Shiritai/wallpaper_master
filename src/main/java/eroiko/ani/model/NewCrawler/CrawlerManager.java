@@ -119,7 +119,8 @@ public class CrawlerManager {
         return res;
     }
     
-    public static boolean checkValidation(String keyword){
+    public static boolean checkValidation(String keyword) throws Exception{
+        Dumper.quickPing("github.com");
         return CrawlerBase.isValid(keyword);
     }
 
@@ -136,7 +137,8 @@ public class CrawlerManager {
         return res;
     }
 
-    public void A_getLinks(){
+    public void A_getLinks() throws Exception{
+        Dumper.quickPing("github.com");
         var service = Executors.newCachedThreadPool();
         /** 批次請求不同網站 */
         int numOfCrawler = crawlers.size();
@@ -199,8 +201,10 @@ public class CrawlerManager {
         }
     }
     
-    /** 下載預覽圖 */
-    public void B_download(){
+    /** 下載預覽圖 
+     * @throws Exception : 連線中斷 */
+    public void B_download() throws Exception{
+        Dumper.quickPing("github.com");
         var service = Executors.newCachedThreadPool();
         /* 蒐集 callable */
         var calls = new ArrayList<Callable<Boolean>>();
@@ -211,7 +215,7 @@ public class CrawlerManager {
                 continue;
             }
             calls.add(() -> {
-                (new Dumper()).downloadPicture(this, tmp.first, tmp.third, false);
+                Dumper.downloadPicture(this, tmp.first, tmp.third, false);
                 return true;
             });
         }
@@ -223,9 +227,11 @@ public class CrawlerManager {
         service.shutdown();
     }
 
-    /** 下載所有完全圖 */
-    public void D_lastDownloadStage(){
-        currentTask = 0; // init progress
+    /** 下載所有完全圖 
+     * @throws Exception: 連線中斷 */
+    public void D_lastDownloadStage() throws Exception{
+        Dumper.quickPing("github.com"); // init progress
+        currentTask = 0;
         progress.set((currentTask * 1.) / tasks);
         var service = Executors.newCachedThreadPool();
         var calls = new ArrayList<Callable<Boolean>>(wpLinks.size());
@@ -237,7 +243,7 @@ public class CrawlerManager {
                 }
                 if (wp.second == CrawlerBase.CRAWLER_ZEROCHAN){ // 支援多線程下載
                     calls.add(() -> {
-                        (new Dumper()).downloadPicture(this, wp.first, wp.fourth, true);
+                        Dumper.downloadPicture(this, wp.first, wp.fourth, true);
                         ++currentTask;
                         progress.set((currentTask * 1.) / tasks);
                         return true;
@@ -257,7 +263,7 @@ public class CrawlerManager {
                     continue;
                 }
                 if (wp.second == CrawlerBase.CRAWLER_WALLHAVEN){ // 不支援多線程下載
-                    (new Dumper()).downloadPicture(this, wp.first, wp.fourth, true);
+                    Dumper.downloadPicture(this, wp.first, wp.fourth, true);
                     ++currentTask;
                     progress.set((currentTask * 1.) / tasks);
                 }

@@ -21,6 +21,8 @@ import eroiko.ani.MainApp;
 import eroiko.ani.controller.PrimaryControllers.*;
 import eroiko.ani.controller.PromptControllers.ConsoleController;
 import eroiko.ani.controller.PromptControllers.TerminalThread;
+import eroiko.ani.controller.SupportController.MyAlert;
+import eroiko.ani.controller.SupportController.MyAlert.AlertType;
 import eroiko.ani.model.CLI.Console;
 import eroiko.ani.model.CLI.exception.ClearConsoleException;
 import eroiko.ani.model.CLI.exception.ExitConsoleException;
@@ -148,10 +150,18 @@ public class MainController implements Initializable {
             StartWalkingQueue();
         }
         else if (!okToGo){
-            new Alert(Alert.AlertType.INFORMATION, "We are downloading for you... please wait a minute :)").showAndWait();
+            MyAlert.OpenMyShortAlert(
+                AlertType.INFORMATION,
+                "Still downloading...",
+                "We are downloading for you...\nPlease wait a minute :)"
+            );
         }
         else {
-            new Alert(Alert.AlertType.INFORMATION, "Please add some keywords :)").showAndWait();
+            MyAlert.OpenMyShortAlert(
+                AlertType.INFORMATION,
+                "Empty Queue",
+                "Please add some keywords :)"
+            );
         }
     }
     
@@ -214,6 +224,7 @@ public class MainController implements Initializable {
                 okToGo = true;
             }
         });
+        crawlerThread.setOnFailed(e -> MyAlert.OpenMyShortAlert(AlertType.ERROR, crawlerThread.getException()));
         crawlerThread.restart();
     }
 
@@ -586,7 +597,11 @@ public class MainController implements Initializable {
                     addSearchQueue();
                 }
                 else if (tmp.length() <= 3 && tmp.charAt(0) != '\n'){
-                    new Alert(Alert.AlertType.INFORMATION, "keyword is too short! Please check again :)").showAndWait();
+                    MyAlert.OpenMyShortAlert(
+                        AlertType.INFORMATION,
+                        "Invalid keywords!",
+                        "Keywords : " + tmp + "\nKeyword is too short!\nPlease check again :)"
+                    );
                 }
             }
             else {
@@ -766,10 +781,18 @@ public class MainController implements Initializable {
                 var tmp = searchBar.getText();
                 if (tmp.length() > 0){
                     if (tmp.length() >= 60){
-                        new Alert(Alert.AlertType.INFORMATION, "Bad keyword! Please check again :)").showAndWait();
+                        MyAlert.OpenMyShortAlert(
+                            AlertType.INFORMATION,
+                            "Invalid keywords!",
+                            "Keywords : " + tmp + "\nKeywords is too long.\nPlease check again :)"
+                        );
                     }
                     else if (tmp.length() <= 3 && tmp.charAt(0) != '\n'){
-                        new Alert(Alert.AlertType.INFORMATION, "keyword is too short! Please check again :)").showAndWait();
+                        MyAlert.OpenMyShortAlert(
+                            AlertType.INFORMATION,
+                            "Invalid keywords!",
+                            "Keywords : " + tmp + "\nKeywords is too short.\nPlease check again :)"
+                        );
                     }
                     else if (tmp.length() > 3 && tmp.charAt(0) != '\n' && tmp.charAt(0) != '\r'){
                         addSearchQueue();
@@ -810,7 +833,11 @@ public class MainController implements Initializable {
         searchBar.clear();
         for (var i : searchQueue.getItems()){
             if (i.key.equals(WallpaperUtil.capitalize(keyword))){
-                new Alert(Alert.AlertType.INFORMATION, "We've already have that :)").showAndWait();
+                MyAlert.OpenMyShortAlert(
+                    AlertType.INFORMATION,
+                    "Invalid keywords!",
+                    "Keywords : " + keyword + "\nWe've already have that :)"
+                );
                 return;
             }
         }
@@ -819,7 +846,7 @@ public class MainController implements Initializable {
             protected Task<Boolean> createTask(){
                 return new Task<Boolean>(){
                     @Override 
-                    protected Boolean call(){
+                    protected Boolean call() throws Exception{
                         return CrawlerManager.checkValidation(WallpaperUtil.capitalize(keyword));
                     }
                 };
@@ -840,10 +867,15 @@ public class MainController implements Initializable {
                     searchBar.setText(keyword);
                     searchBar.setStyle("-fx-background-color: #efb261;");
                     searchBar.selectAll();
-                    new Alert(Alert.AlertType.INFORMATION, "Invalid keywords! Please check again :)").showAndWait();
+                    MyAlert.OpenMyShortAlert(
+                        AlertType.INFORMATION,
+                        "Invalid keywords!",
+                        "Keywords : " + keyword + "\nPlease check again :)"
+                    );
                 }
             }
         });
+        check.setOnFailed(e -> MyAlert.OpenMyAlert(AlertType.ERROR, check.getException()));
         check.restart();
     }
 
@@ -1014,8 +1046,9 @@ public class MainController implements Initializable {
                 return new Task<Void>(){
                     @Override
                     protected Void call(){
-                        var pool = Executors.newCachedThreadPool();
-                        var poolList = new ArrayList<Callable<VBox>>(paths.size());
+                        int size = paths.size();
+                        var pool = Executors.newFixedThreadPool(size);
+                        var poolList = new ArrayList<Callable<VBox>>(size);
                         /* 未來實現, File Explorer 右鍵選單功能 */
                         // final ContextMenu menu = new ContextMenu();
                         // var delete = new MenuItem("delete");

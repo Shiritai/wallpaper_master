@@ -51,6 +51,7 @@ public class MainApp extends Application{
     public static FXTrayIcon trayIcon;
 
     public static HostServices hostServices;
+    public static Font minchoE60;
     public static Font rainbow28;
     public static Font firaCode12;
     public static Font firaCode13;
@@ -69,11 +70,13 @@ public class MainApp extends Application{
     
     @Override
     public void start (Stage mainStage) throws IOException{
+        icon = new Image(WallpaperPath.IMAGE_SOURCE_PATH.resolve("wallpaper79.png").toFile().toURI().toURL().toString());
         /* System settings */
         hostServices = getHostServices();
         hostName = getComputerName();
         userName = System.getProperty("user.name");
         /* Load fonts */
+        minchoE60 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/HGRME.TTC").toFile()), 56.);
         rainbow28 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/rainyhearts.ttf").toFile()), 28.);
         firaCode12 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 12.);
         firaCode13 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/FiraCode-Regular.ttf").toFile()), 13.);
@@ -85,7 +88,7 @@ public class MainApp extends Application{
         notoSansCJKLight12 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/NotoSansCJKtc-Light.otf").toFile()), 12.);
         notoSansCJK15 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/NotoSansCJKtc-Regular.otf").toFile()), 15.);
         notoSansCJK22 = Font.loadFont(new FileInputStream(WallpaperPath.DEFAULT_DATA_PATH.resolve("font/NotoSansCJKtc-Regular.otf").toFile()), 22.);
-
+        
         MainApp.mainStage = mainStage;
         Parent root = FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("MainWindow.fxml").toUri().toURL());
         // Parent root = FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("TerminalWindow.fxml").toUri().toURL()); // for debug
@@ -119,7 +122,6 @@ public class MainApp extends Application{
             }
         });
         /* mainStage 基礎設定 */
-        icon = new Image(WallpaperPath.IMAGE_SOURCE_PATH.resolve("wallpaper79.png").toFile().toURI().toURL().toString());
         mainStage.getIcons().add(icon);
         mainStage.setTitle("Wallpaper Master");
         mainStage.setScene(mainScene);

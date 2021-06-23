@@ -22,7 +22,7 @@ public class Wallpaperize {
     private Path path;
     
     /** 
-     * 將當前資料夾 Wallpaperize, 所有圖片統一命名為 WallpaperXXX.XXX
+     * 將當前資料夾 Wallpaperize, 所有圖片統一命名為 WallpaperXXX
      * @param path          要 Wallpaperize 的資料夾
      * @param toUseDefault  是否將此資料夾設為預設 Wallpaper 資料夾
      */
