@@ -80,6 +80,21 @@ public class CarryReturn {
         return res;
     }
 
+    public static String addCarryReturnForTile(String str, int length){
+        String res = "";
+        var tmp = str.toCharArray();
+        int currentSize = 0;
+        for (int i = 0; i < tmp.length; ++i){
+            currentSize += (Character.isAlphabetic(tmp[i])) ? 1 : 3;
+            res += tmp[i];
+            if (currentSize >= length){
+                res += "\n";
+                currentSize = 0;
+            }
+        }
+        return res;
+    }
+
     private static boolean isChineseNotation(char ch){
         return ch == '。' || ch == '，' || ch == '、' || ch == '「' || ch == '」';
     }

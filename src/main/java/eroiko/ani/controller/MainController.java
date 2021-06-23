@@ -1082,7 +1082,8 @@ public class MainController implements Initializable {
                                     iconView.setFitWidth(36);
                                 }
                                 
-                                var name = new Text(CarryReturn.addCarryReturnForAbout(p.getFileName().toString(), 19, 0));
+                                // var name = new Text(CarryReturn.addCarryReturnForAbout(p.getFileName().toString(), 19, 0));
+                                var name = new Text(CarryReturn.addCarryReturnForTile(p.getFileName().toString(), 19));
                                 name.setFont(MainApp.notoSansCJKLight12);
                                 
                                 var vbox = new VBox(iconView, name);

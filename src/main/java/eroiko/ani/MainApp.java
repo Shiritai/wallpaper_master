@@ -38,7 +38,7 @@ public class MainApp extends Application{
         
     public static boolean isTesting = true;
     public static final String version = "version 0.1.7";
-    public static final String date = "2021/06/22";
+    public static final String date = "2021/06/24";
     public static Image icon;
     public static String hostName;
     public static String userName;

@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.ResourceBundle;
 
 import eroiko.ani.MainApp;
+import eroiko.ani.controller.SupportController.MyAlert;
 import eroiko.ani.util.MediaClass.MediaOperator;
 import eroiko.ani.util.Method.CarryReturn;
 import eroiko.ani.util.Method.TimeWait;
@@ -31,7 +32,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -178,7 +178,11 @@ public class MusicWithSyamiko implements Initializable {
             }
         }
         else {
-            new Alert(Alert.AlertType.INFORMATION, "You've already opened Music with Syamiko :)").showAndWait();
+            MyAlert.OpenMyShortAlert(
+                MyAlert.AlertType.INFORMATION,
+                "Syamiko Opened",
+                "You've already opened Music with Syamiko :)"
+            );
         }
     }
     /* Controller part */

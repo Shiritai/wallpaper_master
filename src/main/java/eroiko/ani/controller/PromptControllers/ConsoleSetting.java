@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 
 import eroiko.ani.MainApp;
 import eroiko.ani.controller.PromptControllers.ConsoleController.ConsoleLabel;
+import eroiko.ani.controller.SupportController.MyAlert;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.DoubleProperty;
@@ -17,7 +18,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
@@ -63,7 +63,11 @@ public class ConsoleSetting implements Initializable {
             }
         }
         else {
-            new Alert(Alert.AlertType.INFORMATION, "You've already opened Terminal Settings :)").showAndWait();
+            MyAlert.OpenMyShortAlert(
+                MyAlert.AlertType.INFORMATION,
+                "Setting Opened",
+                "You've already opened Terminal Settings :)"
+            );
         }
     }
     
