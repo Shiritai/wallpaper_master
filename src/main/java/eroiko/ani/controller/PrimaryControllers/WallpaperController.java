@@ -26,6 +26,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -41,7 +42,7 @@ public class WallpaperController implements Initializable{
     public static final int ADD = 3;
     public static final int DEL = 4;
     
-    private static Scene wallpaperScene;
+    private static Stage stage;
         
     /**
      * @param wp            the Wallpaper to open
@@ -59,13 +60,12 @@ public class WallpaperController implements Initializable{
         }
         var fixedWp = wp;
         boolean prev = isPreview || wp.getCurrentFullPath().getParent().equals(WallpaperPath.DEFAULT_IMAGE_PATH);
-        System.out.println("[Wallpaper Controller]  Is preview ? " + prev);
         WallpaperController.isPreview = prev;
         final int fixedSerialNumber = serialNumber;
-        var stage = new Stage();
+        stage = new Stage();
         System.out.println("[Wallpaper Controller]  Open Neo Wallpaper Viewer...");
         stage.setTitle("Neo Wallpaper Viewer");
-        wallpaperScene = new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("WallpaperWindow.fxml").toUri().toURL()));
+        var wallpaperScene = new Scene(FXMLLoader.load(WallpaperPath.FXML_SOURCE_PATH.resolve("WallpaperWindow.fxml").toUri().toURL()));
         wallpaperScene.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
             if (e.getCode() == KeyCode.RIGHT){
                 if (!fixedWp.isEmpty()){
@@ -106,10 +106,10 @@ public class WallpaperController implements Initializable{
 
     
     Wallpaper wp;
-    public static ImageView imageView;
     
-    @FXML private ImageView view;
     @FXML private StackPane stackPane;
+    @FXML private BorderPane border;
+    @FXML private ImageView view;
     @FXML private Text wallpaperName;
     @FXML private Text wallpaperPosition;
 
@@ -125,6 +125,7 @@ public class WallpaperController implements Initializable{
     @FXML private Text slash;
     @FXML private Text hint;
 
+    private Stage wallpaperStage;
     private BooleanProperty isChangedListener;
     private int lastSize;
     private boolean viewMode;
@@ -144,6 +145,19 @@ public class WallpaperController implements Initializable{
 
     @Override
     public void initialize(URL url, ResourceBundle rb){
+        /* 縮放設定 */
+        wallpaperStage = stage;
+        wallpaperStage.setMinWidth(640); // 最小長寬, 以確保在 border center 的 view 可以在擁有縮放效果的前提下, 保持一定美觀
+        wallpaperStage.setMinHeight(640); // 最小長寬, 以確保在 border center 的 view 可以在擁有縮放效果的前提下, 保持一定美觀
+        wallpaperStage.widthProperty().addListener(e -> { // 隨 wallpaperStage 同步縮放
+            border.setPrefWidth(wallpaperStage.getWidth());
+            view.setFitWidth(wallpaperStage.getWidth() - 160);
+        });
+        wallpaperStage.heightProperty().addListener(e -> { // 隨 wallpaperStage 同步縮放
+            border.setPrefHeight(wallpaperStage.getHeight());
+            view.setFitHeight(wallpaperStage.getHeight() - 160);
+        });
+        /* 取得圖片 */
         final int serialNumber = Wallpaper.getWallpaperSerialNumberImmediately();
         wp = Wallpaper.getWallpaper(serialNumber);
         /* set listener */

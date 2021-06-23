@@ -40,7 +40,7 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 2. 全新的訊息通知介面, 可向使用者反映更詳細的錯誤、例外、資訊, 其中 EVA 風背景為我使用 小畫家3D 親手製成
 
-3. 修正多處 Bug, 尤其終端機以及 File Explorer 的功能
+3. 實現自動縮放的 Wallpaper Viewer
 
 4. 新增 Music With Akari 的彩蛋
 

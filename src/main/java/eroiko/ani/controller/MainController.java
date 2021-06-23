@@ -519,6 +519,7 @@ public class MainController implements Initializable {
         imagePreview.setImage(theWallpaper.getCurrentPreviewImage());
 
         Terminal_in.setContextMenu(new ContextMenu());
+        Terminal_in.setStyle("-fx-background-color: #333333;-fx-text-fill: #eeeeee;");
         Terminal_out.setEditable(false);
         Terminal_out.setContextMenu(new ContextMenu());
         try {
@@ -963,7 +964,6 @@ public class MainController implements Initializable {
     private void treeViewSelected(MouseEvent me) throws IOException{
         var clicked = me.getPickResult().getIntersectedNode();
         if (clicked.toString().contains("null")){
-            System.out.println("[File Explorer (Tree)]  No selected item.");
             treeFileExplorer.getSelectionModel().clearSelection();
         }
         else if (clicked.getStyleClass().toString().equals("arrow") || clicked.getStyleClass().toString().equals("tree-disclosure-node")){
