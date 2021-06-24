@@ -100,15 +100,15 @@ public class Dumper {
     }
 
     public static boolean isImage(Path filePath){
-        return imagePattern.matcher(filePath.getFileName().toString()).find();
+        return imagePattern.matcher(filePath.getFileName().toString().toLowerCase()).find();
     }
 
     public static boolean isPngJpg(Path filePath){
-        return pjImagePattern.matcher(filePath.getFileName().toString()).find();
+        return pjImagePattern.matcher(filePath.getFileName().toString().toLowerCase()).find();
     }
 
     public static boolean isMusic(Path filePath){
-        return musicPattern.matcher(filePath.getFileName().toString()).find();
+        return musicPattern.matcher(filePath.getFileName().toString().toLowerCase()).find();
     }
 
     public static boolean quickPing(String target) throws Exception {

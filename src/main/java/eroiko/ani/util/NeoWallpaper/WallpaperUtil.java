@@ -194,6 +194,7 @@ public class WallpaperUtil {
         return new ImageView(fetchScaledSmallImage(path, 64));
     }
     
+    public static final int SMALL_IMG_SIZE = 64;
     /**
      * 嘗試取得圖片小圖示, 使用縮放與銳化算法, 大小為 size * size
      * <p> 注意, 縮放算法很耗效能且占空間, 請勿隨意大量調用

@@ -222,6 +222,7 @@ public class MainController implements Initializable {
                 searchQueue.getItems().clear();
                 nowProcessingText.clear();
                 okToGo = true;
+                mainPbar.progressProperty().unbind();
             }
         });
         crawlerThread.setOnFailed(e -> MyAlert.OpenMyAlert(AlertType.ERROR, crawlerThread.getException(), true));
@@ -549,7 +550,7 @@ public class MainController implements Initializable {
         });
         nowProcessingText.setEditable(false);
 
-        viewImageTileTable.setPadding(new Insets(5., 5., 5., 8.));
+        viewImageTileTable.setPadding(new Insets(5., 15., 5., 8.));
         viewImageTileTable.setVgap(8.);
         viewImageTileTable.setHgap(8.);
         
@@ -913,8 +914,6 @@ public class MainController implements Initializable {
         doBFS.setOnSucceeded(e -> {
             root.setExpanded(isExpanded);
             treeFileExplorer.setRoot(root);
-            var str = (rootPath.toAbsolutePath().toString().length() < 45) ? rootPath.toString() : ".../" + rootPath.getFileName().toString();
-            percentageMark.setText("Finish loading " + str);
         });
         doBFS.restart();
     }
@@ -1042,6 +1041,13 @@ public class MainController implements Initializable {
 
         final int size = paths.size();
         var list = new ArrayList<VBox>(size);
+        /* 決定是否優化 File Explorer 圖示 */
+        int cnt = 0;
+        for (var p : paths){ if (Dumper.isImage(p)){ ++cnt; }}
+        final int imgCnt = cnt;
+        final boolean fastImageLoadLimit = imgCnt <= 32; // 小於此數者, 直接取得高品質小圖示
+        final boolean scanImageLoadLimit = imgCnt > 256; // 超過此數者, 指掃描系統小圖示
+        /* 開啟 Service */
         var service = new Service<Void>(){
             @Override
             protected Task<Void> createTask(){
@@ -1050,25 +1056,24 @@ public class MainController implements Initializable {
                     protected Void call(){
                         var pool = Executors.newFixedThreadPool(size);
                         var poolList = new ArrayList<Callable<VBox>>(size);
-                        /* 決定是否優化 File Explorer 圖示 */
-                        int imgCnt = 0;
-                        for (var p : paths){ if (Dumper.isImage(p)){ ++imgCnt; }}
-                        boolean useRaw = imgCnt > 40;
+                        /* 建立圖示 */
+                        long i = 0;
                         for (var p : paths){
                             poolList.add(() -> {
                                 ImageView iconView;
                                 if (Dumper.isImage(p)){
-                                    if (useRaw){
-                                        iconView = WallpaperUtil.fetchSmallImageView(p);
-                                    }
-                                    else {
+                                    if (fastImageLoadLimit){
                                         iconView = WallpaperUtil.fetchScaledSmallImageView(p);
+                                    }
+                                    else if (scanImageLoadLimit){ // 避免爆記憶體
+                                        iconView = WallpaperUtil.fetchIconUsePathWithHightQuality(p);
+                                    }
+                                    else { // 適合一般數量的圖片資料夾
+                                        iconView = WallpaperUtil.fetchSmallImageView(p);
                                     }
                                 }
                                 else {
                                     iconView = WallpaperUtil.fetchIconUsePathWithHightQuality(p);
-                                    iconView.setFitHeight(36);
-                                    iconView.setFitWidth(36);
                                 }
                                 
                                 var name = new Text(CarryReturn.addCarryReturnForTile(p.getFileName().toString(), 19));
@@ -1105,6 +1110,8 @@ public class MainController implements Initializable {
                                 });
                                 return vbox;
                             });
+                            ++i;
+                            updateProgress(i, size);
                         }
                         try {
                             var tmp = pool.invokeAll(poolList);
@@ -1117,12 +1124,56 @@ public class MainController implements Initializable {
                 };
             }
         };
+        mainPbar.progressProperty().bind(service.progressProperty());
         service.setOnSucceeded(e -> {
             list.sort((a, b) -> WallpaperUtil.pathNameCompare(((Text) a.getChildren().get(1)).getText(), ((Text) a.getChildren().get(1)).getText()));
             viewImageTileTable.getChildren().addAll(list);
             viewImageTileTable.prefHeightProperty().bind(scrollableTile.heightProperty()); // 自由改變高
             viewImageTileTable.prefWidthProperty().bind(scrollableTile.widthProperty()); // 自由改變寬
             scrollableTile.setContent(viewImageTileTable);
+            /* 慢慢載入高品質圖片小圖示 */
+            var str = (lastTilePath.toAbsolutePath().toString().length() < 45) ? lastTilePath.toString() : ".../" + lastTilePath.getFileName().toString();
+            if (!fastImageLoadLimit){
+                Service<Void> imageRefresh = new Service<Void>(){
+                    @Override
+                    protected Task<Void> createTask(){
+                        return new Task<Void>(){
+                            @Override 
+                            protected Void call() throws Exception{
+                                var pIt = paths.iterator();
+                                Path tmpP;
+                                for (int i = 0; i < size; ++i){
+                                    if (root.equals(lastTilePath)){ // Tile 目錄不變的情況下
+                                        assert pIt.hasNext() : "Bad iterator";
+                                        if (Dumper.isPngJpg(tmpP = pIt.next())){
+                                            ((ImageView) list.get(i).getChildren().get(0)).setImage(WallpaperUtil.fetchScaledSmallImage(tmpP, WallpaperUtil.SMALL_IMG_SIZE));
+                                        }
+                                        else if (Dumper.isImage(tmpP)){
+                                            ((ImageView) list.get(i).getChildren().get(0)).setImage(WallpaperUtil.fetchSmallImage(tmpP, WallpaperUtil.SMALL_IMG_SIZE));
+                                        }
+                                    }
+                                    else { break; }
+                                    updateProgress(i + 1, size);
+                                    if (i + 1 == size){
+                                        percentageMark.setText("Finish loading " + str);
+                                    }
+                                }
+                                return null;
+                            }
+                        };
+                    }
+                };
+                mainPbar.progressProperty().unbind();
+                mainPbar.progressProperty().bind(imageRefresh.progressProperty());
+                percentageMark.setText("Loading " + str + " high quality images...");
+                imageRefresh.setOnSucceeded(ev -> {
+                    mainPbar.progressProperty().unbind();
+                });
+                imageRefresh.restart();
+            }
+            else {
+                percentageMark.setText("Finish loading " + str);
+            }
         });
         service.restart();
     }

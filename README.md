@@ -1,6 +1,6 @@
 # Wallpaper Master
 
-`version 0.1.7 (2021/06/24)`
+`version 0.1.8 (2021/06/25) : Enhanced File Explorer`
 
 ## Introduction 簡介
 
@@ -42,27 +42,29 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 3. 實現自動縮放的 Wallpaper Viewer
 
-4. Wallpaper 新增取得經過縮放 + 銳化的小圖示, 改善 MainWindow 左下角的預覽圖品質
+4. 改善 MainWindow 左下角的預覽圖品質
 
 5. File Explorer (Tile) 檔案圖示優化
 
-6. 修正 File Explorer (Tile) 的文字邏輯
+6. File Explorer (Tile) 改採分段載入策略, 確保不濫用記憶體
+
+7. 修正 File Explorer (Tile) 的文字邏輯
+
+8. 進度條顯示 File Explorer 的載入進度
 
 ## Change Log 內部變化紀錄
 
-1. CLI : 補強指令查詢與修復 Bugs, 修改 Exception passing 機制
+1. WallpaperUtil 的比較函數 debug
 
-2. WallpaperUtil 的比較函數 debug
+2. WallpaperUtil 新增對小圖示的縮放與銳化優化, 搭配 Wallpaper 新增取得經過縮放 + 銳化小圖示的方法
 
-3. Decouple and kill magic number/classes
+4. Decouple and kill magic number/classes
 
-4. 內嵌與獨立 Terminal 為 OCP, java.nio 以及多線程的練習成果
-
-5. 當前使用程式碼行數 (Excluded deprecated classes) 約 : 6300 行
+5. 當前使用程式碼行數 (Excluded deprecated classes) 約 : 6600 行
 
 ## Known issue 已知問題
 
-1. 如果進入過多圖片的資料夾, 可能會爆記憶體...
+1. 如果進入過多圖片的資料夾, 可能會在載入縮圖的時候爆記憶體... -> 改成慢慢載入, 同時提升載入之圖片品質
 
 ## Maybe in the future... 未來可能的擴充方向
 
