@@ -63,7 +63,7 @@ public class ConsoleSetting implements Initializable {
             }
         }
         else {
-            MyAlert.OpenMyShortAlert(
+            MyAlert.OpenMyAlert(
                 MyAlert.AlertType.INFORMATION,
                 "Setting Opened",
                 "You've already opened Terminal Settings :)"

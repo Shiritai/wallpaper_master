@@ -178,7 +178,7 @@ public class MusicWithSyamiko implements Initializable {
             }
         }
         else {
-            MyAlert.OpenMyShortAlert(
+            MyAlert.OpenMyAlert(
                 MyAlert.AlertType.INFORMATION,
                 "Syamiko Opened",
                 "You've already opened Music with Syamiko :)"

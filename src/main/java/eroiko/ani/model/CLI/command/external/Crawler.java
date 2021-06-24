@@ -27,7 +27,7 @@ public class Crawler extends Command {
             Dumper.quickPing("github");
         } catch (Exception e){
             out.println(illegalParaStr(e.getMessage()).getMessage());
-            MyAlert.OpenMyAlert(AlertType.ERROR, e);
+            MyAlert.OpenMyAlert(AlertType.ERROR, e, true);
             return;
         }
         /* 確認是否印出詳細 */

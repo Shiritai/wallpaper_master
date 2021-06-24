@@ -150,14 +150,14 @@ public class MainController implements Initializable {
             StartWalkingQueue();
         }
         else if (!okToGo){
-            MyAlert.OpenMyShortAlert(
+            MyAlert.OpenMyAlert(
                 AlertType.INFORMATION,
                 "Still downloading...",
                 "We are downloading for you...\nPlease wait a minute :)"
             );
         }
         else {
-            MyAlert.OpenMyShortAlert(
+            MyAlert.OpenMyAlert(
                 AlertType.INFORMATION,
                 "Empty Queue",
                 "Please add some keywords :)"
@@ -224,7 +224,7 @@ public class MainController implements Initializable {
                 okToGo = true;
             }
         });
-        crawlerThread.setOnFailed(e -> MyAlert.OpenMyShortAlert(AlertType.ERROR, crawlerThread.getException()));
+        crawlerThread.setOnFailed(e -> MyAlert.OpenMyAlert(AlertType.ERROR, crawlerThread.getException(), true));
         crawlerThread.restart();
     }
 
@@ -352,7 +352,7 @@ public class MainController implements Initializable {
         }
         quit = false;
         new TerminalThread(pipIn, terminalThread, Terminal_out, quit);
-        System.out.println("Create by Eroiko, terminal version 1.3 at 2021/06/22" +
+        System.out.println("Created by Eroiko, terminal version 1.3 at 2021/06/22" +
         "\nUse Ctrl + C to cancel executing command, and Ctrl + L to clear the text." +
         "\n\nSupport several linux-based commands." +
         "\nCheck commands with \"man COMMAND_NAME\" or \"COMMAND_NAME --help\"" +
@@ -598,7 +598,7 @@ public class MainController implements Initializable {
                     addSearchQueue();
                 }
                 else if (tmp.length() <= 3 && tmp.charAt(0) != '\n'){
-                    MyAlert.OpenMyShortAlert(
+                    MyAlert.OpenMyAlert(
                         AlertType.INFORMATION,
                         "Invalid keywords!",
                         "Keywords : " + tmp + "\nKeyword is too short!\nPlease check again :)"
@@ -619,6 +619,7 @@ public class MainController implements Initializable {
                 var content = new ClipboardContent();
                 content.putString(pathLabel.getText().stripLeading());
                 Clipboard.getSystemClipboard().setContent(content);
+                MyAlert.OpenMyAlert(AlertType.INFORMATION, "Path copied", ":)");
                 new Alert(Alert.AlertType.INFORMATION, "Path has copied :)").showAndWait();
             }
         });
@@ -782,14 +783,14 @@ public class MainController implements Initializable {
                 var tmp = searchBar.getText();
                 if (tmp.length() > 0){
                     if (tmp.length() >= 60){
-                        MyAlert.OpenMyShortAlert(
+                        MyAlert.OpenMyAlert(
                             AlertType.INFORMATION,
                             "Invalid keywords!",
                             "Keywords : " + tmp + "\nKeywords is too long.\nPlease check again :)"
                         );
                     }
                     else if (tmp.length() <= 3 && tmp.charAt(0) != '\n'){
-                        MyAlert.OpenMyShortAlert(
+                        MyAlert.OpenMyAlert(
                             AlertType.INFORMATION,
                             "Invalid keywords!",
                             "Keywords : " + tmp + "\nKeywords is too short.\nPlease check again :)"
@@ -834,7 +835,7 @@ public class MainController implements Initializable {
         searchBar.clear();
         for (var i : searchQueue.getItems()){
             if (i.key.equals(WallpaperUtil.capitalize(keyword))){
-                MyAlert.OpenMyShortAlert(
+                MyAlert.OpenMyAlert(
                     AlertType.INFORMATION,
                     "Invalid keywords!",
                     "Keywords : " + keyword + "\nWe've already have that :)"
@@ -868,7 +869,7 @@ public class MainController implements Initializable {
                     searchBar.setText(keyword);
                     searchBar.setStyle("-fx-background-color: #efb261;");
                     searchBar.selectAll();
-                    MyAlert.OpenMyShortAlert(
+                    MyAlert.OpenMyAlert(
                         AlertType.INFORMATION,
                         "Invalid keywords!",
                         "Keywords : " + keyword + "\nPlease check again :)"
@@ -876,7 +877,7 @@ public class MainController implements Initializable {
                 }
             }
         });
-        check.setOnFailed(e -> MyAlert.OpenMyAlert(AlertType.ERROR, check.getException()));
+        check.setOnFailed(e -> MyAlert.OpenMyAlert(AlertType.EXCEPTION, check.getException(), true));
         check.restart();
     }
 

@@ -1,3 +1,8 @@
+/*
+ * Author : Shiritai (楊子慶, or Eroiko on Github) at 2021/06/23.
+ * See https://github.com/Shiritai/wallpaper_master for more information.
+ * Created using VSCode.
+ */
 package eroiko.ani.controller.SupportController;
 
 import java.io.PrintWriter;
@@ -71,10 +76,21 @@ public class MyAlert implements Initializable {
         }
     }
 
-    public static void OpenMyAlert(AlertType type, Throwable ex){
+    /**
+     * 提交種類與例外內容來開啟自訂 Alert
+     * @param type      Alert 種類
+     * @param ex        Throwable
+     * @param withImage Open with image
+     */
+    public static void OpenMyAlert(AlertType type, Throwable ex, boolean withImage){
         var tmp = new StringWriter();
         ex.printStackTrace(new PrintWriter(tmp));
-        OpenMyAlert(type, ex.getMessage(), tmp.toString(), type.path);
+        if (withImage){
+            OpenMyAlert(type, ex.getMessage(), tmp.toString(), type.path);
+        }
+        else {
+            OpenMyAlert(type, ex.getMessage(), tmp.toString());
+        }
     }
 
     /**
@@ -83,7 +99,7 @@ public class MyAlert implements Initializable {
      * @param innerTitle    內部大標題
      * @param textMsg       詳細內容
      */
-    public static void OpenMyShortAlert(AlertType type, String innerTitle, String textMsg){
+    public static void OpenMyAlert(AlertType type, String innerTitle, String textMsg){
         MyAlert.textMsg = textMsg;
         MyAlert.innerTitle = innerTitle;
         MyAlert.imagePath = null;
@@ -97,12 +113,6 @@ public class MyAlert implements Initializable {
         } catch (Exception e){
             e.printStackTrace();
         }
-    }
-    
-    public static void OpenMyShortAlert(AlertType type, Throwable ex){
-        var tmp = new StringWriter();
-        ex.printStackTrace(new PrintWriter(tmp));
-        OpenMyShortAlert(type, ex.getMessage(), tmp.toString());
     }
 
     @FXML private Label info;
