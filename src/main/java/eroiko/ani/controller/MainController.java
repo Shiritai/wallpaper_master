@@ -786,14 +786,14 @@ public class MainController implements Initializable {
                         MyAlert.OpenMyAlert(
                             AlertType.INFORMATION,
                             "Invalid keywords!",
-                            "Keywords : " + tmp + "\nKeywords is too long.\nPlease check again :)"
+                            "Keywords : " + tmp + "\nKeyword is too long.\nPlease check again :)"
                         );
                     }
                     else if (tmp.length() <= 3 && tmp.charAt(0) != '\n'){
                         MyAlert.OpenMyAlert(
                             AlertType.INFORMATION,
                             "Invalid keywords!",
-                            "Keywords : " + tmp + "\nKeywords is too short.\nPlease check again :)"
+                            "Keywords : " + tmp + "\nKeyword is too short.\nPlease check again :)"
                         );
                     }
                     else if (tmp.length() > 3 && tmp.charAt(0) != '\n' && tmp.charAt(0) != '\r'){

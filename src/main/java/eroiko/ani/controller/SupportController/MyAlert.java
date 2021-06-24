@@ -33,9 +33,9 @@ import javafx.stage.Stage;
 public class MyAlert implements Initializable {
     
     public enum AlertType {
-        ERROR("Error", "エラー", WallpaperPath.IMAGE_SOURCE_PATH.resolve("Usagyuuun_no_connect.gif")),
-        INFORMATION("Information", "情報",WallpaperPath.IMAGE_SOURCE_PATH.resolve("Usagyuuun_no_connect.gif")),
-        EXCEPTION("Exception", "例外", WallpaperPath.IMAGE_SOURCE_PATH.resolve("Usagyuuun_no_connect.gif")),
+        ERROR("Error", "エラー", WallpaperPath.IMAGE_SOURCE_PATH.resolve("usagyuuun_error.gif")),
+        EXCEPTION("Exception", "例外", WallpaperPath.IMAGE_SOURCE_PATH.resolve("usagyuuun_exception.gif")),
+        INFORMATION("Information", "情報",WallpaperPath.IMAGE_SOURCE_PATH.resolve("usagyuuun_information.gif")),
         ;
         public final String name;
         public final String labelStr;
