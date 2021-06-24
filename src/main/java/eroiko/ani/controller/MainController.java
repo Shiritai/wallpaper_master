@@ -1041,12 +1041,12 @@ public class MainController implements Initializable {
 
         final int size = paths.size();
         var list = new ArrayList<VBox>(size);
-        /* 決定是否優化 File Explorer 圖示 */
+        /* 優化 File Explorer 圖示載入的策略 */
         int cnt = 0;
         for (var p : paths){ if (Dumper.isImage(p)){ ++cnt; }}
         final int imgCnt = cnt;
         final boolean fastImageLoadLimit = imgCnt <= 32; // 小於此數者, 直接取得高品質小圖示
-        final boolean scanImageLoadLimit = imgCnt > 256; // 超過此數者, 指掃描系統小圖示
+        final boolean scanImageLoadLimit = imgCnt > 128; // 超過此數者, 先掃描系統小圖示, 之後逐一載入高品質小圖示
         /* 開啟 Service */
         var service = new Service<Void>(){
             @Override
