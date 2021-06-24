@@ -130,6 +130,18 @@
       <version>15.0.1</version>
     </dependency>
         
+    
+      <dependency>
+        <groupId>gov.nih.imagej</groupId>
+        <artifactId>imagej</artifactId>
+        <version>1.46</version>
+      </dependency>
+    
+      <dependency>
+        <groupId>com.jhlabs</groupId>
+        <artifactId>filters</artifactId>
+        <version>2.0.235-1</version>
+      </dependency>
     </dependencies>
 
   <build>

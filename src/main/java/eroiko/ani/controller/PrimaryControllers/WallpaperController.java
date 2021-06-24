@@ -151,7 +151,7 @@ public class WallpaperController implements Initializable{
         wallpaperStage.setMinHeight(640); // 最小長寬, 以確保在 border center 的 view 可以在擁有縮放效果的前提下, 保持一定美觀
         wallpaperStage.widthProperty().addListener(e -> { // 隨 wallpaperStage 同步縮放
             border.setPrefWidth(wallpaperStage.getWidth());
-            view.setFitWidth(wallpaperStage.getWidth() - 160);
+            view.setFitWidth(wallpaperStage.getWidth() - 120);
         });
         wallpaperStage.heightProperty().addListener(e -> { // 隨 wallpaperStage 同步縮放
             border.setPrefHeight(wallpaperStage.getHeight());

@@ -24,6 +24,7 @@ import javafx.scene.image.Image;
 
 public class Wallpaper {
     /* New wallpaper viewer, for outside classes! */
+    private static final int wallpaperViewingSize = 300; // wallpaper preview 的 ImageView 大小, 至少...讓這個東西不要那麼 Magic Number
     /* 開放對外存取 Wallpaper 途徑 */
     private static HashMap<Integer, Wallpaper> wallpapersToFile = new HashMap<>(); // 不必排序, 僅要快速訪問 (O(1))
     private static int lastWallpaperNumber = 0;
@@ -278,7 +279,7 @@ public class Wallpaper {
 
     public Image getCurrentPreviewImage(){
         if (onlyFullFlag){ // 理想極端情況
-            return getCurrentFullImage();
+            return getCurrentSmallImage();
         }
         try {
             return new Image(wallpapers.get(current).second.toUri().toURL().toString());
@@ -297,20 +298,25 @@ public class Wallpaper {
         return null;
     }
 
+    /** 使用 WallpaperUtil.fetchScaledSmallImage 取得縮小且銳化後的圖片 */
+    public Image getCurrentSmallImage(){
+        return WallpaperUtil.fetchScaledSmallImage(wallpapers.get(current).third, wallpaperViewingSize);
+    }
+    
     public Path getPreviousPreviewPath(){
         if (onlyFullFlag){ // 理想極端情況
             return getPreviousFullPath();
         }
         return wallpapers.get(leftShift()).second;
     }
-
+    
     public Path getPreviousFullPath(){
         return wallpapers.get(leftShift()).third;
     }
-
+    
     public Image getPreviousPreviewImage(){
         if (onlyFullFlag){ // 理想極端情況
-            return getPreviousFullImage();
+            return getPreviousSmallImage();
         }
         try {
             return new Image(wallpapers.get(leftShift()).second.toUri().toURL().toString());
@@ -319,7 +325,7 @@ public class Wallpaper {
             return null;
         }
     }
-
+    
     public Image getPreviousFullImage(){
         try {
             return new Image(wallpapers.get(leftShift()).third.toUri().toURL().toString());
@@ -327,6 +333,11 @@ public class Wallpaper {
             System.out.println(e.toString());
         }
         return null;
+    }
+    
+    /** 使用 WallpaperUtil.fetchScaledSmallImage 取得縮小且銳化後的圖片 */
+    public Image getPreviousSmallImage(){
+        return WallpaperUtil.fetchScaledSmallImage(wallpapers.get(leftShift()).third, wallpaperViewingSize);
     }
     
     public Path getNextPreviewPath(){
@@ -337,14 +348,14 @@ public class Wallpaper {
             return wallpapers.get(rightShift()).second;
         }
     }
-
+    
     public Path getNextFullPath(){
         return wallpapers.get(rightShift()).third;
     }
-
+    
     public Image getNextPreviewImage(){
         if (onlyFullFlag){ // 理想極端情況
-            return getNextFullImage();
+            return getNextSmallImage();
         }
         else {
             try {
@@ -355,7 +366,7 @@ public class Wallpaper {
             return null;
         }
     }
-
+    
     public Image getNextFullImage(){
         try {
             return new Image(wallpapers.get(rightShift()).third.toUri().toURL().toString());
@@ -363,5 +374,10 @@ public class Wallpaper {
             System.out.println(e.toString());
         }
         return null;
+    }
+    
+    /** 使用 WallpaperUtil.fetchScaledSmallImage 取得縮小且銳化後的圖片 */
+    public Image getNextSmallImage(){
+        return WallpaperUtil.fetchScaledSmallImage(wallpapers.get(rightShift()).third, wallpaperViewingSize);
     }
 }

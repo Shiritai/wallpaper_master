@@ -42,7 +42,11 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 3. 實現自動縮放的 Wallpaper Viewer
 
-4. 修正 File Explorer (Tile) 的文字邏輯
+4. Wallpaper 新增取得經過縮放 + 銳化的小圖示, 改善 MainWindow 左下角的預覽圖品質
+
+5. File Explorer (Tile) 檔案圖示優化
+
+6. 修正 File Explorer (Tile) 的文字邏輯
 
 ## Change Log 內部變化紀錄
 
@@ -60,29 +64,31 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 1. 如果進入過多圖片的資料夾, 可能會爆記憶體...
 
-## In the future... 未來可能的擴充方向
+## Maybe in the future... 未來可能的擴充方向
 
 1. 支援中文介面
 
 2. 雙 Music Player 新增音樂播放清單
 
-3. Music with Akari 新增最小化 or 可關閉視窗的播放功能
+3. Wallpaper Viewer 新增簡易圖片編輯功能
 
-4. File Explorer 新增右鍵選單, 支援在檔案總管的基本操作
+4. Music with Akari 新增最小化 or 可關閉視窗的播放功能
 
-5. 新增自動下載更新此軟體的功能
+5. File Explorer 新增右鍵選單, 支援在檔案總管的基本操作
 
-6. 實作網路流量監測 (for crawler)
+6. 新增自動下載更新此軟體的功能
 
-7. File Explorer 右側區域新增可切換以大圖示 / 詳細資料來瀏覽的介面
+7. 實作網路流量監測 (for crawler)
 
-8. 新增自訂軟體啟動的小幫手
+8. File Explorer 右側區域新增可切換以大圖示 / 詳細資料來瀏覽的介面
 
-9. 更多可調參數的爬蟲, 如果有必要甚至考慮為其加開 Controller
+9. 新增自訂軟體啟動的小幫手
 
-10. 增加爬蟲目標
+10. 更多可調參數的爬蟲, 如果有必要甚至考慮為其加開 Controller
 
-11. ~~動態看板娘~~
+11. 增加爬蟲目標
+
+12. ~~動態看板娘~~
 
 ## Environment
 

@@ -15,19 +15,13 @@ import java.util.regex.Pattern;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
 
 public class Dumper {
-    public static Pattern imagePattern = Pattern.compile(".*?jpe?g|png|gif|webp$");
+    public static Pattern imagePattern = Pattern.compile(".*?jpe?g|png|gif$");
+    public static Pattern pjImagePattern = Pattern.compile(".*?jpe?g|png$");
     public static Pattern musicPattern = Pattern.compile(".*?wav|mp3$");
 
     /* 負責讀資料 + 寫檔案 */
     public static void dump(InputStream in, OutputStream out) throws IOException {
-        try (var input = new BufferedInputStream(in); 
-        var output = new BufferedOutputStream(out)){ // try auto close
-            var data = new byte[16384];
-            var length = 0;
-            while ((length = input.read(data)) != -1){
-                output.write(data, 0, length);
-            }
-        }
+        dump(in, out, 16384);
     }
 
     public static void dump(InputStream in, OutputStream out, int approximateSize) throws IOException {
@@ -107,6 +101,10 @@ public class Dumper {
 
     public static boolean isImage(Path filePath){
         return imagePattern.matcher(filePath.getFileName().toString()).find();
+    }
+
+    public static boolean isPngJpg(Path filePath){
+        return pjImagePattern.matcher(filePath.getFileName().toString()).find();
     }
 
     public static boolean isMusic(Path filePath){

@@ -6,13 +6,17 @@
 package eroiko.ani.util.NeoWallpaper;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
 import javax.swing.filechooser.FileSystemView;
+
+import com.jhlabs.image.ScaleFilter;
 
 import eroiko.ani.util.Method.Dumper;
 import javafx.embed.swing.SwingFXUtils;
@@ -145,13 +149,87 @@ public class WallpaperUtil {
         return new ImageView(SwingFXUtils.toFXImage(tmpBufferImage, null));
     }
 
-    public static ImageView fetchSmallImage(Path path){
+    /** 取得系統小圖示, 品質效果卓越 */
+    public static ImageView fetchIconUsePathWithHightQuality(Path path){ // 真方便
+        var tmp = FileSystemView.getFileSystemView().getSystemIcon(path.toFile());
+        var tmpBufferImage = new java.awt.image.BufferedImage(
+            tmp.getIconWidth(),
+            tmp.getIconHeight(),
+            java.awt.image.BufferedImage.TYPE_INT_ARGB
+        );
+        tmp.paintIcon(null, tmpBufferImage.getGraphics(), 0, 0);
+        return new ImageView(scaleAndSharpen(tmpBufferImage, 64));
+    }
+
+    /**
+     * 嘗試取得圖片小圖示, 大小為 64 * 64
+     * @param path  圖片檔案位置
+     * @return ImageView, 若檔案案不存在或格式不支持, 返回 new ImageView()
+     */
+    public static ImageView fetchSmallImageView(Path path){
+        return new ImageView(fetchSmallImage(path, 64));
+    }
+
+    /**
+     * 嘗試取得圖片小圖示, 大小為 size * size
+     * @param path  圖片檔案位置
+     * @return ImageView, 若檔案案不存在或格式不支持, 返回 new ImageView()
+     */
+    public static Image fetchSmallImage(Path path, int size){
         try {
-            var img = new Image(path.toAbsolutePath().toUri().toURL().toString(), 64, 64, true, false);
-            return new ImageView(img);
+            return new javafx.scene.image.Image(path.toAbsolutePath().toUri().toURL().toString(), 64, 64, true, false);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    /**
+     * 嘗試取得圖片小圖示, 使用縮放與銳化算法, 大小為 64 * 64
+     * <p> 注意, 縮放算法很耗效能且占空間, 請勿隨意大量調用
+     * @param path  圖片檔案位置
+     * @return ImageView, 若檔案案不存在或格式不支持, 返回 new ImageView()
+     */
+    public static ImageView fetchScaledSmallImageView(Path path){
+        return new ImageView(fetchScaledSmallImage(path, 64));
+    }
+    
+    /**
+     * 嘗試取得圖片小圖示, 使用縮放與銳化算法, 大小為 size * size
+     * <p> 注意, 縮放算法很耗效能且占空間, 請勿隨意大量調用
+     * @param path  圖片檔案位置, 因為算法目前測試僅支持 png, jpg, 因此其他格式都會調用 WallpaperUtil.fetchSmallImageView
+     * @return Image, 若檔案案不存在或格式不支持, 返回 null
+     */
+    public static Image fetchScaledSmallImage(Path path, int size){
+        if (Dumper.isPngJpg(path)){
+            try {
+                return scaleAndSharpen(ImageIO.read(path.toFile()), size);
+            } catch (IOException e){ e.printStackTrace(); }
+        }
+        return fetchSmallImage(path, size);
+    }
+    
+    /** 內部縮放與銳化算法 */
+    private static Image scaleAndSharpen(java.awt.image.BufferedImage img, int size){
+        int width = img.getWidth();
+        int height = img.getHeight();
+        /* Scale */
+        float mul;
+        ScaleFilter filter = null;
+        if (width >= height){
+            mul = (float) size / width;
+            filter = new com.jhlabs.image.ScaleFilter(size, (int) (height * mul));
+        }
+        else {
+            mul = (float) size / height;
+            filter = new com.jhlabs.image.ScaleFilter((int) (width * mul), size);
+        }
+        img = filter.filter(img, null);
+        /* Sharpen */
+        var shFilter = new com.jhlabs.image.SharpenFilter();
+        shFilter.setUseAlpha(true);
+        img = shFilter.filter(img, null);
+        /* return ImageView */
+        return SwingFXUtils.toFXImage(img, null);
     }
 }

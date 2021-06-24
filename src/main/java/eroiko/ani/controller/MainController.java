@@ -1040,50 +1040,37 @@ public class MainController implements Initializable {
         }
         viewImageTileTable.getChildren().clear();
 
-        var list = new ArrayList<VBox>(paths.size());
+        final int size = paths.size();
+        var list = new ArrayList<VBox>(size);
         var service = new Service<Void>(){
             @Override
             protected Task<Void> createTask(){
                 return new Task<Void>(){
                     @Override
                     protected Void call(){
-                        int size = paths.size();
                         var pool = Executors.newFixedThreadPool(size);
                         var poolList = new ArrayList<Callable<VBox>>(size);
-                        /* 未來實現, File Explorer 右鍵選單功能 */
-                        // final ContextMenu menu = new ContextMenu();
-                        // var delete = new MenuItem("delete");
-                        // Path vboxPath = null;
-                        // // var vboxPath = new SimpleStringProperty();
-                        // delete.setOnAction(e -> {
-                        //     try {
-                        //         deleteFile(vboxPath);
-                        //     } catch (IOException e2) {
-                        //         e2.printStackTrace();
-                        //     }
-                        // });
-                        // menu.getItems().addAll(delete);
-                        // var copy = new MenuItem("copy");
-                        // copy.setOnAction(e -> {
-                        //     var content = new ClipboardContent();
-                        //     content.putFilesByPath(List<String>.of());
-                        //     Clipboard.getSystemClipboard().setContent(content);
-                        // });
-                        // var paste = new MenuItem("paste");
-                        // menu.getItems().addAll(copy, paste);
+                        /* 決定是否優化 File Explorer 圖示 */
+                        int imgCnt = 0;
+                        for (var p : paths){ if (Dumper.isImage(p)){ ++imgCnt; }}
+                        boolean useRaw = imgCnt > 40;
                         for (var p : paths){
                             poolList.add(() -> {
                                 ImageView iconView;
                                 if (Dumper.isImage(p)){
-                                    iconView = WallpaperUtil.fetchSmallImage(p);
+                                    if (useRaw){
+                                        iconView = WallpaperUtil.fetchSmallImageView(p);
+                                    }
+                                    else {
+                                        iconView = WallpaperUtil.fetchScaledSmallImageView(p);
+                                    }
                                 }
                                 else {
-                                    iconView = WallpaperUtil.fetchIconUsePath(p);
+                                    iconView = WallpaperUtil.fetchIconUsePathWithHightQuality(p);
                                     iconView.setFitHeight(36);
                                     iconView.setFitWidth(36);
                                 }
                                 
-                                // var name = new Text(CarryReturn.addCarryReturnForAbout(p.getFileName().toString(), 19, 0));
                                 var name = new Text(CarryReturn.addCarryReturnForTile(p.getFileName().toString(), 19));
                                 name.setFont(MainApp.notoSansCJKLight12);
                                 
