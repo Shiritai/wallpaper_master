@@ -149,7 +149,7 @@ public class WallpaperUtil {
         return new ImageView(SwingFXUtils.toFXImage(tmpBufferImage, null));
     }
 
-    /** 取得系統小圖示, 品質效果卓越 */
+    /** 取得系統小圖示, 品質效果卓越, 大小固定為 64 * 64 */
     public static ImageView fetchIconUsePathWithHightQuality(Path path){ // 真方便
         var tmp = FileSystemView.getFileSystemView().getSystemIcon(path.toFile());
         var tmpBufferImage = new java.awt.image.BufferedImage(
