@@ -44,8 +44,10 @@ public class CrawlerManager {
      * @param keywords      爬蟲搜索關鍵字
      * @param pages         目標頁數, 每頁都有多張圖
      * @param printProcessInfoWhileCrawling 是否再爬取時印出當前資訊
+     * @throws Exception
      */
-    public CrawlerManager(String folderPath, String [] keywords, int pages, boolean printProcessInfoWhileCrawling){
+    public CrawlerManager(String folderPath, String [] keywords, int pages, boolean printProcessInfoWhileCrawling) throws Exception{
+        Dumper.quickPing("github.com");
         printInfo = printProcessInfoWhileCrawling;
         progress.set(0.);
         fullSavePath = folderPath + "\\" + String.join(" ", keywords);
@@ -90,8 +92,9 @@ public class CrawlerManager {
      * @param folderPath    母目標資料夾, 會在其內建立 tmp 資料夾
      * @param keywords      爬蟲搜索關鍵字
      * @param pages         目標頁數, 每頁都有多張圖
+     * @throws Exception
      */
-    public CrawlerManager(String folderPath, String [] keywords, int pages){
+    public CrawlerManager(String folderPath, String [] keywords, int pages) throws Exception{
         this(folderPath, keywords, pages, true);
     }
 

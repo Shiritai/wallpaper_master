@@ -4,11 +4,8 @@
  * Created using VSCode.
  */
 package eroiko.ani.model.CLI.command.external;
-import eroiko.ani.controller.SupportController.MyAlert;
-import eroiko.ani.controller.SupportController.MyAlert.AlertType;
 import eroiko.ani.model.CLI.command.fundamental.*;
 import eroiko.ani.model.NewCrawler.CrawlerManager;
-import eroiko.ani.util.Method.Dumper;
 import eroiko.ani.util.NeoWallpaper.WallpaperPath;
 
 public class Crawler extends Command {
@@ -22,14 +19,6 @@ public class Crawler extends Command {
 
     @Override
     public void execute() throws IllegalArgumentException {
-        /* 檢測網路 */
-        try {
-            Dumper.quickPing("github");
-        } catch (Exception e){
-            out.println(illegalParaStr(e.getMessage()).getMessage());
-            MyAlert.OpenMyAlert(AlertType.ERROR, e, true);
-            return;
-        }
         /* 確認是否印出詳細 */
         var printInfo = keywords.startsWith("-i");
         if (printInfo){ keywords = keywords.substring(3); }

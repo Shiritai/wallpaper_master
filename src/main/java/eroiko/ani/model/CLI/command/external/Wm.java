@@ -31,8 +31,8 @@ public class Wm extends Command {
             case "--about" -> MainController.OpenAboutWindow();
             case "--pref" -> MainController.OpenPreferenceWindow();
             case "--music" -> MusicWithSyamiko.openMusicWithSyamiko();
-            case "--terminal" -> ConsoleController.OpenCompleteTerminal();
-            case "--complete" -> MainApp.OpenMainWindow();
+            case "--terminal" -> { ConsoleController.OpenCompleteTerminal(); /* System.setOut(MainApp.stdOut); */ } // reset stdout
+            case "--complete" -> { MainApp.OpenMainWindow(); /* System.setOut(MainApp.stdOut); */ } // reset stdout
             default -> throw illegalParaStr("Invalid parameter option.");
         }
     }

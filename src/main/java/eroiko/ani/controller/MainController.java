@@ -70,7 +70,6 @@ public class MainController implements Initializable {
     public static Wallpaper theWallpaper;
 
     /* Terminal */
-    private static PrintStream stdOut = new PrintStream(System.out);
     public PipedInputStream pipIn = new PipedInputStream();
     private Thread terminalThread;
     public static boolean quit = true;
@@ -378,7 +377,7 @@ public class MainController implements Initializable {
                 this.terminalThread.join(1000l);
                 this.pipIn.close();
             } catch (Exception e){}
-            System.setOut(stdOut);
+            System.setOut(MainApp.stdOut);
             System.out.println("GUI Terminal has closed.");
         }
         else {

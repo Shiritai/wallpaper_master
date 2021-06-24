@@ -205,6 +205,7 @@ public class ConsoleController implements Initializable {
             /* set Console */
             pipIn = new PipedInputStream();
             print = new PrintStream(new PipedOutputStream(pipIn), true);
+            // System.setOut(print); // 改變 stdout 導向
             console = new Console(print, initPath, pathComp, computerName, userName, true);
             new ConsoleThread(pipIn, txt.textProperty());
             txt.setText(info + console.promptString());
@@ -268,7 +269,6 @@ public class ConsoleController implements Initializable {
         
         private void backToLabel(){
             var cmd = txt.refresh();
-            System.out.println("[Command]\n" + cmd);
             setGraphic(null);
             try {
                 new TimeWait(100);

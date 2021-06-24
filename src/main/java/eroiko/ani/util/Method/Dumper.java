@@ -112,8 +112,8 @@ public class Dumper {
     }
 
     public static boolean quickPing(String target) throws Exception {
-        var tmp = Runtime.getRuntime().exec("cmd /C ping " + target);
-        if (tmp.waitFor() != 0){
+        var process = Runtime.getRuntime().exec("cmd /C ping " + target);
+        if (process.waitFor() != 0){
             throw new Exception("Bad network connection!");
         }
         return true;

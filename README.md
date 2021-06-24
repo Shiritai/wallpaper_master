@@ -58,13 +58,15 @@ If you'd like to see the command window while running, run `start.bat` alternati
 
 2. WallpaperUtil 新增對小圖示的縮放與銳化優化, 搭配 Wallpaper 新增取得經過縮放 + 銳化小圖示的方法
 
-4. Decouple and kill magic number/classes
+3. Decouple and kill magic number/classes
+
+4. 消除 Crawler 指令的 Bug
 
 5. 當前使用程式碼行數 (Excluded deprecated classes) 約 : 6600 行
 
 ## Known issue 已知問題
 
-1. 如果進入過多圖片的資料夾, 可能會在載入縮圖的時候爆記憶體... -> 改成慢慢載入, 同時提升載入之圖片品質
+1. 當前 Complete Terminal 有不少 Bugs, 強烈不建議使用
 
 ## Maybe in the future... 未來可能的擴充方向
 

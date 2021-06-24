@@ -13,7 +13,7 @@ public class ConsoleThread implements Runnable {
     private StringProperty terminal;
 
     /**
-     * 利用 Round-Robin 的性質, 監聽 in 並輸出文字至 terminal (使用 appendText())
+     * 利用 Round-Robin 的性質, 監聽 in 並輸出文字至 terminal
      * @param in : the piped inputStream of source
      * @param terminal : the string property to append text
      */
