@@ -710,7 +710,7 @@ public class MainController implements Initializable {
                     } catch (Exception ex){
                         ex.printStackTrace();
                     }
-                    if (console != null){ // 可能已經 exit 或 shutdown
+                    if (console != null && !console.isSearchCmd()){ // 可能已經 exit 或 shutdown, is search command 讓查詢指令時不須用重新整理資料夾
                         refreshExplorerPath(console.getCurrentPath(), true, true);
                     }
                 }

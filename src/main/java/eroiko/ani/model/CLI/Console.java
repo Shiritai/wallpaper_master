@@ -38,6 +38,7 @@ public class Console {
     private Consulter rq;
     private Comparator<Path> compPath;
     private Future<Void> future;
+    private boolean isSearchCommand;
     
     /**
      * Create a new Console
@@ -53,6 +54,7 @@ public class Console {
         this.consoleOut = consoleOut;
         this.computerName = computerName;
         this.userName = userName;
+        this.isSearchCommand = false;
         Command.setDefaultPath(root);
         Command.setPrintBehavior(printRelative);
         Command.setAllCommandPrintStream(consoleOut);
@@ -80,6 +82,13 @@ public class Console {
         Command.setDefaultPath(root);
     }
 
+    /**
+     * 返回上一個指令是否為查詢式指令
+     * <p> 查詢式指令指的是 man CMD 或 CMD --help 這兩種
+     * @return 是否為查詢式指令
+     */
+    public boolean isSearchCmd(){ return isSearchCommand; }
+    
     public Path getCurrentPath(){ return Command.getCurrentPath(); }
     
     /** return {@code null} if there is no previous history command */
@@ -153,14 +162,16 @@ public class Console {
         /* call COMMAND --help --> i.e. man COMMAND */
         if (cmdLine.length == 2 && cmdLine[1].equals("--help")){
             new Man(cmdLine[0]).execute();
+            isSearchCommand = true;
             return;
         }
+        isSearchCommand = false;
         try {
             var passingStr = stripHeadingCommand(cmd);
             switch (cmdLine[0]){
                 /* Fundamental */
                 case "" -> {} // this is when the user pressed ENTER
-                case "man" -> new Man(passingStr).execute();
+                case "man" -> { new Man(passingStr).execute(); isSearchCommand = true; }
     
                 /* Basic */
                 case "cd" -> new Cd(passingStr).execute();
